@@ -41,6 +41,7 @@ class TopUpController extends Controller
         ]);
 
         return response()->json([
+            'status' => 'success',
             'message' => 'Top-up berhasil',
             'topup_id' => $topupId,
             'amount' => $package->amount
