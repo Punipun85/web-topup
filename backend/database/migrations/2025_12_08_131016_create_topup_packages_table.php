@@ -8,11 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('games', function (Blueprint $table) {
+        Schema::create('topup_packages', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->string('code')->unique(); // internal code, contoh: ML, FF
+            $table->foreignId('game_id')->constrained('games')->onDelete('cascade');
+            $table->string('name'); // contoh: "50 Diamonds"
+            $table->integer('amount'); // nominal topup
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
@@ -20,6 +20,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('games');
+        Schema::dropIfExists('topup_packages');
     }
 };
