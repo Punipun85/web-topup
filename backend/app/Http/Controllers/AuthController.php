@@ -32,11 +32,9 @@ class AuthController extends Controller
             'role' => 'user' // selalu user
         ]);
 
-        $token = $user->createToken('api-token')->plainTextToken;
-
         return response()->json([
             'user' => $user,
-            'token' => $token
+            'message' => 'User registered successfully'
         ], 201);
     }
 
