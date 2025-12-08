@@ -10,12 +10,15 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    /**
+     * Register user baru (role default = user)
+     */
     public function register(Request $r)
     {
         $v = Validator::make($r->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
         ]);
 
         if ($v->fails()) {
@@ -25,14 +28,21 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $r->name,
             'email' => $r->email,
-            'password' => Hash::make($r->password)
+            'password' => Hash::make($r->password),
+            'role' => 'user' // selalu user
         ]);
+
+        $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
             'user' => $user,
-        ]);
+            'token' => $token
+        ], 201);
     }
 
+    /**
+     * Login user
+     */
     public function login(Request $r)
     {
         if (!Auth::attempt($r->only('email', 'password'))) {
@@ -41,10 +51,10 @@ class AuthController extends Controller
             ], 401);
         }
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
-        // optional: hapus token lama
+        // hapus token lama
         $user->tokens()->delete();
 
         $token = $user->createToken('api-token')->plainTextToken;
@@ -55,11 +65,17 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Info user saat ini
+     */
     public function me(Request $r)
     {
         return response()->json($r->user());
     }
 
+    /**
+     * Logout user
+     */
     public function logout(Request $r)
     {
         $r->user()->currentAccessToken()->delete();
