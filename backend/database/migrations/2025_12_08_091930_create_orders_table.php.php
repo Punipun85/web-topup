@@ -15,7 +15,7 @@ return new class extends Migration
     $table->id();
     $table->string('order_number')->unique();
     $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-    $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+    $table->foreignId('topup_package_id')->constrained('topup_packages')->cascadeOnDelete();
     $table->string('player_id'); // in-game id / username
     $table->decimal('amount', 12, 2);
     $table->enum('status', ['pending','paid','failed','processing','completed','cancelled'])->default('pending');

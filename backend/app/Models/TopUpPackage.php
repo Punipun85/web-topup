@@ -17,6 +17,11 @@ class TopUpPackage extends Model
         'amount',
     ];
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function game()
     {
         return $this->belongsTo(Game::class);

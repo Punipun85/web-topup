@@ -29,9 +29,9 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function product()
+    public function topupPackage()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(TopUpPackage::class);
     }
 
     public function transaction()
