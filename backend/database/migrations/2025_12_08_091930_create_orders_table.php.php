@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
     $table->id();
     $table->string('order_number')->unique();
-    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+    $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
     $table->foreignId('topup_package_id')->constrained('topup_packages')->cascadeOnDelete();
     $table->string('player_id'); // in-game id / username
     $table->decimal('amount', 12, 2);

@@ -4,52 +4,63 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Transaction;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
 class PaymentWebhookController extends Controller
 {
-    public function webhook(Request $r)
+    public function webhook(Request $request)
     {
-        // 1. Verify signature
-        if ($r->header('X-WEBHOOK-SIGNATURE') !== config('services.payment.webhook_secret')) {
-            return response()->json(['error' => 'Invalid signature'], 403);
-        }
+        $request->validate([
+            'order_number' => 'required|exists:orders,order_number',
+            'status'       => 'required|in:success,failed'
+        ]);
 
-        $payload = $r->all();
+        return DB::transaction(function () use ($request) {
 
-        $order = Order::where('order_number', $payload['order_number'] ?? null)->first();
-        if (!$order) {
-            return response()->json(['error' => 'order_not_found'], 404);
-        }
+            $order = Order::where('order_number', $request->order_number)
+                ->lockForUpdate()
+                ->first();
 
-        // 2. Idempotent check
-        if ($order->status === 'paid') {
-            return response()->json(['ok' => true]);
-        }
-
-        return DB::transaction(function () use ($order, $payload) {
-
-            $status = $payload['status'] ?? 'failed';
-
-            $order->status = $status === 'success' ? 'paid' : 'failed';
-            $order->payment_payload = $payload;
-            $order->save();
-
-            $tx = $order->transaction()->first();
-
-            if ($tx) {
-                $tx->transaction_id = $payload['transaction_id'] ?? null;
-                $tx->status = $status === 'success' ? 'success' : 'failed';
-                $tx->raw_response = $payload;
-                $tx->save();
+            // idempotent
+            if ($order->status === 'paid') {
+                return response()->json(['ok' => true]);
             }
 
-            // 3. Fulfillment (ASYNC recommended)
-            if ($status === 'success') {
-                // dispatch(new ProcessTopup($order));
-            }
+            $transaction = $order->transaction;
+            
+            if (!$transaction) {
+            $transaction = $order->transaction()->create([
+             'provider' => 'dummy',
+             'amount'   => $order->amount,
+             'status'   => 'pending'
+            ]);
+        }
 
-            return response()->json(['ok' => true]);
+            // GENERATE DUMMY PROVIDER TRX ID
+            $providerTrxId = 'DUMMY-' . strtoupper(Str::random(12));
+
+            // UPDATE TRANSACTION
+            $transaction->update([
+                'provider'         => 'dummy',
+                'provider_trx_id'  => $providerTrxId,
+                'payment_method'   => $transaction->payment_method ?? 'manual',
+                'status'           => $request->status === 'success' ? 'success' : 'failed',
+                'raw_response'     => $request->all()
+            ]);
+
+            // UPDATE ORDER
+            $order->update([
+                'status' => $request->status === 'success' ? 'paid' : 'failed'
+            ]);
+
+            return response()->json([
+                'message'          => 'Webhook processed',
+                'order_number'     => $order->order_number,
+                'order_status'     => $order->status,
+                'provider_trx_id'  => $providerTrxId
+            ]);
         });
     }
 }

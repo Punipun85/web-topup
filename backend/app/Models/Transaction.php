@@ -12,7 +12,9 @@ class Transaction extends Model
     protected $fillable = [
         'order_id',
         'provider',
-        'transaction_id',
+        'provider_trx_id',
+        'payment_method',
+        'amount',
         'status',
         'raw_response'
     ];

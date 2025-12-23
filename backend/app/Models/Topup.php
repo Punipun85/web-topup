@@ -5,23 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Order extends Model
+class Topup extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'order_number',
         'user_id',
-        'topup_package_id',
+        'game_id',
+        'package_id',
         'player_id',
+        'server_id',
+        'email',
         'amount',
-        'status',
-        'payment_payload'
+        'payment_method',
+        'status'
     ];
 
     protected $casts = [
-        'amount' => 'float',
-        'payment_payload' => 'array'
+        'amount' => 'integer'
     ];
 
     public function user()
@@ -29,13 +30,13 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function topupPackage()
+    public function game()
     {
-        return $this->belongsTo(TopUpPackage::class);
+        return $this->belongsTo(Game::class);
     }
 
-    public function transaction()
+    public function package()
     {
-        return $this->hasOne(Transaction::class);
+        return $this->belongsTo(TopUpPackage::class, 'package_id');
     }
 }
