@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
+            $table->string('image')->nullable();
             $table->string('code')->unique(); // internal code, contoh: ML, FF
             $table->boolean('active')->default(true);
             $table->timestamps();

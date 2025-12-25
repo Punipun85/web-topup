@@ -53,26 +53,44 @@ class GamesSeeder extends Seeder
         // 2. Data topup packages
         $packagesData = [
             // Mobile Legends
-            ['slug' => 'mobile-legends', 'name' => '12 Diamonds', 'amount' => 12],
-            ['slug' => 'mobile-legends', 'name' => '50 Diamonds', 'amount' => 50],
+            ['slug' => 'mobile-legends', 'name' => '12 Diamonds', 'amount' => 12, 'price' => 10000],
+            ['slug' => 'mobile-legends', 'name' => '50 Diamonds', 'amount' => 50, 'price' => 40000],
+            ['slug' => 'mobile-legends', 'name' => '50 Diamonds', 'amount' => 76, 'price' => 40000],
             // Free Fire
-            ['slug' => 'free-fire', 'name' => '50 Diamonds', 'amount' => 50],
-            ['slug' => 'free-fire', 'name' => '100 Diamonds', 'amount' => 100],
+            ['slug' => 'free-fire', 'name' => '50 Diamonds', 'amount' => 50, 'price' => 20000],
+            ['slug' => 'free-fire', 'name' => '100 Diamonds', 'amount' => 100, 'price' => 35000],
             // PUBG Mobile
-            ['slug' => 'pubg-mobile', 'name' => '100 UC', 'amount' => 100],
-            ['slug' => 'pubg-mobile', 'name' => '500 UC', 'amount' => 500],
+            ['slug' => 'pubg-mobile', 'name' => '100 UC', 'amount' => 100, 'price' => 2500],
+            ['slug' => 'pubg-mobile', 'name' => '500 UC', 'amount' => 500, 'price' => 12500],
             // Genshin Impact
-            ['slug' => 'genshin-impact', 'name' => '60 Genesis Crystals', 'amount' => 60],
-            ['slug' => 'genshin-impact', 'name' => '300 Genesis Crystals', 'amount' => 300],
+            ['slug' => 'genshin-impact', 'name' => '60 Genesis Crystals', 'amount' => 60, 'price' => 15000],
+            ['slug' => 'genshin-impact', 'name' => '300 Genesis Crystals', 'amount' => 300, 'price' => 75000],
         ];
 
         foreach ($packagesData as $pkg) {
             $game_id = $gameIds[$pkg['slug']];
 
             TopUpPackage::firstOrCreate(
-                ['game_id' => $game_id, 'name' => $pkg['name']],
-                ['amount' => $pkg['amount']]
-            );
+        [
+        'game_id' => $game_id,
+        'name' => $pkg['name'],
+        ],
+        [
+        'amount' => $pkg['amount'],
+        'price' => $pkg['price'],
+        'active' => true,
+        'meta' => [ // tambahan semisal akan ada promo (untuk sekarang diberi bonus diamonds dulu)
+            'promo' => [
+                'label' => 'Bonus Diamonds',
+                'bonus_amount' => intval($pkg['amount'] * 0.5),
+            ],
+            'ui' => [
+                'badge' => '💎',
+                'highlight' => true,
+                ]
+            ]
+        ]
+    );
         }
     }
 }
