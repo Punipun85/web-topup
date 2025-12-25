@@ -13,6 +13,8 @@ return new class extends Migration
             $table->foreignId('game_id')->constrained('games')->onDelete('cascade');
             $table->string('name'); // contoh: "50 Diamonds"
             $table->integer('amount'); // nominal topup
+            $table->integer('price'); // harga jual
+            $table->json('meta')->nullable(); // data tambahan, misal: {"bonus": "10 Diamonds"}
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

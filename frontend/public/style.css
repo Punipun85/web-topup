@@ -1,0 +1,159 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: #0f0f0f;
+  color: #fff;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: #151515;
+  border-bottom: 1px solid #222;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo {
+  width: 36px;
+  height: 36px;
+  background: #ffd600;
+  color: #000;
+  font-weight: bold;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search {
+  width: 320px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 22px;
+}
+
+.nav-menu a {
+  color: #bbb;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.nav-menu a.active {
+  color: #ffd600;
+  font-weight: 600;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.lang {
+  font-size: 14px;
+  color: #ddd;
+}
+
+.link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* HERO */
+.hero {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  background: radial-gradient(circle at top left, #d6d4a4, #3a3a3a 60%);
+}
+
+.hero h1 {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  color: #ddd;
+  margin-bottom: 40px;
+}
+
+/* CARD */
+.card {
+  background: #2e2b3a;
+  padding: 26px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  text-align: left;
+}
+
+.card label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  background: #3b3848;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+}
+
+.input-group input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+}
+
+.icon {
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+/* BUTTON */
+.btn {
+  width: 100%;
+  padding: 14px;
+  background: #ffff33;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #000;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}

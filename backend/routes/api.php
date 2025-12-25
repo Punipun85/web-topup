@@ -6,6 +6,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\TopUpController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\TopUpPackageController;
+use App\Http\Controllers\Admin\TopUpPackageAdminController;
 
 // auth (public)
 Route::post('/register', [AuthController::class, 'register']);
@@ -32,8 +35,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
+Route::middleware(['auth:sanctum', 'role:admin,moderator'])
+    ->prefix('admin')
+    ->group(function () {
+        Route::get('/packages', [TopUpPackageAdminController::class, 'index']);
+        Route::put('/packages/{id}', [TopUpPackageAdminController::class, 'update']);
+        Route::delete('/packages/{id}/promo', [TopUpPackageAdminController::class, 'removePromo']);
+    });
+
+Route::get('/games', [GameController::class, 'index']);
+Route::get('/games/{slug}', [GameController::class, 'show']);
+Route::get('/games/{slug}/packages', [TopUpPackageController::class, 'show']);
+
 // payment webhook (public but secured by signature)
 Route::post('/payment/webhook', [PaymentWebhookController::class, 'webhook']);
 
 
 
+Route::get('/topup/package/{slug}', [TopUpPackageController::class, 'show']);

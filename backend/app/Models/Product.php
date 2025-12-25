@@ -9,6 +9,8 @@ class Product extends Model
 {
     use HasFactory;
 
+    protected $table = 'topup_packages';
+
     protected $fillable = [
         'game_id',
         'sku',

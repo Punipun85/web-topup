@@ -2,28 +2,35 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class TopUpPackage extends Model
 {
-    use HasFactory;
-
-    protected $table = 'topup_packages';
-
-    protected $fillable = [
-        'game_id',
-        'name',
-        'amount',
+    protected $casts = [
+        'meta' => 'array',
     ];
 
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
+     protected $table = 'topup_packages';
 
-    public function game()
+    public function getActivePromoAttribute()
     {
-        return $this->belongsTo(Game::class);
+        $promo = $this->meta['promo'] ?? null;
+
+        if (!$promo) return null;
+
+        $now = Carbon::now();
+
+        if (
+            isset($promo['starts_at'], $promo['ends_at']) &&
+            $now->between(
+                Carbon::parse($promo['starts_at']),
+                Carbon::parse($promo['ends_at'])
+            )
+        ) {
+            return $promo;
+        }
+
+        return null;
     }
 }
