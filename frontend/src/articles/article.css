@@ -1,0 +1,157 @@
+/* =======================
+   ARTICLE SECTION
+======================= */
+.article-section {
+  margin: 80px 24px;
+  color: #fff;
+}
+
+.article-header {
+  max-width: 1200px;
+  margin: 0 auto 32px;
+}
+
+.article-header h2 {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.article-header p {
+  font-size: 13px;
+  color: #9ca3af;
+  max-width: 700px;
+  margin-top: 8px;
+}
+
+/* =======================
+   GRID
+======================= */
+.article-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .article-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* =======================
+   CARD + RGB
+======================= */
+.article-card {
+  position: relative;
+  height: 360px;
+  border-radius: 24px;
+}
+
+/* RGB BORDER */
+.article-card::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: linear-gradient(
+    270deg,
+    #ff00cc,
+    #3333ff,
+    #00ffee,
+    #ffcc00,
+    #ff00cc
+  );
+  background-size: 400% 400%;
+  animation: rgbBorder 6s linear infinite;
+  filter: blur(10px);
+  z-index: 0;
+}
+
+/* =======================
+   INNER (ISI CARD)
+======================= */
+.article-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #0d0d0d;
+  z-index: 1;
+  cursor: pointer;
+  transition: transform 0.4s ease;
+}
+
+.article-inner:hover {
+  transform: translateY(-10px);
+}
+
+/* =======================
+   IMAGE
+======================= */
+.article-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.article-inner:hover .article-image img {
+  transform: scale(1.06);
+}
+
+/* =======================
+   OVERLAY
+======================= */
+.article-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.95)
+  );
+}
+
+/* =======================
+   CONTENT
+======================= */
+.article-content {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  z-index: 2;
+}
+
+.article-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #f3f305;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.article-content h3 {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+/* =======================
+   RGB ANIMATION
+======================= */
+@keyframes rgbBorder {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

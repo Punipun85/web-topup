@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../config/api.php";
 
 $inv = $_GET["inv"] ?? "";
 if (!$inv) {
@@ -7,9 +7,9 @@ if (!$inv) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT * FROM invoices WHERE invoice_number = ?");
-$stmt->execute([$inv]);
-$invoice = $stmt->fetch();
+$url = $API_BASE . "/orders/" . urlencode($inv);
+$json = file_get_contents($url);
+$invoice = json_decode($json, true);
 ?>
 <!DOCTYPE html>
 <html lang="id">

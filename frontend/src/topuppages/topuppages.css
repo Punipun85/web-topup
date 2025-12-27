@@ -1,0 +1,278 @@
+/* --- GLOBAL --- */
+.topup-page {
+  background-color: #121212;
+  color: #fff;
+  min-height: 100vh;
+  padding-bottom: 50px;
+  font-family: sans-serif;
+  padding-top: 0px;
+  margin-top: -90px;
+}
+
+/* --- HERO --- */
+.hero-section {
+  position: relative;
+  height: 350px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.5);
+  
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+}
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #ffd600;
+  text-transform: uppercase;
+  margin: 0;
+}
+.official-badge {
+  background: #ffd600;
+  color: black;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-right: 10px;
+}
+
+/* --- LAYOUT GRID --- */
+.main-layout {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+  gap: 25px;
+  max-width: 1200px;
+  margin: 0px auto 0;
+  padding: 0 20px;
+  position: relative;
+  z-index: 10;
+}
+
+/* --- CARD BOX --- */
+.card-box {
+  background: #212121;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  border: 1px solid #333;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* Header Angka Kuning */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.step-number {
+  background: #ffd600;
+  color: #000;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 8px;
+}
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+/* --- INPUTS --- */
+.input-row { display: flex; gap: 15px; }
+.custom-input {
+  width: 100%;
+  background: #111;
+  border: 1px solid #444;
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.2s;
+}
+.custom-input:focus { border-color: #ffd600; }
+.helper-text { font-size: 0.85rem; color: #777; margin-top: 8px; font-style: italic; }
+
+/* --- ITEM GRID & CATEGORY --- */
+.category-section {
+  margin-bottom: 30px;
+}
+.category-title {
+  font-size: 1rem;
+  color: #ffd600;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #444;
+  padding-bottom: 5px;
+  display: inline-block;
+}
+.nominal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 Kolom sesuai screenshot */
+  gap: 15px;
+}
+
+.item-card {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 15px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.item-card:hover { background: #333; transform: translateY(-2px); }
+
+/* Jika Dipilih */
+.item-card.active {
+  background: #2a2a2a;
+  border: 2px solid #ffd600;
+  box-shadow: 0 0 10px rgba(255, 214, 0, 0.2);
+}
+
+.item-name { font-size: 0.95rem; font-weight: 500; color: #eee; margin-bottom: 10px; line-height: 1.4; }
+.price-container { margin-top: auto; }
+.price-original { font-size: 0.8rem; text-decoration: line-through; color: #888; }
+.price-final { font-size: 1.1rem; font-weight: bold; color: #ffd600; }
+
+.flash-badge {
+  position: absolute;
+  top: 0; right: 0;
+  background: #ffd600;
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-bottom-left-radius: 8px;
+}
+
+/* --- PAYMENT --- */
+.payment-header {
+  background: #333;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+.payment-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.pay-card {
+  background: white;
+  color: #000;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+.pay-card.active {
+  border-color: #ffd600;
+  background: #fff;
+  position: relative;
+}
+.pay-card.active::after {
+  content: '✔';
+  position: absolute;
+  top: -8px; right: -8px;
+  background: #ffd600; color: black;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* --- QTY & PROMO --- */
+.qty-wrapper {
+  display: flex;
+  background: #111;
+  border: 1px solid #444;
+  border-radius: 8px;
+  width: fit-content;
+}
+.qty-btn {
+  background: #ffd600; border: none; width: 40px; height: 40px; font-weight: bold; cursor: pointer;
+}
+.qty-value { padding: 0 20px; display: flex; align-items: center; font-weight: bold; }
+.promo-group { display: flex; gap: 10px; }
+.btn-apply { background: #ffd600; border: none; padding: 0 20px; font-weight: bold; border-radius: 8px; cursor: pointer; }
+
+/* --- SIDEBAR --- */
+.sticky-sidebar {
+  position: -webkit-sticky; /* Support Safari */
+  position: sticky;
+  
+  /* Jarak berhenti dari atas. Ubah angka ini jika tertutup navbar */
+  top: 120px; 
+  
+  /* Penting: Agar tidak 'goyang' dan ukurannya pas konten */
+  height: fit-content; 
+  align-self: start; 
+  
+  z-index: 20;
+}
+
+/* 2. Rating Card (Hanya style tampilan, jangan kasih sticky lagi disini) */
+.rating-card {
+  background: #212121;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex; 
+  align-items: center; 
+  gap: 15px;
+  margin-bottom: 20px;
+  /* HAPUS position: sticky dari sini agar tidak konflik */
+}
+
+.logo-circle {
+  width: 45px; height: 45px; background: #ffd600; color: black;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;
+}
+.detail-box h3 { margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 10px; }
+.detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; color: #ccc; }
+.detail-row b { color: white; }
+.total-price { font-size: 1.8rem; font-weight: 800; color: #ffd600; text-align: right; margin-bottom: 15px; }
+.btn-pesan {
+  width: 100%; background: #ffd600; color: black; font-weight: 800; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
+}
+.btn-pesan:hover { background: #e6c200; }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .nominal-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-title { font-size: 2rem; }
+}

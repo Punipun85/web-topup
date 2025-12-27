@@ -9,6 +9,7 @@ use App\Http\Controllers\TopUpController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\TopUpPackageController;
 use App\Http\Controllers\Admin\TopUpPackageAdminController;
+use App\Http\Controllers\AssetController;
 
 // auth (public)
 Route::post('/register', [AuthController::class, 'register']);
@@ -53,3 +54,5 @@ Route::post('/payment/webhook', [PaymentWebhookController::class, 'webhook']);
 
 
 Route::get('/topup/package/{slug}', [TopUpPackageController::class, 'show']);
+
+Route::get('/assets', [AssetController::class, 'index']);

@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from "react-router-dom";
 import App from './App.jsx'
-import './index.css' // Baris ini SANGAT PENTING untuk menghubungkan CSS ke program
+import FloatingFooter from './footer/FloatingFooter'
+import './index.css'
+import './cek transaksi/cek_transaksi.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
   <React.StrictMode>
     <App />
+    <FloatingFooter />
   </React.StrictMode>
-  </BrowserRouter>,
 )
