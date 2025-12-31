@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Game;
 use App\Models\TopUpPackage;
+use App\Models\Product;
 
 class GamesSeeder extends Seeder
 {
@@ -113,7 +114,7 @@ class GamesSeeder extends Seeder
         foreach ($packagesData as $pkg) {
             $game_id = $gameIds[$pkg['slug']];
 
-            TopUpPackage::firstOrCreate(
+           Product::firstOrCreate(
         [
         'game_id' => $game_id,
         'name' => $pkg['name'],

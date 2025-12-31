@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import {
   ShoppingBag,
   SearchCode,
@@ -7,31 +8,34 @@ import {
   Calculator,
   LogIn,
   UserPlus
-} from 'lucide-react';
+} from 'lucide-react'
 
-import './navbar.css';
+import './navbar.css'
 
-export default function Navbar({ menuAktif, setMenuAktif }) {
+export default function Navbar() {
+  const location = useLocation()
+
+  // aktif jika path sama ATAU turunan artikel
+  const isActive = (path) =>
+    location.pathname === path || location.pathname.startsWith(path + '/')
+
   return (
     <header className="navbar">
 
       {/* ===== TOP BAR ===== */}
       <div className="navbar-top">
-        <img
-          src="/images/logo.png"
-          alt="Logo"
-          className="navbar-logo"
-          style={{ cursor: 'pointer' }}
-          onClick={() => {
-            setMenuAktif('topup');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
+        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <img
+            src="/images/logo.png"
+            alt="Logo"
+            className="navbar-logo"
+          />
+        </Link>
 
         <div className="navbar-search">
           <input
             type="text"
-            placeholder="Cari Game atau Voucher"
+            placeholder="Cari Game Pilihan Kamu"
             className="search-input"
           />
         </div>
@@ -49,76 +53,78 @@ export default function Navbar({ menuAktif, setMenuAktif }) {
       {/* ===== MENU ===== */}
       <div className="navbar-menu">
 
-        {/* ===== TOPUP ===== */}
         <NavItem
           label="Topup"
           icon={<ShoppingBag size={18} />}
-          active={menuAktif === 'topup'}
-          onClick={() => {
-            setMenuAktif('topup');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
+          to="/"
+          active={isActive('/')}
         />
 
-        {/* ===== CEK TRANSAKSI ===== */}
         <NavItem
           label="Cek Transaksi"
           icon={<SearchCode size={18} />}
-          active={menuAktif === 'cek-transaksi'}
-          onClick={() => {
-            setMenuAktif('cek-transaksi');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
+          to="/cek-transaksi"
+          active={isActive('/cek-transaksi')}
         />
 
-        {/* ===== LEADERBOARD ===== */}
         <NavItem
           label="Leaderboard"
           icon={<Trophy size={18} />}
-          active={menuAktif === 'leaderboard'}
-          onClick={() => {
-            setMenuAktif('leaderboard');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
+          to="/leaderboard"
+          active={isActive('/leaderboard')}
         />
 
-        {/* ===== ARTIKEL (Koneksi ke ArticleSection) ===== */}
+        {/* ✅ ARTIKEL → BERANDA ARTIKEL */}
         <NavItem
           label="Artikel"
           icon={<Megaphone size={18} />}
-          active={menuAktif === 'artikel'} // Menyesuaikan dengan state di App.js
-          onClick={() => {
-            setMenuAktif('artikel'); // Menjalankan fungsi pindah menu
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
+          to="/artikel"
+          active={isActive('/artikel')}
+          external // menandakan buka tab baru
         />
 
-        {/* ===== KALKULATOR ===== */}
         <NavItem
           label="Kalkulator"
           icon={<Calculator size={18} />}
-          active={menuAktif === 'kalkulator'}
-          onClick={() => {
-            setMenuAktif('kalkulator');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
+          to="/kalkulator"
+          active={isActive('/kalkulator')}
         />
 
       </div>
     </header>
-  );
+  )
 }
 
-function NavItem({ label, icon, active, onClick }) {
+/* =========================
+   NAV ITEM COMPONENT
+========================= */
+function NavItem({ label, icon, to, active, external }) {
+  // jika external (artikel), buka tab baru
+  if (external) {
+    return (
+      <a
+        href={to}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`nav-item ${active ? 'active' : ''}`}
+      >
+        {icon}
+        <span>{label.toUpperCase()}</span>
+        {active && <div className="nav-indicator"></div>}
+      </a>
+    )
+  }
+
+  // link internal SPA
   return (
-    <div
-      onClick={onClick}
+    <Link
+      to={to}
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       className={`nav-item ${active ? 'active' : ''}`}
-      style={{ cursor: 'pointer' }} // Menambahkan pointer agar user tahu ini bisa diklik
     >
       {icon}
-      <span>{label.toUpperCase()}</span> {/* Mengikuti gaya gambar yang kapital semua */}
+      <span>{label.toUpperCase()}</span>
       {active && <div className="nav-indicator"></div>}
-    </div>
-  );
+    </Link>
+  )
 }

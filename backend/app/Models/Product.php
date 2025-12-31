@@ -9,20 +9,22 @@ class Product extends Model
 {
     use HasFactory;
 
+    // Arahkan ke tabel yang benar
     protected $table = 'topup_packages';
 
+    // Sesuaikan dengan Migration yang Anda kirim sebelumnya
     protected $fillable = [
         'game_id',
-        'sku',
-        'name',
-        'price',
+        'name',     // contoh: "100 Diamonds"
+        'amount',   // PENTING: jumlah diamond (ada di migration)
+        'price',    // Harga
         'meta',
-        'stock',
         'active'
     ];
 
     protected $casts = [
         'price' => 'float',
+        'amount'=> 'integer',
         'meta'  => 'array',
         'active'=> 'boolean'
     ];
@@ -30,10 +32,5 @@ class Product extends Model
     public function game()
     {
         return $this->belongsTo(Game::class);
-    }
-
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
     }
 }
