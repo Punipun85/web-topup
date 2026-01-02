@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import './App.css';
-import { Link } from 'react-router-dom';
 
 // --- COMPONENTS UTAMA ---
 import Navbar from './navbar/navbar';
@@ -35,24 +34,49 @@ function App() {
   const [games, setGames] = useState([]); 
   const [loading, setLoading] = useState(true);
 
-  // 3. FETCH DATA GAME (Backend Laravel)
+ // 3. FETCH DATA GAME
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await axios.get('/api/games');
+        const response = await axios.get('http://127.0.0.1:8000/api/games');
         
-        const formattedData = response.data.map(game => ({
-          id: game.slug,
-          name: game.name,
-          img: game.image ? game.image : '/images/placeholder.png', 
-          publisher: game.code,
-          banner: `/images/banner-${game.slug}.png`
-        }));
+        console.log("Data mentah:", response.data);
+
+        const formattedData = response.data.map(game => {
+            // LOGIKA BARU: Gambar ada di Frontend (Public Folder)
+            
+            let imageUrl = '/images/placeholder.png'; // Default
+
+            if (game.image) {
+                // Cek isi database:
+                // Kasus A: Jika database isinya cuma nama file (contoh: "mlbb.png")
+                // Maka kita tambahkan "/images/" di depannya.
+                if (!game.image.includes('images/')) {
+                    imageUrl = `/images/${game.image}`;
+                } 
+                // Kasus B: Jika database sudah lengkap (contoh: "/images/mlbb.png")
+                else {
+                    // Pastikan diawali dengan slash '/'
+                    imageUrl = game.image.startsWith('/') ? game.image : `/${game.image}`;
+                }
+            }
+
+            return {
+                id: game.id,
+                slug: game.slug,
+                name: game.name,
+                
+                image: `/images/${game.slug}.png`, // Hasilnya misal: "/images/mlbb.png" (Tanpa http://127...000)
+                
+                publisher: game.code,
+                banner: `/images/banner-${game.slug}.png`
+            };
+        });
 
         setGames(formattedData);
         setLoading(false);
       } catch (error) {
-        console.error("Gagal konek ke backend:", error);
+        console.error("Gagal load data:", error);
         setLoading(false);
       }
     };
@@ -74,11 +98,10 @@ function App() {
 
   // 5. NAVIGASI GAME
   const handleGameClick = (game) => {
-    // Pindah ke halaman /buy membawa data game
     navigate('/buy', { state: { gameData: game } });
   };
 
-  // Wrapper untuk mencegah error jika halaman Topup dibuka langsung tanpa data
+  // Wrapper
   const TopUpPageWrapper = () => {
     const { state } = useLocation();
     if (!state || !state.gameData) return <Navigate to="/" replace />;
@@ -87,21 +110,15 @@ function App() {
 
   return (
     <>
-      {/* NAVBAR: Otomatis berubah sesuai halaman */}
       {isArticlePage ? <ArticleNavbar /> : <Navbar />}
 
       <div className="app-wrapper">
         <main className="app-main">
 
           <Routes>
-
-            {/* =================================================== */}
-            {/* BAGIAN INI MENJADIKAN HALAMAN UTAMA SEBAGAI HOME    */}
-            {/* URL: /                                              */}
-            {/* =================================================== */}
             <Route path="/" element={
               <>
-                {/* 1. Hero Section (Video & Banner) */}
+                {/* 1. Hero Section */}
                 <section className="hero-section">
                   <div className="hero-video">
                     <video autoPlay muted loop playsInline>
@@ -130,20 +147,14 @@ function App() {
                   />
                 )}
 
-                {/* 3. Preview Artikel di Home */}
+                {/* 3. Preview Artikel */}
                 <ArticleSection isPreview />
               </>
             } />
 
-            {/* ================= HALAMAN LAINNYA ================= */}
-
-            {/* Halaman Topup (Saat game diklik) */}
             <Route path="/buy" element={<TopUpPageWrapper />} />
-
-            {/* Halaman Cek Transaksi */}
             <Route path="/cek-transaksi" element={<CekTransaksi transactions={transactions} />} />
 
-            {/* Halaman Utama Artikel */}
             <Route path="/artikel" element={
               <>
                 <ArticleBanner />
@@ -153,7 +164,6 @@ function App() {
               </>
             } />
 
-            {/* Halaman Detail Artikel */}
             <Route path="/artikel/detail" element={<div style={{ paddingTop: 100 }}><ArticleContent /></div>} />
             <Route path="/artikel/detail1" element={<div style={{ paddingTop: 100 }}><ArticleContent1 /></div>} />
             <Route path="/artikel/detail2" element={<div style={{ paddingTop: 100 }}><ArticleContent2 /></div>} />
@@ -161,7 +171,6 @@ function App() {
           </Routes>
         </main>
 
-        {/* FOOTER */}
         {isArticlePage ? <ArticleFooter /> : <Footer />}
       </div>
     </>

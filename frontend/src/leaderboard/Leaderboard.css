@@ -1,0 +1,110 @@
+/* Container Leaderboard */
+.leaderboard-section {
+    padding: 60px 0;
+    background-color: #121212; /* Sesuaikan dengan background web Anda */
+    min-height: 80vh;
+}
+
+.leaderboard-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.leaderboard-header h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.leaderboard-header p {
+    color: #888;
+}
+
+/* Card Pembungkus Table */
+.leaderboard-card {
+    background: #1e1e1e;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #333;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Table Styling */
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+.leaderboard-table th {
+    text-align: left;
+    padding: 20px;
+    color: #666;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #333;
+    text-transform: uppercase;
+}
+
+.leaderboard-table td {
+    padding: 20px;
+    border-bottom: 1px solid #2a2a2a;
+    font-weight: 600;
+}
+
+.leaderboard-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Hover Effect */
+.leaderboard-table tbody tr:hover {
+    background-color: #252525;
+    transform: scale(1.01);
+    transition: 0.2s;
+}
+
+/* --- LOGIKA RANK 1, 2, 3 --- */
+
+/* JUARA 1 (EMAS) */
+.rank-1 {
+    background: linear-gradient(90deg, rgba(255, 214, 0, 0.1) 0%, rgba(0,0,0,0) 100%);
+    border-left: 4px solid #ffd600;
+}
+.rank-1 .username { color: #ffd600; font-size: 1.2rem; }
+.crown-icon { font-size: 1.5rem; margin-right: 10px; }
+
+/* JUARA 2 (PERAK) */
+.rank-2 { border-left: 4px solid #c0c0c0; }
+.rank-2 .username { color: #c0c0c0; }
+
+/* JUARA 3 (PERUNGGU) */
+.rank-3 { border-left: 4px solid #cd7f32; }
+.rank-3 .username { color: #cd7f32; }
+
+/* Badge Sultan */
+.badge-vip {
+    background: #ffd600;
+    color: black;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 10px;
+    font-weight: 800;
+    vertical-align: middle;
+}
+
+.rank-number {
+    display: inline-block;
+    width: 30px;
+    color: #555;
+}
+
+/* Responsive Mobile */
+@media (max-width: 600px) {
+    .leaderboard-header h2 { font-size: 1.8rem; }
+    .leaderboard-table th, .leaderboard-table td { padding: 15px 10px; font-size: 0.9rem; }
+    .badge-vip { display: none; } /* Sembunyikan badge di HP biar gak sempit */
+}
