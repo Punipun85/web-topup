@@ -10,6 +10,7 @@ import GameGrid from './gamegrid/gamegrid';
 import CekTransaksi from './cek transaksi/cek_transaksi';
 import Footer from './footer/footer';
 import TopUpGamePage from "./topuppages";
+import Leaderboard from './leaderboard/Leaderboard';
 
 // --- COMPONENTS ARTIKEL ---
 import ArticleNavbar from './articles/ArticleNavbar';
@@ -36,50 +37,29 @@ function App() {
 
  // 3. FETCH DATA GAME
   useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/api/games');
-        
-        console.log("Data mentah:", response.data);
+  const fetchGames = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/api/games');
+      
+      const formattedData = response.data.map(game => {
+          return {
+              id: game.id,
+              slug: game.slug,
+              name: game.name,
+              // KARENA DATABASE SUDAH BENAR (/images/namafile.png), PAKAI LANGSUNG:
+              image: game.image, 
+              publisher: game.code,
+              banner: `/images/banner-${game.slug}.png`
+          };
+      });
 
-        const formattedData = response.data.map(game => {
-            // LOGIKA BARU: Gambar ada di Frontend (Public Folder)
-            
-            let imageUrl = '/images/placeholder.png'; // Default
-
-            if (game.image) {
-                // Cek isi database:
-                // Kasus A: Jika database isinya cuma nama file (contoh: "mlbb.png")
-                // Maka kita tambahkan "/images/" di depannya.
-                if (!game.image.includes('images/')) {
-                    imageUrl = `/images/${game.image}`;
-                } 
-                // Kasus B: Jika database sudah lengkap (contoh: "/images/mlbb.png")
-                else {
-                    // Pastikan diawali dengan slash '/'
-                    imageUrl = game.image.startsWith('/') ? game.image : `/${game.image}`;
-                }
-            }
-
-            return {
-                id: game.id,
-                slug: game.slug,
-                name: game.name,
-                
-                image: `/images/${game.slug}.png`, // Hasilnya misal: "/images/mlbb.png" (Tanpa http://127...000)
-                
-                publisher: game.code,
-                banner: `/images/banner-${game.slug}.png`
-            };
-        });
-
-        setGames(formattedData);
-        setLoading(false);
-      } catch (error) {
-        console.error("Gagal load data:", error);
-        setLoading(false);
-      }
-    };
+      setGames(formattedData);
+      setLoading(false);
+    } catch (error) {
+      console.error("Gagal load data:", error);
+      setLoading(false);
+    }
+  };
 
     fetchGames();
   }, []);
@@ -154,6 +134,8 @@ function App() {
 
             <Route path="/buy" element={<TopUpPageWrapper />} />
             <Route path="/cek-transaksi" element={<CekTransaksi transactions={transactions} />} />
+
+            <Route path="/leaderboard" element={<Leaderboard />} />
 
             <Route path="/artikel" element={
               <>

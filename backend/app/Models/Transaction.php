@@ -2,29 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'order_id',
-        'provider',
-        'provider_trx_id',
-        'payment_method',
+        'invoice_id',
+        'email',
+        'game_user_id',
+        'zone_id',
+        'game',
+        'item_name',
         'amount',
+        'total_price',
+        'payment_method',
         'status',
-        'raw_response'
+        'user_id'
     ];
-
-    protected $casts = [
-        'raw_response' => 'array'
-    ];
-
-    public function order()
-    {
-        return $this->belongsTo(Order::class);
-    }
 }

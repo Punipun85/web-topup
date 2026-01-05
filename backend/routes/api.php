@@ -10,7 +10,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\TopUpPackageController;
 use App\Http\Controllers\Admin\TopUpPackageAdminController;
 use App\Http\Controllers\AssetController;
-use App\Http\Controllers\Api\LeaderboardController;
+use App\Http\Controllers\LeaderboardController;
 
 // auth (public)
 Route::post('/register', [AuthController::class, 'register']);
@@ -47,14 +47,11 @@ Route::middleware(['auth:sanctum', 'role:admin,moderator'])
 
 Route::get('/games', [GameController::class, 'index']);
 Route::get('/games/{slug}', [GameController::class, 'show']);
-Route::get('/games/{slug}/packages', [TopUpPackageController::class, 'show']);
+Route::get('/games/{slug}', [TopUpPackageController::class, 'show']);
 
 // payment webhook (public but secured by signature)
 Route::post('/payment/webhook', [PaymentWebhookController::class, 'webhook']);
 
-
-
-Route::get('/topup/package/{slug}', [TopUpPackageController::class, 'show']);
 
 Route::get('/assets', [AssetController::class, 'index']);
 

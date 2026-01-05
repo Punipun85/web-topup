@@ -32,9 +32,9 @@ export default function GameGrid({ games, onGameClick }) {
               <button className="game-play-btn">TOP UP</button>
 
               <img
-                src={game.img}
-                alt={game.name}
-                className="game-image"
+                src={game.image} 
+                alt={game.name} 
+                className="game-image" 
                 loading="lazy"
               />
             </div>

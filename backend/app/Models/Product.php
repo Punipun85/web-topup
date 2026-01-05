@@ -9,15 +9,13 @@ class Product extends Model
 {
     use HasFactory;
 
-    // Arahkan ke tabel yang benar
     protected $table = 'topup_packages';
 
-    // Sesuaikan dengan Migration yang Anda kirim sebelumnya
     protected $fillable = [
         'game_id',
-        'name',     // contoh: "100 Diamonds"
-        'amount',   // PENTING: jumlah diamond (ada di migration)
-        'price',    // Harga
+        'name',     
+        'amount',   
+        'price',    
         'meta',
         'active'
     ];
@@ -32,5 +30,16 @@ class Product extends Model
     public function game()
     {
         return $this->belongsTo(Game::class);
+    }
+
+    // --- TAMBAHAN PENTING (Agar Controller tidak error) ---
+    // Ini namanya "Accessor". Laravel otomatis memanggil ini saat Anda tulis $product->active_promo
+    public function getActivePromoAttribute()
+    {
+        // Cek apakah di dalam kolom meta ada key 'promo'
+        if (isset($this->meta['promo'])) {
+            return $this->meta['promo'];
+        }
+        return null;
     }
 }

@@ -38,7 +38,7 @@ const Leaderboard = () => {
             <div className="container">
                 <div className="leaderboard-header">
                     <h2 className="text-yellow">🏆 TOP SULTAN BULAN INI</h2>
-                    <p>Orang-orang paling berkuasa di Land of Dawn</p>
+                    <p>Orang-orang paling kece se indo</p>
                 </div>
 
                 <div className="leaderboard-card">
