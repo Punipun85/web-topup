@@ -12,17 +12,17 @@ class LeaderboardController extends Controller
         $dataSultan = [
             [
                 'rank' => 1,
-                'username' => 'Sultan_Jawa',
+                'username' => 'Raja_Jawa',
                 'total' => 15500000
             ],
             [
                 'rank' => 2,
-                'username' => 'Raja_Diamond',
+                'username' => 'pria solo',
                 'total' => 9800000
             ],
             [
                 'rank' => 3,
-                'username' => 'Pro_Gamer99',
+                'username' => 'buna teddy',
                 'total' => 5200000
             ],
             [

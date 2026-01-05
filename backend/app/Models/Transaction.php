@@ -16,10 +16,12 @@ class Transaction extends Model
         'zone_id',
         'game',
         'item_name',
-        'amount',
-        'total_price',
+        'amount',       // <--- PASTIKAN INI ADA
+        'price',        // <--- PASTIKAN INI ADA (Ini penyebab error Anda)
+        'quantity',     // <--- PASTIKAN INI ADA
+        'total_price',  // <--- PASTIKAN INI ADA
         'payment_method',
         'status',
-        'user_id'
+        'snap_token'
     ];
 }

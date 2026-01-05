@@ -14,7 +14,7 @@
 
 /* ================= BANNER ================= */
 .banner-wrapper {
-  margin-bottom: 2.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .banner-image {
@@ -35,6 +35,8 @@
     grid-template-columns: repeat(5, 1fr);
   }
 }
+
+
 
 /* ================= GAME CARD ================= */
 /* .game-card {

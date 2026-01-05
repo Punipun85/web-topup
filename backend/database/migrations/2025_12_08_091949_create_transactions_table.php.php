@@ -6,43 +6,33 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up()
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             
-            // --- INFORMASI TRANSAKSI ---
-            $table->string('invoice_id')->unique(); // Contoh: TRX-998877
-            $table->string('email');                // Email pembeli
-            $table->string('status')->default('PENDING'); // PENDING, SUCCESS, FAILED
+            // Kolom Penting untuk Transaksi & Midtrans
+            $table->string('invoice_id')->unique(); // Invoice TRX-XXXX
+            $table->string('email');               // Email pembeli
+            $table->string('game_user_id');        // ID Game Player (misal: 123456)
+            $table->string('zone_id')->nullable(); // Zone ID (khusus MLBB, game lain null)
             
-            // --- DATA AKUN GAME ---
-            $table->string('game_user_id');         // ID Akun Game user
-            $table->string('zone_id')->nullable();  // Zone ID
-            $table->string('game');                 // Nama Game
-
-            // --- DATA ITEM ---
-            $table->string('item_name');            // Misal: 100 Diamonds
-            $table->decimal('price', 15, 2);        // Harga satuan
-            $table->integer('quantity')->default(1);// Jumlah beli
-            $table->decimal('total_price', 15, 2);  // Total bayar
+            $table->string('game');                // Nama Game (Valorant, MLBB)
+            $table->string('item_name');           // Nama Item (100 Diamond)
+            $table->integer('amount');             // Jumlah Diamond (angka mentah)
             
-            // --- PEMBAYARAN ---
-            $table->string('payment_method');       // Misal: QRIS, BCA, dll
+            $table->decimal('price', 15, 2);       // Harga Satuan
+            $table->integer('quantity')->default(1); // Jumlah Beli
+            $table->decimal('total_price', 15, 2); // Total Bayar
             
-            // --- OPSIONAL (JIKA LOGIN) ---
-            $table->unsignedBigInteger('user_id')->nullable(); 
+            $table->string('payment_method')->nullable(); // Metode Bayar (BCA, QRIS)
+            $table->string('status')->default('PENDING'); // PENDING / SUCCESS / FAILED
+            $table->string('snap_token')->nullable(); // Token dari Midtrans
             
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down()
     {
         Schema::dropIfExists('transactions');

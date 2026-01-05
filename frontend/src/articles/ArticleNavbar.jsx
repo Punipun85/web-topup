@@ -11,7 +11,7 @@ export default function ArticleNavbar() {
 
         {/* LOGO */}
         <Link to="/artikel" className="article-logo">
-          <img src="/images/logo a6.png" alt="Logo" />
+          <img src="/images/logo.png" alt="Logo" />
         </Link>
 
         {/* MENU */}

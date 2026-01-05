@@ -11,6 +11,8 @@ use App\Http\Controllers\TopUpPackageController;
 use App\Http\Controllers\Admin\TopUpPackageAdminController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PaymentMethodController;
 
 // auth (public)
 Route::post('/register', [AuthController::class, 'register']);
@@ -56,3 +58,14 @@ Route::post('/payment/webhook', [PaymentWebhookController::class, 'webhook']);
 Route::get('/assets', [AssetController::class, 'index']);
 
 Route::get('/leaderboard', [LeaderboardController::class, 'index']);
+
+Route::post('/transaction', [TransactionController::class, 'store']);
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
+
+// Route untuk transaksi
+Route::post('/transaction', [TransactionController::class, 'store']);

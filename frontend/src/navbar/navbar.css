@@ -13,11 +13,11 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 1.5rem; /* Menambah ruang di pinggir layar */
-  height: 70px; /* Sedikit lebih tinggi agar tidak sesak */
+  height: 60px; /* Sedikit lebih tinggi agar tidak sesak */
   display: flex;
   align-items: center;
   justify-content: space-between; /* Kunci agar rapi */
-  gap: 2rem;
+  gap: 20px;
 }
 
 .navbar-logo {
@@ -27,7 +27,16 @@
 
 /* ================= SEARCH ================= */
 .navbar-search {
-  flex: 1;
+  /* Agar dia memanjang mengisi ruang kosong */
+  flex: 1; 
+  
+  /* Supaya tidak terlalu nempel ke logo dan tombol login */
+  margin: 0 40px; 
+  
+  /* Opsional: Batasi lebar maksimal agar tidak aneh di layar ultra-wide */
+  /* Hapus baris ini kalau mau benar-benar full lebar */
+  max-width: 900px; 
+  
   position: relative;
 }
 
@@ -45,22 +54,26 @@
 }
 
 .search-input {
- width: 100%;
-  height: 40px; /* Tinggi yang lebih pas untuk visual */
-  background: #1e1e1e;
-  border: 1px solid #2a2a2a;
-  border-radius: 20px; /* Menggunakan rounded pill agar lebih modern */
-  padding: 0 1rem 0 2.8rem;
-  font-size: 14px;
+ width: 100%; /* Mengisi wrapper */
+  height: 45px; /* Tinggi yang pas agar terlihat kokoh */
+  padding: 0 50px 0 20px; /* Padding kanan besar untuk icon kaca pembesar */
+  margin-top: 25px;
+  /* BENTUK & WARNA */
+  border-radius: 8px; /* Sudut tumpul */
+  border: 1px solid #444; /* Border abu-abu agar terlihat batasnya */
+  background-color: #222; /* Warna sedikit lebih terang dari background navbar */
   color: white;
+  font-size: 15px;
+  
+  /* Hapus outline biru bawaan browser */
   outline: none;
   transition: all 0.3s ease;
 }
 
 .search-input:focus {
-  border-color: #f3f305;
-  background: #252525;
-  box-shadow: 0 0 10px rgba(243, 243, 5, 0.1);
+ border-color: #ffd600; /* Warna kuning saat aktif */
+  background-color: #2a2a2a;
+  box-shadow: 0 0 10px rgba(255, 214, 0, 0.1); /* Sedikit efek glow */
 }
 
 /* ================= AUTH ================= */
@@ -121,4 +134,114 @@
   height: 3px;
   /* background: #f3f305;
   box-shadow: 0 0 15px rgba(243, 243, 5, 0.8); */
+}
+
+/* Container Search agar dropdown relatif terhadap input ini */
+.navbar-search {
+  position: relative;
+  width: 100%;
+  margin: 0 15px;
+  max-width: 600px; /* Sesuaikan lebar */
+  max-width: 100%;
+}
+
+/* INPUT FIELD */
+.search-input {
+  width: 100%;
+  padding: 12px 45px 12px 20px; /* Padding kanan besar untuk icon */
+  border-radius: 8px; /* Sudut agak kotak seperti referensi */
+  border: 1px solid #333;
+  background-color: #2a2a2a;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.search-input:focus {
+  border-color: #ffd600;
+  background-color: #333;
+}
+
+/* --- DROPDOWN HASIL SEARCH --- */
+.search-dropdown {
+  position: absolute;
+  top: 115%; /* Jarak sedikit dari input */
+  left: 0;
+  width: 100%;
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  z-index: 1000;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Scrollbar Custom (Opsional - agar rapi) */
+.search-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+.search-dropdown::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+.search-dropdown::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+/* ITEM HASIL SEARCH */
+.search-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #2a2a2a;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none; /* Hapus garis bawah link */
+}
+
+.search-item:last-child {
+  border-bottom: none;
+}
+
+.search-item:hover {
+  background-color: #333;
+}
+
+/* GAMBAR GAME DI SEARCH */
+.search-item-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px; /* Rounded corner */
+  margin-right: 15px;
+}
+
+/* TEXT INFO */
+.search-item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-item-name {
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.search-item-pub {
+  color: #888;
+  font-size: 12px;
+}
+
+/* Icon Search di dalam Input (Opsional) */
+.search-icon-inside {
+    position: absolute;
+    right: 15px; /* Jarak dari kanan */
+    top: 50%;
+    transform: translateY(-50%); /* Posisi vertikal tengah presisi */
+    color: #888;
+    pointer-events: none; /* Agar klik tembus ke input */
 }

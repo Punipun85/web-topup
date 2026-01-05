@@ -35,34 +35,39 @@ function App() {
   const [games, setGames] = useState([]); 
   const [loading, setLoading] = useState(true);
 
- // 3. FETCH DATA GAME
-  useEffect(() => {
-  const fetchGames = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:8000/api/games');
-      
-      const formattedData = response.data.map(game => {
-          return {
-              id: game.id,
-              slug: game.slug,
-              name: game.name,
-              // KARENA DATABASE SUDAH BENAR (/images/namafile.png), PAKAI LANGSUNG:
-              image: game.image, 
-              publisher: game.code,
-              banner: `/images/banner-${game.slug}.png`
-          };
-      });
+  // --- STATE PENCARIAN (Tetap ada untuk Navbar) ---
+  const [searchTerm, setSearchTerm] = useState(""); 
 
-      setGames(formattedData);
-      setLoading(false);
-    } catch (error) {
-      console.error("Gagal load data:", error);
-      setLoading(false);
-    }
-  };
+  // 3. FETCH DATA GAME
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/games');
+        
+        const formattedData = response.data.map(game => {
+            return {
+                id: game.id,
+                slug: game.slug,
+                name: game.name,
+                image: game.image, 
+                publisher: game.code,
+                banner: `/images/banner-${game.slug}.png`
+            };
+        });
+
+        setGames(formattedData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Gagal load data:", error);
+        setLoading(false);
+      }
+    };
 
     fetchGames();
   }, []);
+
+  // --- (BAGIAN FILTER DIHAPUS AGAR GRID TIDAK TERGANGGU) ---
+  // const filteredGames = games.filter(...) <-- HAPUS INI
 
   // 4. DATA STATIC (Banner & Transaksi)
   const daftarBanner = [
@@ -90,7 +95,16 @@ function App() {
 
   return (
     <>
-      {isArticlePage ? <ArticleNavbar /> : <Navbar />}
+      {isArticlePage ? (
+        <ArticleNavbar />
+      ) : (
+        // Kirim props 'games' ke Navbar agar Dropdown bisa melakukan filter sendiri
+        <Navbar 
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          games={games} 
+        />
+      )}
 
       <div className="app-wrapper">
         <main className="app-main">
@@ -121,12 +135,14 @@ function App() {
                      <h3>Sedang memuat game...</h3>
                    </div>
                 ) : (
+                  // KEMBALI MENGGUNAKAN 'games' (SEMUA DATA)
+                  // Agar tampilan tidak berubah saat mengetik di search bar
                   <GameGrid
                     games={games} 
                     onGameClick={handleGameClick}
                   />
                 )}
-
+                
                 {/* 3. Preview Artikel */}
                 <ArticleSection isPreview />
               </>

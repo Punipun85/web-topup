@@ -14,7 +14,7 @@ export default function ArticleFooter() {
     <footer className="art-footer-wrapper">
       <div className="art-footer-top">
         <div className="art-footer-column art-brand-col">
-          <img src="/images/logo a6.png" className="art-footer-logo" alt="Logo A6TOPUP" />
+          <img src="/images/logo.png" className="art-footer-logo" alt="Logo A6TOPUP" />
           <p className="art-footer-description">
             ✨ <strong>A6TOPUP adalah Sahabat Para Gamers Dan Platform Top Game Termurah di Indonesia. 
             Penuhi Kebutuhan Gaming Mu Bersama a6topup. Store Specialist Game Mobile Legends 
