@@ -1,15 +1,69 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body, html, #root, .app-wrapper, .app-main {
+  overflow: visible !important;
 }
 
+#root {
+  min-height: 100vh;
+}
+
+.app-wrapper {
+  position: relative;
+  z-index: 1; /* ⬅️ SEMUA KONTEN DI ATAS VIDEO */
+  min-height: 100vh;
+  background: transparent;
+}
+
+.app-main {
+  position: relative;
+  z-index: 1;
+}
+
+
+
+
+.hero-section {
+  position: relative;
+  height: 520px;          /* BATAS BACKGROUND */
+  overflow: hidden;
+  border-radius: 24px;
+  margin: 24px;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-video::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.6);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+
+/* ==================================================== */
+
+
+
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+  height: 36px;
+  cursor: pointer;
 }
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
@@ -40,3 +94,4 @@
 .read-the-docs {
   color: #888;
 }
+

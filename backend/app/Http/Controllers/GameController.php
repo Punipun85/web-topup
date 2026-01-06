@@ -9,9 +9,16 @@ class GameController extends Controller
     // HOME - daftar game
     public function index()
     {
-        return response()->json(
-            Game::where('active', true)->get()
-        );
+        $games = Game::where('active', true)->get()
+            ->map(function ($game) {
+                $game->image_url = $game->image
+                    ? asset('uploads/games/' . $game->image)
+                    : null;
+
+                return $game;
+            });
+
+        return response()->json($games);
     }
 
     // DETAIL GAME + PRODUK (TopUp page)
@@ -21,6 +28,11 @@ class GameController extends Controller
             ->where('slug', $slug)
             ->where('active', true)
             ->firstOrFail();
+
+        // tambahkan image url juga di sini
+        $game->image_url = $game->image
+            ? asset('uploads/games/' . $game->image)
+            : null;
 
         return response()->json($game);
     }

@@ -1,0 +1,111 @@
+/* GANTI SEMUA CLASS DENGAN PREFIX art- */
+.art-footer-wrapper {
+  background-color: #000000;
+  color: #ffffff;
+  padding: 60px 40px 20px;
+  font-family: 'Inter', sans-serif;
+  border-top: 1px solid #1a1a1a;
+  width: 100%;
+}
+
+.art-footer-top {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 40px;
+  padding-bottom: 40px;
+  align-items: flex-start; /* Memastikan konten mulai dari atas */
+}
+
+.art-footer-column {
+  flex: 1;
+}
+
+/* FIX LOGO: Agar tidak terlalu besar */
+.art-footer-logo {
+  height: 45px;      /* Mengunci tinggi logo */
+  width: auto;       /* Menjaga proporsi lebar */
+  max-width: 180px;  /* Batas lebar maksimal agar tidak memenuhi layar */
+  display: block;
+  margin-bottom: 20px;
+  object-fit: contain;
+}
+
+.art-footer-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #ffffff;
+  max-width: 450px;
+  text-align: left;
+}
+
+/* POJOK KANAN: Pengaturan Peta Situs */
+.art-sitemap-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Mendorong konten nav ke kanan */
+  text-align: right;     /* Menyelaraskan teks ke kanan */
+}
+
+.art-sitemap-title {
+  color: #eaff00; 
+  font-size: 16px;
+  margin-bottom: 15px;
+  text-transform: capitalize;
+  font-weight: bold;
+}
+
+.art-footer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.art-footer-nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.art-footer-nav a:hover {
+  color: #eaff00;
+}
+
+.art-footer-bottom {
+  border-top: 1px solid #333;
+  padding-top: 20px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.art-copyright-text {
+  font-size: 13px;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .art-footer-top {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .art-footer-description {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .art-sitemap-col {
+    align-items: center;
+    text-align: center;
+  }
+
+  .art-footer-logo {
+    margin: 0 auto 20px;
+  }
+}

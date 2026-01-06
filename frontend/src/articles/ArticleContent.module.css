@@ -1,0 +1,185 @@
+.pageWrapper {
+  display: flex; 
+  gap: 40px;
+  background-color: #2d2a32; 
+  padding: 50px;
+  color: #ffffff;
+  min-height: 100vh;
+  justify-content: center;
+  /* Font kembali ke default awal */
+  font-family: sans-serif; 
+}
+
+.mainContent {
+  flex: 1;
+  max-width: 800px;
+}
+
+.sidebar {
+  width: 350px;
+}
+
+/* Category Badge - Kembali ke Style Awal */
+.categoryBadge {
+  background: #eaff00;
+  color: #000;
+  padding: 5px 12px;
+  display: inline-block;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+/* Title - Kembali ke font-size 32px sesuai kodingan awal */
+.mainTitle {
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.authorMeta {
+  color: #ccc;
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+.authorYellow { color: #eaff00; }
+
+/* Share Buttons */
+.shareGroup {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.shareBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.bgFb { background: #3b5998; }
+.bgTw { background: #1da1f2; }
+.bgIn { background: #0077b5; }
+.bgEm { background: #ea4335; }
+.bgCp { background: #607d8b; }
+
+/* Thumbnail & Watermark sesuai kodingan awal */
+.imageContainer {
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.mainImage { width: 100%; display: block; }
+
+.watermark {
+  position: absolute;
+  left: 0; bottom: 0;
+  background: #fff; color: #000;
+  padding: 10px 5px;
+  writing-mode: vertical-rl;
+  font-weight: bold;
+}
+
+/* Hero Content Body */
+.heroSection h3 { font-size: 20px; margin-bottom: 15px; }
+.heroSection ul { padding-left: 20px; color: #ddd; }
+.heroSection li { margin-bottom: 10px; line-height: 1.5; }
+.divider { border: 0; border-top: 1px solid #444; margin: 30px 0; }
+
+/* Sidebar Popular */
+.sidebarTitle {
+  font-size: 22px;
+  margin-bottom: 20px;
+  border-left: 5px solid #eaff00;
+  padding-left: 10px;
+}
+
+.popCard {
+  display: flex;
+  gap: 15px;
+  background: #3e3a45;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  /* Animasi dikembalikan */
+  transition: all 0.3s ease;
+}
+
+/* Efek Animasi Hover Populer */
+.popCard:hover {
+  transform: translateX(8px);
+  background: #4a4552;
+}
+
+.popCard:hover .popInfo h4 {
+  color: #eaff00; /* Judul berubah kuning saat di-hover */
+}
+
+.popThumb {
+  width: 100px; 
+  height: 70px;
+  background: #555; 
+  border-radius: 5px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.popThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* Sedikit tambahan efek zoom pada gambar saat hover */
+.popCard:hover .popThumb img {
+  transform: scale(1.1);
+}
+
+.miniBadge { 
+  background: #eaff00; 
+  color: #000; 
+  font-size: 10px; 
+  padding: 2px 5px; 
+  border-radius: 3px; 
+}
+
+.popInfo h4 { 
+  font-size: 14px; 
+  margin: 5px 0; 
+  transition: color 0.3s ease;
+}
+
+.popInfo span { font-size: 12px; color: #bbb; }
+
+/* Topup Menu */
+.topupList { display: flex; flex-direction: column; gap: 10px; }
+.topupBtn {
+  background: transparent;
+  border: 1px solid #555;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.topupBtn:hover { border-color: #eaff00; color: #eaff00; }
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .pageWrapper { flex-direction: column; padding: 20px; }
+  .sidebar { width: 100%; }
+}

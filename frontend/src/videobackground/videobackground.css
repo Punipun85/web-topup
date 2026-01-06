@@ -1,0 +1,13 @@
+.video-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -100;            /* ⬅️ PAKSA PALING BELAKANG */
+  pointer-events: none;     /* ⬅️ TIDAK INTERAKTIF */
+  overflow: hidden;
+}
+
+.video-bg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

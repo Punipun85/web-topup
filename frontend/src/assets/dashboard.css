@@ -1,0 +1,291 @@
+/* ================== GLOBAL RESET ================== */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #16161e; /* Sangat gelap */
+  color: #ffffff;
+}
+
+/* ================== LAYOUT ================== */
+.dashboard-page {
+  display: flex;
+  min-height: 100vh;
+  background: #16161e;
+  position: relative;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 30px 40px;
+  background: #16161e; /* Warna dasar sama */
+  overflow-y: auto;
+}
+
+/* ================== ALERT BLUE ================== */
+.security-alert {
+  background: linear-gradient(90deg, #3b82f6, #0ea5e9);
+  padding: 20px 30px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+}
+
+.security-alert h3 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+}
+
+.security-alert p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.shield-icon {
+  font-size: 40px;
+  opacity: 0.8;
+}
+
+/* ================== HERO GRID (PROFILE & COIN) ================== */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: #23232f; /* Dark Card Background */
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* --- Profile Card --- */
+.profile-details {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  background: #3f3f4e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  border: 2px solid #555;
+}
+
+.profile-card .info h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.settings-icon {
+  color: #71717a;
+  cursor: pointer;
+}
+
+.badge-member {
+  background: #0ea5e9;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.profile-footer {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 15px;
+}
+
+.profile-footer .phone {
+  color: #a1a1aa;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* --- Coin Card --- */
+.coin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.coin-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.coin-icon-sm {
+  background: #facc15;
+  color: black;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.coin-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-topup {
+  background: #facc15;
+  color: black;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-redeem {
+  background: #000;
+  color: white;
+  border: 1px solid #333;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.coin-balance h2 {
+  font-size: 28px;
+  margin: 0;
+  color: #facc15;
+}
+
+.coin-balance span {
+  color: #fff;
+  font-size: 20px;
+}
+
+.coin-balance small {
+  font-size: 12px;
+  color: #71717a;
+  margin-left: 5px;
+}
+
+/* ================== STATS GRID (4 Colors) ================== */
+.process-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+
+.p-stat {
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
+
+.p-stat h1 { margin: 0; font-size: 32px; font-weight: 700; margin-bottom: 5px; }
+.p-stat span { font-size: 14px; font-weight: 500; }
+
+.p-stat.yellow { background: #b48d10; } /* Warna Menunggu (Dark Gold) */
+.p-stat.blue { background: #1e6bb8; }   /* Warna Proses */
+.p-stat.green { background: #15803d; }  /* Warna Sukses */
+.p-stat.red { background: #9f1239; }    /* Warna Gagal */
+
+
+/* ================== TABLE SECTION ================== */
+.table-section {
+    background: transparent;
+    margin-top: 20px;
+}
+
+.table-header h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #e4e4e7;
+}
+
+.table-responsive {
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #23232f;
+}
+
+th {
+    background: #2a2a38;
+    color: #d4d4d8;
+    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+td {
+    padding: 15px;
+    color: #a1a1aa;
+    font-size: 13px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.empty-content h4 {
+    margin: 10px 0 5px 0;
+    color: #fff;
+}
+
+/* ================== CS FLOAT BUTTON ================== */
+.customer-service-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #facc15;
+    color: black;
+    padding: 12px 20px;
+    border-radius: 50px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(250, 204, 21, 0.4);
+    cursor: pointer;
+    z-index: 100;
+}

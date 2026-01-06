@@ -1,25 +1,85 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function TopUp() {
   const { gameSlug } = useParams();
+  const navigate = useNavigate();
+
   const [game, setGame] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [userId, setUserId] = useState("");
+  const [serverId, setServerId] = useState("");
+  const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   useEffect(() => {
-    fetch(`/api/games/${gameSlug}`)
-      .then((res) => res.json())
-      .then((data) => setGame(data))
+    Promise.all([
+      fetch(`/api/games/${gameSlug}`).then(res => res.json()),
+      fetch(`/api/games/${gameSlug}/packages`).then(res => res.json()),
+    ])
+      .then(([gameData, packagesData]) => {
+        setGame({
+          ...gameData,
+          products: packagesData
+        });
+      })
       .finally(() => setLoading(false));
   }, [gameSlug]);
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;
   if (!game) return <p className="text-center mt-10">Game tidak ditemukan</p>;
 
+  const canCheckout =
+    userId &&
+    selectedProduct &&
+    (email || whatsapp);
+
+  const handleCheckout = async () => {
+  try {
+    const res = await fetch("/api/topups", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        game_id: game.id,
+        package_id: selectedProduct.id,
+        player_id: userId,
+        server_id: serverId || null,
+        email: email || null,
+        payment_method: "UNSELECTED"
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Gagal membuat topup");
+      return;
+    }
+
+    navigate("/checkout", {
+      state: {
+        topupId: data.data.topup_id,
+        game,
+        product: selectedProduct,
+        userId,
+        serverId,
+        email,
+        whatsapp
+      }
+    });
+
+  } catch (e) {
+    console.error(e);
+    alert("Terjadi kesalahan");
+  }
+};
+
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-10 space-y-10">
-      {/* HEADER GAME */}
+      {/* HEADER */}
       <div className="flex items-center gap-5">
         <img
           src={game.image}
@@ -34,24 +94,47 @@ export default function TopUp() {
         </div>
       </div>
 
-      {/* USER ID */}
-      <div className="bg-[#1c1c24] p-6 rounded-2xl border border-white/10">
-        <h2 className="font-semibold mb-4">Masukkan User ID</h2>
+      {/* USER DATA */}
+      <div className="bg-[#1c1c24] p-6 rounded-2xl border border-white/10 space-y-4">
+        <h2 className="font-semibold">Data Player</h2>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
-            type="text"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
             placeholder="User ID"
             className="bg-[#121218] border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#f3f305]"
           />
           <input
-            type="text"
+            value={serverId}
+            onChange={(e) => setServerId(e.target.value)}
             placeholder="Server ID (opsional)"
             className="bg-[#121218] border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#f3f305]"
           />
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email untuk invoice"
+            type="email"
+            className="bg-[#121218] border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#f3f305]"
+          />
+          <input
+            value={whatsapp}
+            onChange={(e) => setWhatsapp(e.target.value)}
+            placeholder="No WhatsApp (opsional)"
+            className="bg-[#121218] border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#f3f305]"
+          />
+        </div>
+
+        <p className="text-xs text-gray-400">
+          Minimal isi Email atau WhatsApp
+        </p>
       </div>
 
-      {/* PAKET TOPUP */}
+      {/* PRODUK */}
       <div>
         <h2 className="text-xl font-bold mb-4">Pilih Nominal</h2>
 
@@ -96,10 +179,11 @@ export default function TopUp() {
 
       {/* ACTION */}
       <button
-        disabled={!selectedProduct}
+        disabled={!canCheckout}
+        onClick={handleCheckout}
         className={`w-full py-4 rounded-xl font-semibold transition
           ${
-            selectedProduct
+            canCheckout
               ? "bg-[#f3f305] text-black hover:brightness-110"
               : "bg-gray-600 text-gray-300 cursor-not-allowed"
           }`}

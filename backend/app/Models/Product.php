@@ -13,16 +13,16 @@ class Product extends Model
 
     protected $fillable = [
         'game_id',
-        'sku',
-        'name',
-        'price',
+        'name',     
+        'amount',   
+        'price',    
         'meta',
-        'stock',
         'active'
     ];
 
     protected $casts = [
         'price' => 'float',
+        'amount'=> 'integer',
         'meta'  => 'array',
         'active'=> 'boolean'
     ];
@@ -32,8 +32,14 @@ class Product extends Model
         return $this->belongsTo(Game::class);
     }
 
-    public function orders()
+    // --- TAMBAHAN PENTING (Agar Controller tidak error) ---
+    // Ini namanya "Accessor". Laravel otomatis memanggil ini saat Anda tulis $product->active_promo
+    public function getActivePromoAttribute()
     {
-        return $this->hasMany(Order::class);
+        // Cek apakah di dalam kolom meta ada key 'promo'
+        if (isset($this->meta['promo'])) {
+            return $this->meta['promo'];
+        }
+        return null;
     }
 }

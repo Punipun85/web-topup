@@ -9,47 +9,47 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('transactions', function (Blueprint $table) {
+       Schema::create('transactions', function (Blueprint $table) {
     $table->id();
 
-    $table->foreignId('order_id')
-        ->constrained()
+    // referensi ke transaksi utama
+    $table->foreignId('topup_id')
+        ->constrained('topups')
         ->cascadeOnDelete();
 
-    // payment gateway
-    $table->string('provider'); 
-    // contoh: midtrans, xendit, dummy
+    // identitas final
+    $table->string('invoice_id')->unique();
 
-    // id dari payment gateway
-    $table->string('provider_trx_id')->nullable();
+    // snapshot data (tidak join ke mana-mana)
+    $table->string('game_name');
+    $table->string('package_name');
+    $table->unsignedInteger('amount');
+    $table->unsignedInteger('price');
 
-    // metode pembayaran
-    $table->string('payment_method')->nullable();
-    // contoh: qris, va_bca, ewallet
+    // siapa & bagaimana bayar
+    $table->string('payment_method');
+    $table->string('payer_email')->nullable();
 
-    $table->decimal('amount', 12, 2);
+    // hasil akhir
+    $table->enum('status', ['success','failed']);
 
-    $table->enum('status', [
-        'pending',
-        'success',
-        'failed',
-        'expired',
-        'refunded'
-    ])->default('pending');
-
-    $table->json('raw_response')->nullable();
+    // waktu sukses/gagal
+    $table->timestamp('finalized_at');
 
     $table->timestamps();
+
+    $table->index(['topup_id', 'status']);
 });
+
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
-        //
+        Schema::dropIfExists('transactions');
     }
 };
