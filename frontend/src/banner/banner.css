@@ -1,0 +1,88 @@
+/* ================= BANNER WRAPPER ================= */
+.banner {
+  position: relative;
+  border-radius: 3rem;
+  overflow: hidden;
+  
+  /* Jarak Luar */
+  margin: 2.5rem auto; /* Atas-Bawah 2.5rem, Kiri-Kanan Auto (Tengah) */
+  
+  background: #f3f305;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+  max-width: 1200px;
+  width: 92%; /* Memberi jarak di layar HP */
+  
+  /* Memastikan container hanya setinggi isinya */
+  height: auto; 
+}
+
+/* ================= IMAGE WRAPPER ================= */
+.banner-image-wrapper {
+  width: 100%;
+  position: relative;
+  display: block; /* Mengatasi whitespace di bawah image */
+  line-height: 0; /* Menghilangkan gap extra */
+}
+
+.banner-image {
+  width: 100%;
+  height: auto; /* Biarkan tinggi proporsional mengikuti lebar */
+  object-fit: cover;
+  display: block;
+}
+
+/* ================= NAVIGASI (PANAH) - PERBAIKAN TOTAL ================= */
+.banner-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; /* Memenuhi area banner */
+  display: flex;
+  align-items: center; /* Panah tepat di tengah vertikal */
+  justify-content: space-between;
+  padding: 0 1rem;
+  pointer-events: none; /* Klik bisa tembus ke gambar */
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.banner:hover .banner-nav {
+  opacity: 1;
+}
+
+.banner-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto; /* Tombol tetap bisa diklik */
+  transition: all 0.25s ease;
+}
+
+.banner-btn:hover {
+  background: #f3f305;
+  color: #000;
+  transform: scale(1.1);
+}
+
+/* Responsif Mobile */
+@media (max-width: 768px) {
+  .banner {
+    margin: 1.5rem auto;
+    border-radius: 1rem;
+  }
+  .banner-btn {
+    width: 30px;
+    height: 30px;
+  }
+}

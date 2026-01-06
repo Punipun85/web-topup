@@ -1,0 +1,214 @@
+/* ================= SECTION WRAPPER ================= */
+.game-section {
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1rem;
+}
+
+/* ================= TAB MENU ================= */
+.tab-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;   /* jarak ke grid */
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+/* ================= GRID ================= */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 5rem;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .game-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 180px));
+    gap: 1.5rem;
+  }
+}
+
+/* ================= CARD ================= */
+.game-card {
+  background: #15171e;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  transition: 0.3s ease;
+}
+
+.game-card::before {
+  content: "";
+  position: absolute;
+  width: 80px;
+  height: 360px;
+  background: linear-gradient(#ff2288, #387ef0);
+  opacity: 0;
+  animation: rotation_9018 8000ms infinite linear;
+}
+
+.game-card::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: #15171e;
+  border-radius: 0.9rem;
+  z-index: 1;
+}
+
+.game-card:hover {
+  transform: translateY(-3px);
+}
+
+.game-card:hover::before {
+  opacity: 1;
+}
+
+/* ================= IMAGE ================= */
+.game-image-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #1c1c24;
+  position: relative;
+  z-index: 2;
+}
+
+.game-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.4s ease;
+}
+
+.game-card:hover .game-image {
+  transform: scale(1.05);
+  filter: brightness(0.6);
+}
+
+/* ================= BUTTON TOP UP ================= */
+.game-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  padding: 4px 10px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #f3f305, #ffd500);
+  color: #000;
+  border: none;
+  border-radius: 999px;
+  opacity: 0;
+  transition: 0.25s ease;
+  z-index: 3;
+  cursor: pointer;
+}
+
+.game-card:hover .game-play-btn {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ================= INFO ================= */
+.game-info {
+  z-index: 2;
+  text-align: center;
+}
+
+.game-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff;
+  margin-top: 0.6rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.game-card:hover .game-title {
+  color: #f3f305;
+}
+
+.game-subtitle {
+  font-size: 9px;
+  color: #b5b5b5;
+}
+
+/* ================= BADGE ================= */
+.badge-hot {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, #ff2d2d, #ff9800);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  z-index: 3;
+}
+
+/* ================= TAB BUTTON (UIVERSE) ================= */
+.btn {
+  font-size: 12px;
+  background: transparent;
+  border: none;
+  padding: 8px 14px;
+  color: #ffedd3;
+  text-transform: uppercase;
+  position: relative;
+  cursor: pointer;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: #ffc506;
+  transition: 0.4s;
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: #ffc506;
+  z-index: -1;
+  height: 0;
+  transition: 0.4s;
+}
+
+.btn:hover::before {
+  width: 100%;
+}
+
+.btn:hover::after,
+.btn.active::after {
+  height: 100%;
+}
+
+.btn:hover,
+.btn.active {
+  color: #1e1e2b;
+}
+
+/* ================= ANIMATION ================= */
+@keyframes rotation_9018 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

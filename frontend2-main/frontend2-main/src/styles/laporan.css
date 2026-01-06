@@ -1,0 +1,155 @@
+/* Layout dasar */
+.header-section {
+  margin-bottom: 25px;
+}
+
+.header-section h2 {
+  font-size: 22px;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.header-section p {
+  color: #a1a1aa;
+  font-size: 14px;
+}
+
+/* FILTER CARD */
+.filter-card {
+  background: rgba(35, 35, 47, 0.7) !important;
+  backdrop-filter: blur(10px);
+  padding: 25px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+}
+
+.filter-grid.laporan-filter {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr; /* Kolom produk lebih lebar */
+  gap: 20px;
+}
+
+.filter-group label {
+  display: block;
+  color: #d4d4d8;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.filter-input {
+  width: 100%;
+  background: #2a2a38;
+  border: 1px solid #3f3f4e;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+}
+
+.filter-input:focus {
+  border-color: #facc15;
+}
+
+/* ================== TABLE ACTIONS (POJOK KANAN) ================== */
+.table-actions {
+  display: flex;
+  justify-content: flex-end; /* Memaksa ke kanan */
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.btn-export {
+  background: #3f3f4e;
+  color: #d4d4d8;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
+}
+
+.btn-export:hover {
+  background: #4b4b5e;
+  color: #fff;
+}
+
+.entry-select {
+  background: #2a2a38;
+  color: #fff;
+  border: 1px solid #3f3f4e;
+  padding: 10px 12px;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* TABLE STYLES */
+.glass-table {
+  background: rgba(35, 35, 47, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 15px;
+  color: #d4d4d8;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+td {
+  padding: 15px;
+  color: #a1a1aa;
+  font-size: 13px;
+}
+
+.empty-state {
+  padding: 80px 0 !important;
+  text-align: center;
+}
+
+.empty-icon {
+  opacity: 0.2;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+/* PAGINATION */
+.pagination-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  color: #a1a1aa;
+  font-size: 13px;
+}
+
+.btn-nav {
+  background: #3f3f4e;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.btn-nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

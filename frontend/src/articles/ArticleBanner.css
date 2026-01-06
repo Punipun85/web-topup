@@ -1,0 +1,186 @@
+/* ===============================
+   ARTICLE BANNER SECTION
+================================ */
+.art-banner-section {
+  background: #1e1e2a;
+  padding-top: 120px;
+  padding-bottom: 40px;
+}
+
+.art-banner-container {
+  max-width: 1200px;
+  width: 95%;
+  margin: auto;
+}
+
+.art-banner-inner-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
+
+/* ===============================
+   SISI KIRI (GAMBAR)
+================================ */
+.art-banner-image-side {
+  position: relative;
+  background: #111;
+  aspect-ratio: 16 / 9;
+  z-index: 2;
+
+  /* potongan miring halus */
+  clip-path: polygon(0 0, 100% 0, 88% 100%, 0% 100%);
+}
+
+.art-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ===== GARIS MIRING TIPIS (SEPERTI GAMBAR) ===== */
+.art-banner-image-side::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 6%;
+  width: 6px;                 /* tipis & clean */
+  height: 100%;
+  background: #ffffff;
+  transform: skewX(-12deg);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ===============================
+   SISI KANAN (KONTEN)
+================================ */
+.art-content-side {
+  background: #faff00;
+  padding: 48px 48px 48px 96px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+
+  /* masuk ke bawah garis miring */
+  margin-left: -22%;
+  z-index: 1;
+}
+
+.art-badge {
+  background: #111;
+  color: #fff;
+  width: fit-content;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.art-title {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #111;
+}
+
+/* ===============================
+   NAVIGASI BANNER (FIX SESUAI GAMBAR)
+================================ */
+.art-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.35);   /* transparan gelap */
+  border: 2px solid #faff00;        /* garis kuning tipis */
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 20;
+
+  transition: all 0.2s ease;
+}
+
+/* kiri – agak masuk ke gambar */
+.art-nav-btn.art-left {
+  left: 24px;
+}
+
+/* kanan – agak masuk ke gambar */
+.art-nav-btn.art-right {
+  right: -100px;
+}
+
+/* hover halus */
+.art-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.55);
+  transform: translateY(-50%) scale(1.1);
+}
+
+
+/* ===============================
+   DOTS
+================================ */
+.art-dots-group {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.art-dot {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.art-dot-active {
+  background: #faff00;
+  width: 20px;
+  border-radius: 10px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 900px) {
+  .art-banner-inner-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .art-banner-image-side {
+    clip-path: none;
+  }
+
+  .art-banner-image-side::after {
+    display: none;
+  }
+
+  .art-content-side {
+    margin-left: 0;
+    padding: 32px;
+  }
+
+  .art-title {
+    font-size: 22px;
+  }
+}
