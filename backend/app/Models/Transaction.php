@@ -10,18 +10,32 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'topup_id',
         'invoice_id',
         'email',
+        'payer_email', // Masukkan keduanya agar aman
         'game_user_id',
         'zone_id',
         'game',
+        'game_name',
         'item_name',
-        'amount',       // <--- PASTIKAN INI ADA
-        'price',        // <--- PASTIKAN INI ADA (Ini penyebab error Anda)
-        'quantity',     // <--- PASTIKAN INI ADA
-        'total_price',  // <--- PASTIKAN INI ADA
+        'package_name',
+        'amount',
+        'price',
+        'quantity',
+        'total_price',
         'payment_method',
         'status',
-        'snap_token'
+        'snap_token',
+        'finalized_at',
     ];
+
+    protected $casts = [
+        'finalized_at' => 'datetime',
+    ];
+
+    public function topup()
+    {
+        return $this->belongsTo(Topup::class);
+    }
 }

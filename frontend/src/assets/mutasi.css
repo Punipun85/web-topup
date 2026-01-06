@@ -1,0 +1,177 @@
+/* Layout dasar */
+.header-section {
+    margin-bottom: 25px;
+}
+
+.header-section h2 {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.header-section p {
+    color: #a1a1aa;
+    font-size: 14px;
+}
+
+/* Filter Card */
+.filter-card {
+    background: #23232f;
+    padding: 25px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+
+.filter-grid.mutasi-filter {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-size: 13px;
+    color: #a1a1aa;
+}
+
+.filter-input {
+    background: #2a2a38;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    color: #71717a;
+}
+
+.search-wrapper .filter-input {
+    padding-left: 35px;
+    width: 100%;
+}
+
+/* ================== TABLE ACTIONS (POJOK KANAN) ================== */
+.table-actions {
+    display: flex;
+    justify-content: flex-end; /* Mendorong semua ke pojok kanan */
+    align-items: center;
+    gap: 12px; /* Jarak antar tombol dan dropdown */
+    margin-bottom: 20px;
+}
+
+.btn-export {
+    background: #3f3f4e;
+    color: #d4d4d8;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s ease;
+}
+
+.btn-export:hover {
+    background: #4b4b5e;
+    color: #fff;
+}
+
+.entry-select {
+    background: #2a2a38;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    min-width: 100px;
+}
+
+.entry-select:focus {
+    border-color: #facc15;
+}
+/* ================================================================= */
+
+/* Table Styling */
+.glass-table {
+    background: #23232f;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding: 15px;
+    color: #d4d4d8;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+td {
+    padding: 15px;
+    color: #a1a1aa;
+    font-size: 13px;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 80px 0 !important;
+}
+
+.empty-icon {
+    opacity: 0.2;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+/* Pagination */
+.pagination-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    color: #71717a;
+    font-size: 13px;
+}
+
+.btn-nav {
+    background: #2a2a38;
+    border: none;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 6px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.btn-nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}

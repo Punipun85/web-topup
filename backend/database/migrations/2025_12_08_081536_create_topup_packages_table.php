@@ -8,16 +8,25 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('topup_packages', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('game_id')->constrained('games')->onDelete('cascade');
-            $table->string('name'); // contoh: "50 Diamonds"
-            $table->integer('amount'); // nominal topup
-            $table->integer('price'); // harga jual
-            $table->json('meta')->nullable(); // data tambahan, misal: {"bonus": "10 Diamonds"}
-            $table->boolean('active')->default(true);
-            $table->timestamps();
-        });
+       Schema::create('topup_packages', function (Blueprint $table) {
+    $table->id();
+
+    $table->foreignId('game_id')
+        ->constrained('games')
+        ->cascadeOnDelete();
+
+    $table->string('name', 100); // "50 Diamonds"
+    $table->unsignedInteger('amount'); // nominal topup
+    $table->unsignedInteger('price'); // harga jual
+
+    $table->json('meta')->nullable(); // bonus, event, dll
+
+    $table->boolean('active')->default(true)->index();
+
+    $table->timestamps();
+
+    $table->index(['game_id', 'active']);
+});
     }
 
     public function down(): void

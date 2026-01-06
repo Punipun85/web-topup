@@ -1,172 +1,75 @@
 /* ================= NAVBAR WRAPPER ================= */
 .navbar {
-   position: sticky;
+  position: sticky;
   top: 0;
-  z-index: 999;  /* ⬅️ JAUH DI ATAS VIDEO */
-  isolation: isolate; /* ⬅️ PENTING */
+  z-index: 999;       /* Prioritas tinggi agar di atas elemen lain */
+  isolation: isolate; /* Mencegah video/background layer bawah naik */
   background: rgba(13, 13, 13, 0.95);
   backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* ================= TOP BAR ================= */
 .navbar-top {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1.5rem; /* Menambah ruang di pinggir layar */
-  height: 60px; /* Sedikit lebih tinggi agar tidak sesak */
+  padding: 0 1.5rem;
+  height: 70px;       /* Tinggi yang nyaman */
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Kunci agar rapi */
-  gap: 20px;
+  justify-content: space-between;
+  gap: 2rem;
 }
 
+/* LOGO */
 .navbar-logo {
   height: 36px;
   cursor: pointer;
+  display: block;
 }
 
-/* ================= SEARCH ================= */
+/* ================= SEARCH AREA ================= */
 .navbar-search {
-  /* Agar dia memanjang mengisi ruang kosong */
-  flex: 1; 
-  
-  /* Supaya tidak terlalu nempel ke logo dan tombol login */
-  margin: 0 40px; 
-  
-  /* Opsional: Batasi lebar maksimal agar tidak aneh di layar ultra-wide */
-  /* Hapus baris ini kalau mau benar-benar full lebar */
-  max-width: 900px; 
-  
+  width: 100%;
+  max-width: 450px; /* Membatasi lebar agar tidak menabrak login */
   position: relative;
 }
 
 .search-icon {
   position: absolute;
-  /* Pastikan ikon berada di kiri dengan jarak yang pas */
   left: 14px;
-  /* Menghilangkan transform miring dan menggunakan flex untuk centering */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 50%;
+  transform: translateY(-50%);
   color: #6b7280;
   pointer-events: none;
   z-index: 10;
 }
 
-.search-input {
- width: 100%; /* Mengisi wrapper */
-  height: 45px; /* Tinggi yang pas agar terlihat kokoh */
-  padding: 0 50px 0 20px; /* Padding kanan besar untuk icon kaca pembesar */
-  margin-top: 25px;
-  /* BENTUK & WARNA */
-  border-radius: 8px; /* Sudut tumpul */
-  border: 1px solid #444; /* Border abu-abu agar terlihat batasnya */
-  background-color: #222; /* Warna sedikit lebih terang dari background navbar */
-  color: white;
-  font-size: 15px;
-  
-  /* Hapus outline biru bawaan browser */
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-.search-input:focus {
- border-color: #ffd600; /* Warna kuning saat aktif */
-  background-color: #2a2a2a;
-  box-shadow: 0 0 10px rgba(255, 214, 0, 0.1); /* Sedikit efek glow */
-}
-
-/* ================= AUTH ================= */
-.navbar-auth {
- display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  flex-shrink: 0; /* Mencegah tombol mengecil saat layar menyempit */
-}
-
-.auth-btn {
- font-size: 13px; /* Memperbesar sedikit agar terbaca */
-  letter-spacing: 0.05em;
-}
-
-.auth-btn:hover {
-  color: #f3f305;
-}
-
-/* ================= MENU ================= */
-.navbar-menu {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  gap: 1.5rem;
-  padding: 0 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.nav-item {
-  padding: 12px 0;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #9ca3af;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
-
-.nav-item:hover {
-  color: white;
-}
-
-.nav-item.active {
-  color: #f3f305;
-  border-bottom: 2px solid #f3f305;
-}
-
-/* ================= INDICATOR ================= */
-.nav-indicator {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  /* background: #f3f305;
-  box-shadow: 0 0 15px rgba(243, 243, 5, 0.8); */
-}
-
-/* Container Search agar dropdown relatif terhadap input ini */
-.navbar-search {
-  position: relative;
-  width: 100%;
-  margin: 0 15px;
-  max-width: 600px; /* Sesuaikan lebar */
-  max-width: 100%;
-}
-
-/* INPUT FIELD */
+/* INPUT STYLE */
 .search-input {
   width: 100%;
-  padding: 12px 45px 12px 20px; /* Padding kanan besar untuk icon */
-  border-radius: 8px; /* Sudut agak kotak seperti referensi */
-  border: 1px solid #333;
-  background-color: #2a2a2a;
-  color: white;
+  height: 42px;
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px; /* Sudut sedikit kotak agar pas dengan dropdown */
+  padding: 0 1rem 0 2.5rem; /* Padding kiri untuk icon search */
   font-size: 14px;
+  color: white;
   outline: none;
-  transition: all 0.3s;
+  transition: all 0.25s ease;
 }
 
 .search-input:focus {
-  border-color: #ffd600;
-  background-color: #333;
+  border-color: #f3f305;
+  background: #252525;
+  box-shadow: 0 0 10px rgba(243, 243, 5, 0.1);
 }
 
-/* --- DROPDOWN HASIL SEARCH --- */
+/* ================= DROPDOWN HASIL SEARCH (PENTING) ================= */
+/* Ini diambil dari versi HEAD kamu agar fitur search jalan */
 .search-dropdown {
   position: absolute;
-  top: 115%; /* Jarak sedikit dari input */
+  top: 110%;
   left: 0;
   width: 100%;
   background-color: #1e1e1e;
@@ -178,19 +81,14 @@
   overflow-y: auto;
 }
 
-/* Scrollbar Custom (Opsional - agar rapi) */
 .search-dropdown::-webkit-scrollbar {
-  width: 8px;
-}
-.search-dropdown::-webkit-scrollbar-track {
-  background: #1e1e1e;
+  width: 6px;
 }
 .search-dropdown::-webkit-scrollbar-thumb {
   background: #444;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
-/* ITEM HASIL SEARCH */
 .search-item {
   display: flex;
   align-items: center;
@@ -198,50 +96,89 @@
   border-bottom: 1px solid #2a2a2a;
   cursor: pointer;
   transition: background 0.2s;
-  text-decoration: none; /* Hapus garis bawah link */
-}
-
-.search-item:last-child {
-  border-bottom: none;
 }
 
 .search-item:hover {
   background-color: #333;
 }
 
-/* GAMBAR GAME DI SEARCH */
-.search-item-img {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 8px; /* Rounded corner */
-  margin-right: 15px;
+.search-item:last-child {
+  border-bottom: none;
 }
 
-/* TEXT INFO */
-.search-item-info {
+/* ================= AUTH BUTTONS ================= */
+.navbar-auth {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  flex-shrink: 0;
 }
 
-.search-item-name {
-  color: #fff;
-  font-weight: bold;
-  font-size: 14px;
-  margin-bottom: 4px;
+.auth-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  color: #e5e7eb;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
-.search-item-pub {
-  color: #888;
-  font-size: 12px;
+.auth-btn:hover {
+  color: #f3f305;
 }
 
-/* Icon Search di dalam Input (Opsional) */
-.search-icon-inside {
-    position: absolute;
-    right: 15px; /* Jarak dari kanan */
-    top: 50%;
-    transform: translateY(-50%); /* Posisi vertikal tengah presisi */
-    color: #888;
-    pointer-events: none; /* Agar klik tembus ke input */
+/* ================= BOTTOM MENU ================= */
+.navbar-menu {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  gap: 2rem;
+  padding: 0 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  overflow-x: auto; /* Agar aman di mobile */
+}
+
+/* Hilangkan scrollbar di menu */
+.navbar-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-item {
+  position: relative;
+  padding: 16px 0;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.nav-item:hover {
+  color: white;
+}
+
+.nav-item.active {
+  color: #f3f305;
+}
+
+/* Indikator Garis Bawah Kuning */
+.nav-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #f3f305;
+  box-shadow: 0 0 10px rgba(243, 243, 5, 0.5);
 }

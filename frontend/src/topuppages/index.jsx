@@ -28,12 +28,12 @@ const TopUpGame = ({ game, onBack }) => {
   const [quantity, setQuantity] = useState(1);
 
   // =========================================
-  // 2. FETCH PAYMENT METHODS
+  // 2. FETCH PAYMENT METHODS (DARI API)
   // =========================================
   useEffect(() => {
+      // Mengambil metode pembayaran dinamis dari Backend
       axios.get("http://127.0.0.1:8000/api/payment-methods")
           .then((response) => {
-              // Pastikan data dari backend sudah berisi path: /images/nama_bank.png
               setPaymentMethods(response.data);
           })
           .catch((error) => {
@@ -46,6 +46,7 @@ const TopUpGame = ({ game, onBack }) => {
   // =========================================
   
   const totalPrice = selectedProduct ? selectedProduct.price * quantity : 0;
+  // Mengambil fee dari database (HEAD logic), bukan hardcoded
   const adminFee = selectedPayment ? selectedPayment.admin_fee : 0; 
   const grandTotal = totalPrice + adminFee;
 
@@ -60,9 +61,7 @@ const TopUpGame = ({ game, onBack }) => {
   const handleIncrease = () => setQuantity(prev => prev + 1);
   const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
-  // --- FUNGSI 'getPaymentLogo' DIHAPUS KARENA SUDAH ADA DI DB ---
-
-  // --- LOGIKA PEMBELIAN ---
+  // --- LOGIKA PEMBELIAN (TRANSAKSI KE BACKEND) ---
   const handleBuy = async () => {
       if (!selectedProduct || !userId || !email || !selectedPayment) {
           alert("Mohon lengkapi User ID, Email, dan Pilih Pembayaran.");
@@ -129,7 +128,6 @@ const TopUpGame = ({ game, onBack }) => {
     if (game && game.slug) fetchProducts();
   }, [game]);
 
-
   return (
     <div className="topup-page dark-theme">
       
@@ -159,6 +157,7 @@ const TopUpGame = ({ game, onBack }) => {
             <button className="btn-yellow hero-btn" onClick={() => document.getElementById('section-nominal').scrollIntoView({behavior: 'smooth'})}>Beli Sekarang!</button>
           </div>
         </div>
+        
         <div className="floating-game-icon container">
             <img src={game.image} alt={game.name} />
         </div>
@@ -231,6 +230,7 @@ const TopUpGame = ({ game, onBack }) => {
               <h2 className="section-title">Pilih Pembayaran</h2>
             </div>
 
+            {/* Grid Pembayaran Dinamis (dari API) */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
               {paymentMethods.map((method) => (
                 <div
@@ -244,8 +244,7 @@ const TopUpGame = ({ game, onBack }) => {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{ background: 'white', padding: '4px', borderRadius: '6px', width: '60px', height: '35px', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-                       {/* === BAGIAN INI SUDAH LANGSUNG DARI DB === */}
-                       <img 
+                        <img 
                           src={method.image} 
                           alt={method.name} 
                           style={{ width: '100%', height: '100%', objectFit: 'contain' }}

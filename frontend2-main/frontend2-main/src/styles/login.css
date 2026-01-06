@@ -1,0 +1,157 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* ================= CONTAINER ================= */
+.login-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
+/* ================= CLOSE BUTTON ================= */
+.close-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  background: transparent;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ================= LEFT ================= */
+.login-left {
+  width: 40%;
+  background: #3b3646;
+  padding: 70px 40px;
+  color: #fff;
+}
+
+.login-left h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #cfcfcf;
+  margin-bottom: 30px;
+}
+
+/* ================= INPUT ================= */
+form label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  border: none;
+  background: #4a4458;
+  color: #fff;
+  outline: none;
+}
+
+form input::placeholder {
+  color: #bdbdbd;
+}
+
+/* ================= OPTIONS ================= */
+.options {
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.remember input {
+  margin: 0;
+}
+
+.forgot {
+  color: #ffeb00;
+  cursor: pointer;
+}
+
+.forgot:hover {
+  text-decoration: underline;
+}
+
+/* ================= BUTTON ================= */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: #ffeb00;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #000;
+}
+
+.btn-submit:hover {
+  opacity: 0.9;
+}
+
+/* ================= REGISTER LINK ================= */
+.register-link {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.register-link span {
+  color: #ffeb00;
+  cursor: pointer;
+}
+
+/* ================= RIGHT ================= */
+.login-right {
+  width: 60%;
+  background: #ffeb00;
+  position: relative;
+}
+
+/* ================= CUSTOMER SERVICE ================= */
+.customer-service {
+  position: absolute;
+  bottom: 25px;
+  right: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  color: #000;
+}
+
+.customer-service:hover {
+  text-decoration: underline;
+}

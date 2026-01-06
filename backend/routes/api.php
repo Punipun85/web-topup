@@ -1,71 +1,115 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// PUBLIC CONTROLLERS
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TopUpPackageController;
+use App\Http\Controllers\TopUpController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentWebhookController;
-use App\Http\Controllers\TopUpController;
-use App\Http\Controllers\GameController;
-use App\Http\Controllers\TopUpPackageController;
-use App\Http\Controllers\Admin\TopUpPackageAdminController;
-use App\Http\Controllers\AssetController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentMethodController;
 
-// auth (public)
+// ADMIN CONTROLLERS
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminTopupController;
+use App\Http\Controllers\Admin\TopUpPackageAdminController;
+use App\Http\Controllers\Admin\AdminGameController;
+
+/*
+|--------------------------------------------------------------------------
+| AUTH (PUBLIC)
+|--------------------------------------------------------------------------
+*/
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// public product
+/*
+|--------------------------------------------------------------------------
+| PUBLIC DATA
+|--------------------------------------------------------------------------
+*/
+Route::get('/games', [GameController::class, 'index']);
+Route::get('/games/{slug}', [GameController::class, 'show']);
+Route::get('/games/{slug}/packages', [TopUpPackageController::class, 'show']);
+
 Route::get('/products/active', [ProductController::class, 'listActive']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 
-// PUBLIC ORDER
+Route::get('/leaderboard', [LeaderboardController::class, 'index']);
+Route::get('/assets', [AssetController::class, 'index']);
+Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
+
+/*
+|--------------------------------------------------------------------------
+| TOPUP & TRANSACTION
+|--------------------------------------------------------------------------
+*/
+Route::post('/topup', [TopUpController::class, 'store']);
+Route::post('/topup/check', [TopUpController::class, 'check']);
+Route::get('/topup/public/{topup_code}', [TopUpController::class, 'publicShow']);
+
+Route::post('/transaction', [TransactionController::class, 'store']);
+
 Route::post('/orders', [OrderController::class, 'store']);
 Route::post('/orders/check', [OrderController::class, 'check'])
     ->middleware('throttle:10,1');
-Route::get('/topup/public/{topup_code}', [TopUpController::class, 'publicShow']);
 
-// top-up (public)
-Route::post('/topup/check', [TopUpController::class, 'check']);
-Route::post('/topup', [TopUpController::class, 'store']);
+/*
+|--------------------------------------------------------------------------
+| PAYMENT WEBHOOK
+|--------------------------------------------------------------------------
+*/
+Route::post('/payment/webhook', [PaymentWebhookController::class, 'webhook']);
 
-// protected (SANCTUM TOKEN)
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATED USER
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth:sanctum', 'role:admin,moderator'])
     ->prefix('admin')
     ->group(function () {
+
+        // dashboard
+        Route::get('/dashboard', [AdminDashboardController::class, 'index']);
+        
+        // games
+        Route::get('/games', [AdminGameController::class, 'index']);
+        Route::post('/games', [AdminGameController::class, 'store']);
+        Route::put('/games/{game}', [AdminGameController::class, 'update']);
+        Route::delete('/games/{game}', [AdminGameController::class, 'destroy']);
+
+        // topups
+        Route::get('/topups', [AdminTopupController::class, 'index']);
+        Route::get('/topups/{topup}', [AdminTopupController::class, 'show']);
+
+        // admin manual payment
+        Route::post('/topups/{topup}/manual-success', [AdminTopupController::class, 'manualSuccess']);
+        Route::post('/topups/{topup}/manual-fail', [AdminTopupController::class, 'manualFail']);
+
+        // topup packages
         Route::get('/packages', [TopUpPackageAdminController::class, 'index']);
         Route::put('/packages/{id}', [TopUpPackageAdminController::class, 'update']);
         Route::delete('/packages/{id}/promo', [TopUpPackageAdminController::class, 'removePromo']);
     });
-
-Route::get('/games', [GameController::class, 'index']);
-Route::get('/games/{slug}', [GameController::class, 'show']);
-Route::get('/games/{slug}', [TopUpPackageController::class, 'show']);
-
-// payment webhook (public but secured by signature)
-Route::post('/payment/webhook', [PaymentWebhookController::class, 'webhook']);
-
-
-Route::get('/assets', [AssetController::class, 'index']);
-
-Route::get('/leaderboard', [LeaderboardController::class, 'index']);
-
-Route::post('/transaction', [TransactionController::class, 'store']);
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
-
-// Route untuk transaksi
-Route::post('/transaction', [TransactionController::class, 'store']);
