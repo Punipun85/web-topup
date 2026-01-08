@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./topuppages.css";
+import { useNavigate } from "react-router-dom";
 
 const TopUpGame = ({ game, onBack }) => {
+  const navigate = useNavigate();
 
   const [bannerSrc, setBannerSrc] = useState(game?.banner);
   useEffect(() => {
@@ -62,49 +64,67 @@ const TopUpGame = ({ game, onBack }) => {
   const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
   // --- LOGIKA PEMBELIAN (TRANSAKSI KE BACKEND) ---
-  const handleBuy = async () => {
-      if (!selectedProduct || !userId || !email || !selectedPayment) {
-          alert("Mohon lengkapi User ID, Email, dan Pilih Pembayaran.");
-          return;
-      }
+ const handleBuy = async () => {
+  if (!selectedProduct || !userId || !email || !selectedPayment) {
+    alert("Mohon lengkapi User ID, Email, dan Pilih Pembayaran.");
+    return;
+  }
 
-      setIsSubmitting(true);
+  setIsSubmitting(true);
 
-      const payload = {
-          email: email,
-          game_user_id: userId,
-          zone_id: zoneId,
-          game: game.name,
-          item_name: selectedProduct.name,
-          amount: selectedProduct.amount,
-          price: selectedProduct.price,
-          quantity: quantity,
-          total_price: grandTotal,
-          payment_method: selectedPayment.name 
-      };
-
-      try {
-          const response = await axios.post('http://127.0.0.1:8000/api/transaction', payload);
-          
-          console.log("Transaksi Berhasil:", response.data);
-
-          alert(
-            `✅ Pesanan Berhasil Dibuat!\n\n` +
-            `Invoice: ${response.data.data.invoice_id}\n` +
-            `Total: Rp ${response.data.data.total_price.toLocaleString()}\n\n` +
-            `Silakan transfer manual ke:\n` +
-            `BCA: 123-456-7890 (Admin)\n` +
-            `A.n: A6Topup\n\n` +
-            `Status pesanan Anda saat ini: PENDING`
-          );
-      } catch (error) {
-          console.error("Error:", error);
-          const errorMsg = error.response?.data?.message || "Terjadi kesalahan sistem.";
-          alert("Gagal membuat pesanan: " + errorMsg);
-      } finally {
-          setIsSubmitting(false);
-      }
+  const payload = {
+    email,
+    game_user_id: userId,
+    zone_id: zoneId,
+    game: game.name,
+    item_name: selectedProduct.name,
+    amount: selectedProduct.amount,
+    price: selectedProduct.price,
+    quantity,
+    total_price: grandTotal,
+    payment_method: selectedPayment.name,
   };
+
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api/transaction",
+      payload
+    );
+
+    const trx = response.data.data;
+
+    // 👉 PINDAH KE CHECKOUT (INI INTINYA)
+    navigate("/checkout", {
+      state: {
+        invoice: trx.invoice_id,
+        total: trx.total_price,
+        status: trx.status,
+        payment_method: selectedPayment.name,
+        bank: {
+          name: "BCA",
+          account: "123-456-7890",
+          holder: "A6Topup",
+        },
+        customer: {
+          userId,
+          zoneId,
+          email,
+        },
+        item: {
+          name: selectedProduct.name,
+          quantity,
+        },
+      },
+    });
+  } catch (error) {
+    const errorMsg =
+      error.response?.data?.message || "Terjadi kesalahan sistem.";
+    alert("Gagal membuat pesanan: " + errorMsg);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   // =========================================
   // 4. FETCH PRODUCTS

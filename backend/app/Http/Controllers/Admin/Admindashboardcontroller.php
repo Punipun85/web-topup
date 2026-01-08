@@ -3,32 +3,72 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Topup;
+use App\Models\TopUp;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class AdminDashboardController extends Controller
 {
     public function index()
     {
-        $today = Carbon::today(); // bisa disesuaikan timezone
+        /* =========================
+         | KPI HARI INI (UANG)
+         ========================= */
+        $todayTransactionCount = Transaction::whereDate('created_at', today())
+            ->where('status', 'success')
+            ->count();
 
-        $stats = Topup::select(
-                DB::raw("SUM(status = 'pending') as pending"),
-                DB::raw("SUM(status = 'success') as success"),
-                DB::raw("SUM(status = 'failed') as failed")
-            )
-            ->first();
-
-        $todayTotal = Topup::where('status', 'success')
-            ->whereDate('created_at', $today)
+        $todayRevenue = Transaction::whereDate('created_at', today())
+            ->where('status', 'success')
             ->sum('amount');
 
+        /* =========================
+         | STATUS TOPUP (OPERASIONAL)
+         ========================= */
+        $pendingCount = TopUp::where('status', 'pending')->count();
+        $successCount = TopUp::where('status', 'success')->count();
+        $failedCount  = TopUp::where('status', 'failed')->count();
+
+        /* =========================
+         | GRAFIK 7 HARI (REVENUE)
+         ========================= */
+        $last7Days = Transaction::select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('COUNT(*) as total'),
+                DB::raw('SUM(amount) as revenue')
+            )
+            ->where('status', 'success')
+            ->where('created_at', '>=', now()->subDays(6))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        /* =========================
+         | TRANSAKSI TERAKHIR (TOPUP)
+         ========================= */
+        $latestTopups = TopUp::latest()
+            ->limit(5)
+            ->get([
+                'id',
+                'topup_code',
+                'player_id',
+                'amount',
+                'status',
+                'created_at'
+            ]);
+
         return response()->json([
-            'pending'      => (int) $stats->pending,
-            'success'      => (int) $stats->success,
-            'failed'       => (int) $stats->failed,
-            'today_total'  => (int) $todayTotal,
+            'kpi' => [
+                'transactions_today' => $todayTransactionCount,
+                'revenue_today'      => $todayRevenue,
+            ],
+            'status_summary' => [
+                'pending' => $pendingCount,
+                'success' => $successCount,
+                'failed'  => $failedCount,
+            ],
+            'chart' => $last7Days,
+            'latest_topups' => $latestTopups
         ]);
     }
 }

@@ -6,13 +6,17 @@ import "./styles/admin.css";
 export default function AdminLayout() {
   return (
     <div className="admin-wrapper">
-  <div className="admin-sidebar">...</div>
-  <div className="admin-main">
-    <div className="admin-topbar">...</div>
-    <div className="admin-content">
-      <Outlet />
+      {/* SIDEBAR */}
+      <AdminSidebar />
+
+      {/* MAIN */}
+      <div className="admin-main">
+        <AdminTopbar />
+
+        <div className="admin-content">
+          <Outlet />
+        </div>
+      </div>
     </div>
-  </div>
-</div>
   );
 }

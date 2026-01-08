@@ -8,45 +8,52 @@ import {
   Calculator,
   LogIn,
   UserPlus,
-  Search // Pastikan icon Search diimport
+  User,
+  LogOut,
+  Search
 } from 'lucide-react'
 
+import { useAuth } from '../Context/useAuth' // 🔥 KUNCI UTAMA
 import './navbar.css'
 
-// Menerima props 'games', 'searchTerm', 'setSearchTerm' dari App.jsx
 export default function Navbar({ searchTerm, setSearchTerm, games = [] }) {
   const location = useLocation()
   const navigate = useNavigate()
-  
-  // State lokal untuk menampilkan dropdown
-  const [showDropdown, setShowDropdown] = useState(false);
+  const { user, logout } = useAuth() // 🔥 KUNCI UTAMA
 
-  // Filter games untuk Dropdown Navbar
-  // Batasi max 10 hasil agar tidak terlalu panjang
-  const searchResults = games.filter(game => 
-     game.name.toLowerCase().includes((searchTerm || "").toLowerCase())
-  ).slice(0, 10); 
+  const [showDropdown, setShowDropdown] = useState(false)
+
+  const searchResults = games
+    .filter(game =>
+      game.name.toLowerCase().includes((searchTerm || '').toLowerCase())
+    )
+    .slice(0, 10)
 
   const isActive = (path) =>
     location.pathname === path || location.pathname.startsWith(path + '/')
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    setShowDropdown(e.target.value.length > 0); 
-  };
+    setSearchTerm(e.target.value)
+    setShowDropdown(e.target.value.length > 0)
+  }
 
-  // Saat item di dropdown diklik
   const handleItemClick = (game) => {
-    navigate('/buy', { state: { gameData: game } }); // Pindah ke halaman beli
-    setSearchTerm(''); // Reset search
-    setShowDropdown(false); // Tutup dropdown
-  };
+    navigate('/buy', { state: { gameData: game } })
+    setSearchTerm('')
+    setShowDropdown(false)
+  }
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
 
   return (
     <header className="navbar">
 
       {/* ===== TOP BAR ===== */}
       <div className="navbar-top">
+
         {/* LOGO */}
         <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <img
@@ -56,53 +63,82 @@ export default function Navbar({ searchTerm, setSearchTerm, games = [] }) {
           />
         </Link>
 
-        {/* --- SEARCH BAR DENGAN DROPDOWN --- */}
+        {/* ===== SEARCH BAR ===== */}
         <div className="navbar-search">
           <Search className="search-icon" size={18} />
           <input
             type="text"
             placeholder="Cari Game atau Voucher..."
             className="search-input"
-            value={searchTerm} 
+            value={searchTerm}
             onChange={handleSearchChange}
             onFocus={() => searchTerm && setShowDropdown(true)}
-            onBlur={() => setTimeout(() => setShowDropdown(false), 200)} 
+            onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
           />
 
-          {/* DROPDOWN LOGIC */}
           {showDropdown && searchTerm && (
-              <div className="search-dropdown">
-                  {searchResults.length > 0 ? (
-                      searchResults.map((game) => (
-                          <div 
-                            key={game.id} 
-                            className="search-item"
-                            onClick={() => handleItemClick(game)}
-                          >
-                              <img src={game.image} alt={game.name} style={{width: 40, height: 40, borderRadius: 4, marginRight: 10, objectFit: 'cover'}} />
-                              <div>
-                                  <div style={{color: 'white', fontSize: 13, fontWeight: 'bold'}}>{game.name}</div>
-                                  <div style={{color: '#888', fontSize: 11}}>{game.publisher}</div>
-                              </div>
-                          </div>
-                      ))
-                  ) : (
-                      <div className="search-item" style={{cursor: 'default', padding: 15, color: '#888'}}>
-                          Game tidak ditemukan
+            <div className="search-dropdown">
+              {searchResults.length > 0 ? (
+                searchResults.map((game) => (
+                  <div
+                    key={game.id}
+                    className="search-item"
+                    onClick={() => handleItemClick(game)}
+                  >
+                    <img
+                      src={game.image}
+                      alt={game.name}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 4,
+                        marginRight: 10,
+                        objectFit: 'cover'
+                      }}
+                    />
+                    <div>
+                      <div style={{ color: 'white', fontSize: 13, fontWeight: 'bold' }}>
+                        {game.name}
                       </div>
-                  )}
-              </div>
+                      <div style={{ color: '#888', fontSize: 11 }}>
+                        {game.publisher}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div
+                  className="search-item"
+                  style={{ cursor: 'default', padding: 15, color: '#888' }}
+                >
+                  Game tidak ditemukan
+                </div>
+              )}
+            </div>
           )}
         </div>
 
-        {/* --- TOMBOL AUTH (LOGIN/REGISTER) --- */}
+        {/* ===== AUTH SECTION (INI YANG DIPERBAIKI) ===== */}
         <div className="navbar-auth">
-          <Link to="/login" className="auth-btn">
-            <LogIn size={16} /> Masuk
-          </Link>
-          <Link to="/register" className="auth-btn">
-            <UserPlus size={16} /> Daftar
-          </Link>
+          {!user ? (
+            <>
+              <Link to="/login" className="auth-btn">
+                <LogIn size={16} /> Masuk
+              </Link>
+              <Link to="/register" className="auth-btn">
+                <UserPlus size={16} /> Daftar
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/profile" className="auth-btn">
+                <User size={16} /> {user.name ?? 'Profile'}
+              </Link>
+              <button onClick={handleLogout} className="auth-btn logout">
+                <LogOut size={16} /> Logout
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -118,10 +154,10 @@ export default function Navbar({ searchTerm, setSearchTerm, games = [] }) {
   )
 }
 
-// Komponen Item Menu
+/* ===== MENU ITEM ===== */
 function NavItem({ label, icon, to, active, external }) {
-  const commonClass = `nav-item ${active ? 'active' : ''}`;
-  
+  const commonClass = `nav-item ${active ? 'active' : ''}`
+
   if (external) {
     return (
       <a href={to} target="_blank" rel="noopener noreferrer" className={commonClass}>
@@ -130,8 +166,13 @@ function NavItem({ label, icon, to, active, external }) {
       </a>
     )
   }
+
   return (
-    <Link to={to} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className={commonClass}>
+    <Link
+      to={to}
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      className={commonClass}
+    >
       {icon} <span>{label}</span>
       {active && <div className="nav-indicator"></div>}
     </Link>

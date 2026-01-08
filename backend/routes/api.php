@@ -3,7 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// PUBLIC CONTROLLERS
+/*
+|--------------------------------------------------------------------------
+| PUBLIC CONTROLLERS
+|--------------------------------------------------------------------------
+*/
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProductController;
@@ -12,15 +16,21 @@ use App\Http\Controllers\TopUpController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\LeaderboardController;
-use App\Http\Controllers\AssetController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\PaymentProofController;
 
-// ADMIN CONTROLLERS
+/*
+|--------------------------------------------------------------------------
+| ADMIN CONTROLLERS
+|--------------------------------------------------------------------------
+*/
 use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\AdminTopupController;
-use App\Http\Controllers\Admin\TopUpPackageAdminController;
+use App\Http\Controllers\Admin\AdminTopUpController;
 use App\Http\Controllers\Admin\AdminGameController;
+use App\Http\Controllers\Admin\TopUpPackageAdminController;
+use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\AdminOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,30 +54,31 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 
 Route::get('/leaderboard', [LeaderboardController::class, 'index']);
-Route::get('/assets', [AssetController::class, 'index']);
 Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
 
 /*
 |--------------------------------------------------------------------------
-| TOPUP & TRANSACTION
+| TOPUP & TRANSACTION (PUBLIC)
 |--------------------------------------------------------------------------
 */
 Route::post('/topup', [TopUpController::class, 'store']);
 Route::post('/topup/check', [TopUpController::class, 'check']);
 Route::get('/topup/public/{topup_code}', [TopUpController::class, 'publicShow']);
 
-Route::post('/transaction', [TransactionController::class, 'store']);
-
 Route::post('/orders', [OrderController::class, 'store']);
 Route::post('/orders/check', [OrderController::class, 'check'])
     ->middleware('throttle:10,1');
 
+Route::get('/transaction/{invoice}', [TransactionController::class, 'show']);
+Route::post('/transaction', [TransactionController::class, 'store']);
+
 /*
 |--------------------------------------------------------------------------
-| PAYMENT WEBHOOK
+| PAYMENT
 |--------------------------------------------------------------------------
 */
 Route::post('/payment/webhook', [PaymentWebhookController::class, 'webhook']);
+Route::post('/payment/upload-proof', [PaymentProofController::class, 'store']);
 
 /*
 |--------------------------------------------------------------------------
@@ -76,40 +87,43 @@ Route::post('/payment/webhook', [PaymentWebhookController::class, 'webhook']);
 */
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN
+| ADMIN ROUTES
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth:sanctum', 'role:admin,moderator'])
+Route::middleware(['auth:sanctum', 'role:admin,cs'])
     ->prefix('admin')
     ->group(function () {
 
-        // dashboard
+        // Dashboard
         Route::get('/dashboard', [AdminDashboardController::class, 'index']);
-        
-        // games
+
+        // Games
         Route::get('/games', [AdminGameController::class, 'index']);
         Route::post('/games', [AdminGameController::class, 'store']);
         Route::put('/games/{game}', [AdminGameController::class, 'update']);
         Route::delete('/games/{game}', [AdminGameController::class, 'destroy']);
 
-        // topups
-        Route::get('/topups', [AdminTopupController::class, 'index']);
-        Route::get('/topups/{topup}', [AdminTopupController::class, 'show']);
+        // Topups
+        Route::get('/topups', [AdminTopUpController::class, 'index']);
+        Route::get('/topups/{id}', [AdminTopUpController::class, 'show']);
+        Route::post('/topups/{id}/approve', [AdminTopUpController::class, 'approve']);
+        Route::post('/topups/{id}/fail', [AdminTopUpController::class, 'fail']);
 
-        // admin manual payment
-        Route::post('/topups/{topup}/manual-success', [AdminTopupController::class, 'manualSuccess']);
-        Route::post('/topups/{topup}/manual-fail', [AdminTopupController::class, 'manualFail']);
+        //orders
+        Route::get('/orders', [AdminOrderController::class, 'index']);
+        Route::get('/orders/{order}', [AdminOrderController::class, 'show']);
 
-        // topup packages
+        // Topup Packages
         Route::get('/packages', [TopUpPackageAdminController::class, 'index']);
         Route::put('/packages/{id}', [TopUpPackageAdminController::class, 'update']);
         Route::delete('/packages/{id}/promo', [TopUpPackageAdminController::class, 'removePromo']);
+
+        // Activity Logs
+        Route::get('/activity-logs', [ActivityLogController::class, 'index']);
+        Route::get('/activity-logs/{id}', [ActivityLogController::class, 'show']);
     });

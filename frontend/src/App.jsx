@@ -17,6 +17,9 @@ import CekTransaksi from "./cek transaksi/cek_transaksi";
 import Footer from "./footer/footer";
 import TopUpGamePage from "./topuppages";
 import Leaderboard from "./leaderboard/Leaderboard";
+import Checkout from "./Checkout/Checkout";
+import Selesai from "./selesai/selesai";
+import UploadPembayaran from "./Upload/UploadPembayaran";
 
 // --- AUTH ---
 import Login from "./pages/Login";
@@ -26,6 +29,9 @@ import Register from "./pages/Register";
 import AdminLayout from "./admin/AdminLayout";
 import Dashboard from "./admin/pages/Dashboard";
 import AdminRoute from "./admin/Adminroute"; 
+import Orders from "./admin/pages/Orders";
+import Games from "./admin/pages/Games";
+import Packages from "./admin/pages/Packages";
 
 // --- COMPONENTS ARTIKEL ---
 import ArticleNavbar from "./articles/ArticleNavbar";
@@ -184,6 +190,13 @@ function App() {
               }
             />
 
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/selesai" element={<Selesai />} />
+            <Route
+              path="/upload-pembayaran"
+              element={<UploadPembayaran />}
+            />
+
             {/* AUTH (Dari teman) */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -198,6 +211,9 @@ function App() {
               }
             >
               <Route index element={<Dashboard />} />
+              <Route path="orders" element={<Orders />} />
+              <Route path="games" element={<Games />} />
+              <Route path="packages" element={<Packages />} />
             </Route>
 
             {/* TOPUP */}

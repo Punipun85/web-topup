@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import "../assets/login.css";
 import { FaHeadset } from "react-icons/fa";
+import { useAuth } from "../Context/useAuth";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth(); // 🔥 INI KUNCINYA
 
   const [form, setForm] = useState({
     email: "",
@@ -30,11 +32,12 @@ export default function Login() {
         password: form.password,
       });
 
+      // 🔑 SIMPAN TOKEN SESUAI REMEMBER
       const storage = form.remember ? localStorage : sessionStorage;
-
-      // 🔑 WAJIB
       storage.setItem("token", data.token);
-      storage.setItem("user", JSON.stringify(data.user));
+
+      // 🔥 UPDATE AUTH STATE (INI YANG BIKIN NAVBAR BERUBAH)
+      login(data.token, data.user);
 
       // 🔑 ROLE-BASED REDIRECT
       if (data.user.role === "admin") {

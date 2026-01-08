@@ -26,6 +26,7 @@ class Transaction extends Model
         'total_price',
         'payment_method',
         'status',
+        'payment_proof',
         'snap_token',
         'finalized_at',
     ];

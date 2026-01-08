@@ -11,7 +11,7 @@ export default function Dashboard() {
       try {
         const res = await api.get("/admin/dashboard");
         setStats(res.data);
-      } catch {
+      } catch  {
         setError("Gagal memuat dashboard");
       } finally {
         setLoading(false);
@@ -25,17 +25,22 @@ export default function Dashboard() {
   if (error) return <p className="error">{error}</p>;
   if (!stats) return <p>Data kosong</p>;
 
+  const pending = stats.status_summary?.pending ?? 0;
+  const success = stats.status_summary?.success ?? 0;
+  const failed  = stats.status_summary?.failed ?? 0;
+  const revenueToday = Number(stats.kpi?.revenue_today ?? 0);
+
   return (
     <>
       <h1>Dashboard</h1>
 
       <div className="cards">
-        <Card title="Pending" value={stats.pending} />
-        <Card title="Success" value={stats.success} />
-        <Card title="Failed" value={stats.failed} />
+        <Card title="Pending" value={pending} />
+        <Card title="Success" value={success} />
+        <Card title="Failed" value={failed} />
         <Card
           title="Revenue Hari Ini"
-          value={`Rp ${Number(stats.today_total).toLocaleString("id-ID")}`}
+          value={`Rp ${revenueToday.toLocaleString("id-ID")}`}
         />
       </div>
     </>

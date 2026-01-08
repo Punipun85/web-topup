@@ -12,15 +12,13 @@ use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 class Kernel extends HttpKernel
 {
     protected $middleware = [
-        \App\Http\Middleware\TrustProxies::class,
-        \Illuminate\Http\Middleware\HandleCors::class,
-        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
-        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-        \App\Http\Middleware\TrimStrings::class,
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        
-        // Tetap masukkan ini agar koneksi Frontend ke Backend tidak error
-        \App\Http\Middleware\Cors::class, 
+    \Illuminate\Http\Middleware\TrustProxies::class,
+    \Illuminate\Http\Middleware\HandleCors::class,
+    \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
+    \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+    \Illuminate\Foundation\Http\Middleware\TrimStrings::class,
+    \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+    \App\Http\Middleware\Cors::class,
     ];
 
     protected $middlewareGroups = [

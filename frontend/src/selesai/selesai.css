@@ -1,0 +1,66 @@
+.selesai-container {
+  min-height: 100vh;
+  background: #0d0d0d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: #fff;
+}
+
+.selesai-card {
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 28px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+.selesai-card h2 {
+  margin-bottom: 12px;
+}
+
+.invoice {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.status {
+  margin: 16px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.status.waiting {
+  color: #facc15; /* kuning */
+}
+
+.status.paid {
+  color: #4ade80; /* hijau */
+}
+
+.summary {
+  margin: 16px 0;
+  text-align: left;
+  font-size: 14px;
+}
+
+.summary div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.btn-home {
+  margin-top: 16px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #ffd600;
+  color: #000;
+  font-weight: 700;
+  cursor: pointer;
+}
