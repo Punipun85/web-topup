@@ -1,0 +1,355 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+
+/* === 1. BACKGROUND & NEBULA EFFECT === */
+.z-page {
+  min-height: 100vh;
+  width: 100%;
+  /* Background Gradient Galaksi (Ungu Gelap ke Hitam) */
+  background: radial-gradient(circle at 50% 10%, #2e1065 0%, #0f172a 60%, #020617 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  color: white;
+  padding: 2rem;
+}
+
+/* Background Stars (DIAM / TANPA ANIMASI) */
+.z-bg-stars {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background-image: 
+    radial-gradient(1.5px 1.5px at 15% 15%, white, transparent),
+    radial-gradient(1px 1px at 35% 65%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(2px 2px at 75% 35%, white, transparent),
+    radial-gradient(1.5px 1.5px at 80% 80%, rgba(165, 243, 252, 0.8), transparent);
+  background-size: 400px 400px;
+  opacity: 0.4;
+  z-index: 0;
+  /* Animasi dimatikan sesuai request */
+  /* animation: bgMove 100s linear infinite; */
+}
+
+.z-layout-wide {
+  position: relative; z-index: 10;
+  width: 100%; max-width: 900px;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+
+/* === 2. VISUALISASI HORIZONTAL (ANTI NABRAK) === */
+.z-visual-horizontal {
+  position: relative;
+  width: 100%;
+  height: 250px; /* Tinggi area gambar */
+  
+  /* Padding Kiri-Kanan agar indikator 0% dan 100% tidak nabrak layar */
+  padding: 0 40px; 
+  box-sizing: border-box;
+
+  margin-top: -60px; 
+  margin-bottom: -20px; 
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* WADAH UTAMA (Canvas) */
+.z-drawing-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* Pastikan rasionya terkunci agar tidak loncat */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.h-constellation { width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain; /* PENTING: Agar rasio gambar tidak penyok */
+}
+
+/* Layer Base (Background Constellation) */
+.z-layer-h { 
+ position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.z-layer-h.base { z-index: 1; opacity: 0.2; }
+.z-layer-h.base .c-line { stroke: #64748b; stroke-width: 2; stroke-dasharray: 6 6; fill: none; }
+.z-layer-h.base .c-star { fill: #334155; }
+
+/* Layer Lit (Menyala) */
+.z-layer-h.lit-mask {
+  z-index: 5;
+  overflow: hidden;
+  border-right: 2px solid #e879f9; 
+  box-shadow: 4px 0 30px rgba(232, 121, 249, 0.6); 
+  transition: width 0.1s linear;
+}
+
+/* Konten Masking */
+.z-layer-h.lit-content {
+  /* Paksa lebar konten agar gambar tidak gepeng */
+  width: 100%;      
+  min-width: 100%;  
+  height: 100%;
+  position: absolute; top: 0; left: 0;
+}
+/* Memastikan proporsi gambar tetap benar di layar besar/kecil */
+.z-layer-h.lit-content { width: 850px; }
+@media (max-width: 900px) { .z-layer-h.lit-content { width: calc(100vw - 4rem - 50px); } }
+
+
+/* === 3. STYLING BINTANG & GARIS (COLORFUL) === */
+.active .c-line {
+  /* Gradient effect via SVG stroke tidak support native CSS gradient, 
+     jadi kita pakai warna Cyan terang tapi diberi glow Ungu */
+  stroke: #22d3ee; 
+  stroke-width: 3px; 
+  fill: none;
+  stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 0 5px #a855f7); /* Glow Ungu */
+  opacity: 1;
+}
+
+/* Bintang Biasa (DIAM) */
+.active .c-star {
+  fill: #fff;
+  filter: drop-shadow(0 0 8px #22d3ee);
+  /* Animasi twinkle dimatikan */
+}
+
+/* Bintang Utama / Spica (DIAM tapi GLOWING) */
+.active .spica-star {
+  fill: #ffffff;
+  r: 9;
+  /* Efek 'supernova' glow */
+  filter: drop-shadow(0 0 15px #e879f9) drop-shadow(0 0 30px #d946ef); 
+  /* Animasi pulse dimatikan */
+}
+
+/* Cross Flare (DIAM) */
+.cross-flare.visible {
+  opacity: 1;
+  filter: drop-shadow(0 0 5px #fff);
+  /* Animasi rotate dimatikan */
+}
+
+/* Indikator Melayang */
+.z-floating-indicator {
+  position: absolute;
+  top: 0;
+  height: 100%; /* Garis memanjang dari atas ke bawah */
+  pointer-events: none;
+  z-index: 20;
+  transform: translateX(-50%); /* Agar garis pas di tengah titik potong */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.z-laser-line {
+  position: absolute;
+  top: 15%; /* Tidak perlu full dari ujung atas */
+  bottom: 15%;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, #e879f9, #22d3ee, transparent);
+  box-shadow: 0 0 15px #d946ef;
+  opacity: 0.8;
+}
+
+.z-glow-dot {
+  width: 12px; height: 12px;
+  background: #fff;
+  border: 2px solid #d946ef;
+  border-radius: 50%;
+  box-shadow: 0 0 15px #d946ef, 0 0 30px #a855f7;
+  z-index: 2;
+  position: relative; /* Agar di atas garis */
+}
+
+.z-float-text {
+  position: absolute;
+  top: 60%; /* Posisi teks sedikit di bawah dot */
+  left: 20px; /* Geser ke kanan sedikit biar ga nutup garis */
+  font-weight: 800; font-size: 1rem;
+  background: linear-gradient(to bottom, #fff, #e879f9);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+}
+
+
+/* === 4. CARD UI (GLASSMORPHISM PREMIUM) === */
+.z-card-wide {
+  /* Background semi-transparan dengan tint ungu */
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(25px); /* Blur lebih kuat */
+  -webkit-backdrop-filter: blur(25px);
+  
+  /* Border Gradient halus */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  
+  border-radius: 24px; padding: 2rem;
+  /* Shadow warna warni halus di belakang card */
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 20px 50px -10px rgba(0, 0, 0, 0.5),
+    inset 0 0 60px rgba(168, 85, 247, 0.1); /* Inner glow ungu */
+}
+
+.z-row-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; }
+
+.z-text-info h3 { 
+  margin: 0; font-size: 1.8rem; letter-spacing: -0.5px;
+  /* Gradient Text: Putih ke Cyan */
+  background: linear-gradient(to right, #fff, #a5f3fc);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.3));
+}
+.z-text-info p { margin: 5px 0 0; color: #94a3b8; font-size: 0.95rem; }
+
+.z-result-box { text-align: right; }
+.z-result-box small { color: #cbd5e1; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; opacity: 0.8; }
+.z-dm-val { 
+  font-size: 2.8rem; font-weight: 800; color: #fff; 
+  display: flex; align-items: center; gap: 12px; 
+  /* Text Shadow kuat agar angka terbaca jelas */
+  text-shadow: 0 0 30px rgba(34, 211, 238, 0.4); 
+}
+.gem-icon { color: #22d3ee; font-size: 2.2rem; filter: drop-shadow(0 0 10px #22d3ee); }
+
+/* === 5. SLIDER & BUTTONS === */
+.z-slider-container { 
+  position: relative; height: 10px; margin-bottom: 2rem; 
+  background: rgba(255,255,255,0.08); border-radius: 20px; 
+  display: flex; align-items: center; /* Supaya thumb pas di tengah vertikal */
+}
+
+/* === ZODIAC.CSS FIX === */
+
+.z-slider-wide {
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  background: transparent; 
+  cursor: pointer; 
+  z-index: 10; 
+  -webkit-appearance: none; 
+  appearance: none;
+  margin: 0;  /* Wajib 0 */
+  padding: 0; 
+}
+
+/* Bagian Tombol Bulat (Thumb) */
+.z-slider-wide::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px; 
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid #22d3ee;
+  
+  /* Hati-hati saat copy paste bagian URL ini, jangan sampai terpotong */
+  background: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='15' fill='white'%3E%E2%99%8D%3C/text%3E%3C/svg%3E") 
+    center / 39px no-repeat,
+    linear-gradient(135deg, #2c0d61, #502873, #6C3483) center / cover no-repeat;
+
+  box-shadow: 0 0 2px rgba(34, 211, 238, 0.5), 0 0 5px #22d3ee;
+  cursor: pointer;
+  margin-top: -8px; 
+  box-sizing: border-box;
+}
+
+/* Firefox Support (Opsional, untuk jaga-jaga) */
+.z-slider-wide::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border: 1px solid #22d3ee;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2c0d61, #502873);
+  cursor: pointer;
+}
+.z-slider-wide:active::-webkit-slider-thumb {
+  transform: scale(1.2); /* Membesar saat ditekan */
+  border-color: #d946ef; /* Berubah jadi Pink */
+  box-shadow: 0 0 0 6px rgba(217, 70, 239, 0.3), 0 0 25px #d946ef;
+}
+
+.z-slider-track-highlight {
+  position: absolute; top: 0; left: 0; height: 100%; 
+  /* Gradient Slider: Ungu -> Pink -> Cyan (Galaxy) */
+  background: linear-gradient(90deg, #7c3aed, #d946ef, #22d3ee);
+  border-radius: 20px; 
+  box-shadow: 0 0 20px rgba(217, 70, 239, 0.5); 
+  pointer-events: none;
+  z-index: 1;
+}
+
+.z-actions { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+
+.z-manual-wrap {
+  display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3);
+  padding: 0.6rem 1.2rem; border-radius: 14px; 
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border 0.3s;
+}
+.z-manual-wrap:focus-within { border-color: #d946ef; }
+.z-manual-wrap input { background: transparent; border: none; color: white; width: 50px; font-size: 1.1rem; outline: none; font-weight: 600; text-align: center; }
+
+.z-btn-group { display: flex; gap: 0.8rem; }
+.z-btn-reset {
+  width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.05); 
+  border: 1px solid rgba(255,255,255,0.1); 
+  color: #cbd5e1; border-radius: 14px; cursor: pointer; transition: 0.3s;
+}
+.z-btn-reset:hover { 
+  border-color: #f472b6; color: #f472b6; 
+  background: rgba(244, 114, 182, 0.1); 
+  transform: rotate(-15deg);
+}
+
+.z-btn-topup {
+  padding: 0 2.5rem; height: 50px; display: flex; align-items: center; gap: 10px;
+  /* Button Gradient yang mencolok */
+  background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+  border: none; border-radius: 14px;
+  color: white; font-weight: 700; cursor: pointer; 
+  box-shadow: 0 4px 20px rgba(219, 39, 119, 0.4); 
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efek membal */
+}
+.z-btn-topup:hover { 
+  transform: scale(1.05); 
+  box-shadow: 0 10px 30px rgba(219, 39, 119, 0.6); 
+  filter: brightness(1.1);
+}
+
+/* Responsive Mobile */
+@media (max-width: 600px) {
+  .z-page { padding: 1rem; align-items: flex-start; }
+  .z-row-top { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+  .z-result-box { text-align: left; width: 100%; display: flex; flex-direction: column; align-items: flex-start; }
+  .z-dm-val { font-size: 2.2rem; }
+  
+  .z-visual-horizontal { height: 220px; padding: 0 15px; } 
+  .z-layer-h { left: 15px; width: calc(100% - 30px); }
+  
+  .z-actions { flex-direction: column; align-items: stretch; }
+  .z-btn-group { width: 100%; }
+  .z-btn-topup { flex: 1; justify-content: center; }
+}

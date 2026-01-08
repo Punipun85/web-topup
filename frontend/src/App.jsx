@@ -21,6 +21,20 @@ import Checkout from "./Checkout/Checkout";
 import Selesai from "./selesai/selesai";
 import UploadPembayaran from "./Upload/UploadPembayaran";
 
+// --- COMPONENTS ARTIKEL ---
+import ArticleNavbar from "./articles/ArticleNavbar";
+import ArticleBanner from "./articles/ArticleBanner";
+import ArticleFooter from "./articles/ArticleFooter";
+import ArticleSection from "./articles/ArticleSection";
+import ArticleContent from "./articles/ArticleContent";
+import ArticleContent1 from "./articles/ArticleContent1";
+import ArticleContent2 from "./articles/ArticleContent2";
+
+// --- KALKULATOR ---
+import KalkulatorWinRate from "./kalkulator/KalkulatorWinRate";
+import KalkulatorMagicWheel from "./kalkulator/KalkulatorMagicWheel";
+import Kalkulatorzodiac from "./kalkulator/Kalkulatorzodiac"; // Pastikan nama file di folder kalkulator adalah Kalkulatorzodiac.jsx
+
 // --- AUTH ---
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -33,15 +47,6 @@ import Orders from "./admin/pages/Orders";
 import Games from "./admin/pages/Games";
 import Packages from "./admin/pages/Packages";
 
-// --- COMPONENTS ARTIKEL ---
-import ArticleNavbar from "./articles/ArticleNavbar";
-import ArticleBanner from "./articles/ArticleBanner";
-import ArticleFooter from "./articles/ArticleFooter";
-import ArticleSection from "./articles/ArticleSection";
-import ArticleContent from "./articles/ArticleContent";
-import ArticleContent1 from "./articles/ArticleContent1";
-import ArticleContent2 from "./articles/ArticleContent2";
-
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -53,17 +58,13 @@ function App() {
   const [currentBanner, setCurrentBanner] = useState(0);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-  // State Pencarian (DIPERTAHANKAN DARI VERSI ANDA)
   const [searchTerm, setSearchTerm] = useState(""); 
 
   // --- FETCH GAME ---
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/games"
-        );
+        const response = await axios.get("http://127.0.0.1:8000/api/games");
 
         const formattedData = response.data.map((game) => ({
           id: game.id,
@@ -100,13 +101,6 @@ function App() {
       price: "IDR 15xxxxx",
       status: "PENDING",
     },
-    {
-      date: "18-12-2025 19:38:22",
-      invoice: "TPxxxxxxxxxxxx874",
-      phone: "*********447",
-      price: "IDR 15xxxxx",
-      status: "PENDING",
-    },
   ];
 
   // --- NAVIGASI GAME ---
@@ -130,7 +124,7 @@ function App() {
 
   return (
     <>
-      {/* NAVBAR: Menggunakan versi HEAD agar fitur Search tetap jalan */}
+      {/* NAVBAR */}
       {isArticlePage ? (
         <ArticleNavbar />
       ) : (
@@ -169,13 +163,7 @@ function App() {
                   </section>
 
                   {loading ? (
-                    <div
-                      style={{
-                        textAlign: "center",
-                        padding: "50px",
-                        color: "white",
-                      }}
-                    >
+                    <div style={{ textAlign: "center", padding: "50px", color: "white" }}>
                       <h3>Sedang memuat game...</h3>
                     </div>
                   ) : (
@@ -192,16 +180,27 @@ function App() {
 
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/selesai" element={<Selesai />} />
-            <Route
-              path="/upload-pembayaran"
-              element={<UploadPembayaran />}
-            />
+            <Route path="/upload-pembayaran" element={<UploadPembayaran />} />
 
-            {/* AUTH (Dari teman) */}
+            {/* --- ROUTE KALKULATOR --- */}
+            
+            {/* 1. Win Rate */}
+            <Route path="/kalkulator/win-rate" element={<KalkulatorWinRate />} />
+            
+            {/* 2. Magic Wheel */}
+            <Route path="/kalkulator/magic-wheel" element={<KalkulatorMagicWheel />} />
+            
+            {/* 3. Zodiac */}
+            <Route path="/kalkulator/zodiac" element={<Kalkulatorzodiac />} />
+
+            {/* 4. Redirect Default /kalkulator ke Win Rate */}
+            <Route path="/kalkulator" element={<Navigate to="/kalkulator/win-rate" replace />} />
+
+            {/* AUTH */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             
-            {/* ================= ADMIN (Dari teman) ================= */}
+            {/* ================= ADMIN ================= */}
             <Route
               path="/admin"
               element={
@@ -220,18 +219,10 @@ function App() {
             <Route path="/buy" element={<TopUpPageWrapper />} />
 
             {/* TRANSAKSI */}
-            <Route
-              path="/cek-transaksi"
-              element={
-                <CekTransaksi transactions={transactions} />
-              }
-            />
+            <Route path="/cek-transaksi" element={<CekTransaksi transactions={transactions} />} />
 
             {/* LEADERBOARD */}
-            <Route
-              path="/leaderboard"
-              element={<Leaderboard />}
-            />
+            <Route path="/leaderboard" element={<Leaderboard />} />
 
             {/* ARTIKEL */}
             <Route
@@ -245,43 +236,15 @@ function App() {
                 </>
               }
             />
+            <Route path="/artikel/detail" element={<div style={{ paddingTop: 100 }}><ArticleContent /></div>} />
+            <Route path="/artikel/detail1" element={<div style={{ paddingTop: 100 }}><ArticleContent1 /></div>} />
+            <Route path="/artikel/detail2" element={<div style={{ paddingTop: 100 }}><ArticleContent2 /></div>} />
 
-            <Route
-              path="/artikel/detail"
-              element={
-                <div style={{ paddingTop: 100 }}>
-                  <ArticleContent />
-                </div>
-              }
-            />
-            <Route
-              path="/artikel/detail1"
-              element={
-                <div style={{ paddingTop: 100 }}>
-                  <ArticleContent1 />
-                </div>
-              }
-            />
-            <Route
-              path="/artikel/detail2"
-              element={
-                <div style={{ paddingTop: 100 }}>
-                  <ArticleContent2 />
-                </div>
-              }
-            />
-
-            {/* 404 - Not Found */}
+            {/* 404 */}
             <Route
               path="*"
               element={
-                <div
-                  style={{
-                    paddingTop: 120,
-                    color: "white",
-                    textAlign: "center",
-                  }}
-                >
+                <div style={{ paddingTop: 120, color: "white", textAlign: "center" }}>
                   <h2>404 - Halaman tidak ditemukan</h2>
                 </div>
               }

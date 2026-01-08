@@ -13,13 +13,13 @@ import {
   Search
 } from 'lucide-react'
 
-import { useAuth } from '../Context/useAuth' // 🔥 KUNCI UTAMA
+import { useAuth } from '../Context/useAuth'
 import './navbar.css'
 
 export default function Navbar({ searchTerm, setSearchTerm, games = [] }) {
   const location = useLocation()
   const navigate = useNavigate()
-  const { user, logout } = useAuth() // 🔥 KUNCI UTAMA
+  const { user, logout } = useAuth()
 
   const [showDropdown, setShowDropdown] = useState(false)
 
@@ -118,7 +118,7 @@ export default function Navbar({ searchTerm, setSearchTerm, games = [] }) {
           )}
         </div>
 
-        {/* ===== AUTH SECTION (INI YANG DIPERBAIKI) ===== */}
+        {/* ===== AUTH SECTION ===== */}
         <div className="navbar-auth">
           {!user ? (
             <>
@@ -143,12 +143,75 @@ export default function Navbar({ searchTerm, setSearchTerm, games = [] }) {
       </div>
 
       {/* ===== MENU BAWAH ===== */}
-      <div className="navbar-menu">
+      <div className="navbar-menu flex items-center">
         <NavItem label="Topup" icon={<ShoppingBag size={18} />} to="/" active={isActive('/')} />
         <NavItem label="Cek Transaksi" icon={<SearchCode size={18} />} to="/cek-transaksi" active={isActive('/cek-transaksi')} />
         <NavItem label="Leaderboard" icon={<Trophy size={18} />} to="/leaderboard" active={isActive('/leaderboard')} />
         <NavItem label="Artikel" icon={<Megaphone size={18} />} to="/artikel" active={isActive('/artikel')} />
-        <NavItem label="Kalkulator" icon={<Calculator size={18} />} to="/kalkulator" active={isActive('/kalkulator')} />
+        
+        {/* --- CUSTOM DROPDOWN KALKULATOR (PREMIUM STYLE - CLEAN JSX) --- */}
+        <div className="relative group h-full flex items-center z-50">
+            
+            {/* 1. TRIGGER BUTTON */}
+            <div className={`nav-item ${isActive('/kalkulator') ? 'active' : ''} cursor-pointer flex items-center gap-2 py-4`}>
+                <Calculator size={18} /> 
+                <span className="font-bold tracking-wide">Kalkulator</span>
+                <svg className="w-3 h-3 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                {isActive('/kalkulator') && <div className="nav-indicator"></div>}
+            </div>
+
+            {/* 2. DROPDOWN CONTENT (Using Classes from CSS) */}
+            <div className="premium-dropdown">
+               <div className="dropdown-glass">
+
+                  <div className="flex flex-col gap-1">
+                    
+                    {/* ITEM 1: WIN RATE */}
+                    <Link to="/kalkulator/win-rate" className="menu-card purple">
+                        <div className="icon-box purple">
+                           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                           </svg>
+                        </div>
+                        <div className="text-content">
+                            <h4 className="menu-title">Hitung Win Rate</h4>
+                            <p className="menu-desc">Target kemenangan mythic kamu.</p>
+                        </div>
+                    </Link>
+
+                    {/* ITEM 2: MAGIC WHEEL */}
+                    <Link to="/kalkulator/magic-wheel" className="menu-card blue">
+                        <div className="icon-box blue">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                            </svg>
+                        </div>
+                        <div className="text-content">
+                            <h4 className="menu-title">Magic Wheel</h4>
+                            <p className="menu-desc">Simulasi diamond Legend.</p>
+                        </div>
+                    </Link>
+
+                    {/* ITEM 3: ZODIAC */}
+                    <Link to="/kalkulator/zodiac" className="menu-card pink">
+                         <div className="icon-box pink">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg>
+                        </div>
+                        <div className="text-content">
+                            <h4 className="menu-title">Zodiac Summon</h4>
+                            <p className="menu-desc">Hitungan point zodiac skin.</p>
+                        </div>
+                    </Link>
+
+                  </div>
+               </div>
+            </div>
+        </div>
+
       </div>
     </header>
   )
