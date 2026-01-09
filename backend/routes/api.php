@@ -19,6 +19,8 @@ use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PaymentProofController;
+use App\Http\Controllers\PublicOrderController;
+use App\Http\Controllers\QrisDummyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,16 +63,17 @@ Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
 | TOPUP & TRANSACTION (PUBLIC)
 |--------------------------------------------------------------------------
 */
-Route::post('/topup', [TopUpController::class, 'store']);
-Route::post('/topup/check', [TopUpController::class, 'check']);
-Route::get('/topup/public/{topup_code}', [TopUpController::class, 'publicShow']);
+Route::post('/topups', [TopUpController::class, 'store']);
+Route::post('/topups/check', [TopUpController::class, 'check']);
+Route::get('/topups/public/{topup_code}', [TopUpController::class, 'publicShow']);
 
 Route::post('/orders', [OrderController::class, 'store']);
 Route::post('/orders/check', [OrderController::class, 'check'])
     ->middleware('throttle:10,1');
 
 Route::get('/transaction/{invoice}', [TransactionController::class, 'show']);
-Route::post('/transaction', [TransactionController::class, 'store']);
+Route::get('/transaction/order/{orderNumber}', [TransactionController::class, 'showByOrder']);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +82,10 @@ Route::post('/transaction', [TransactionController::class, 'store']);
 */
 Route::post('/payment/webhook', [PaymentWebhookController::class, 'webhook']);
 Route::post('/payment/upload-proof', [PaymentProofController::class, 'store']);
+Route::post('/payment/qris-dummy', [QrisDummyController::class, 'pay']);
+Route::get('/orders/{order_number}', [PublicOrderController::class, 'show']);
+
+
 
 /*
 |--------------------------------------------------------------------------

@@ -3,26 +3,27 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Topup;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Models\TopUp;
-use App\Models\ActivityLog;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AdminTopUpController extends Controller
 {
     /**
-     * List transaksi topup (dengan filter)
+     * List topup (delivery queue)
      */
     public function index(Request $request)
     {
-        $query = TopUp::query();
+        $query = Topup::with(['order', 'user', 'game', 'package']);
 
         if ($request->status) {
             $query->where('status', $request->status);
         }
 
         if ($request->search) {
-            $query->where('invoice', 'like', '%' . $request->search . '%');
+            $query->where('topup_code', 'like', '%' . $request->search . '%');
         }
 
         return response()->json(
@@ -31,62 +32,66 @@ class AdminTopUpController extends Controller
     }
 
     /**
-     * Detail transaksi
+     * Detail topup
      */
     public function show($id)
     {
-        $topup = TopUp::findOrFail($id);
+        $topup = Topup::with(['order', 'user', 'game', 'package'])
+            ->findOrFail($id);
+
         return response()->json($topup);
     }
 
     /**
-     * Approve topup manual
+     * Tandai topup SUCCESS (delivery berhasil)
      */
-    public function approve(Request $request, $id)
+    public function success($id)
     {
-        $request->validate([
-            'admin_note' => 'nullable|string|max:255'
-        ]);
+        return DB::transaction(function () use ($id) {
 
-        $topup = TopUp::findOrFail($id);
+            $topup = Topup::lockForUpdate()->findOrFail($id);
 
-        if ($topup->status !== 'pending') {
+            if ($topup->status !== 'pending') {
+                return response()->json([
+                    'message' => 'Topup sudah diproses'
+                ], 422);
+            }
+
+            // 1️⃣ update topup
+            $topup->update([
+                'status' => 'success',
+            ]);
+
+            // 2️⃣ create transaction ledger (ONCE)
+            Transaction::firstOrCreate(
+                [
+                    'topup_id' => $topup->id,
+                ],
+                [
+                    'invoice_id'     => 'INV-' . strtoupper(Str::random(12)),
+                    'amount'         => $topup->amount,
+                    'payment_method' => $topup->order->payment_method,
+                    'status'         => 'success',
+                    'finalized_at'   => now(),
+                ]
+            );
+
             return response()->json([
-                'message' => 'Topup sudah diproses'
-            ], 422);
-        }
-
-        $topup->update([
-            'status'       => 'success',
-            'approved_by'  => Auth::id(),
-            'approved_at'  => now(),
-            'admin_note'   => $request->admin_note
-        ]);
-
-        ActivityLog::create([
-            'admin_id' => Auth::id(),
-            'action'   => 'APPROVE_TOPUP',
-            'payload'  => json_encode([
-                'topup_id' => $topup->id,
-                'invoice'  => $topup->invoice
-            ])
-        ]);
-
-        return response()->json([
-            'message' => 'Topup berhasil di-approve'
-        ]);
+                'message' => 'Topup berhasil diselesaikan'
+            ]);
+        });
     }
 
     /**
-     * Tandai topup gagal
+     * Tandai topup FAILED (delivery gagal)
      */
     public function fail(Request $request, $id)
     {
         $request->validate([
-            'admin_note' => 'required|string|max:255'
+            'reason' => 'required|string|max:255'
         ]);
 
-        $topup = TopUp::findOrFail($id);
+        $topup = Topup::findOrFail($id);
 
         if ($topup->status !== 'pending') {
             return response()->json([
@@ -95,24 +100,12 @@ class AdminTopUpController extends Controller
         }
 
         $topup->update([
-            'status'       => 'failed',
-            'approved_by'  => Auth::id(),
-            'approved_at'  => now(),
-            'admin_note'   => $request->admin_note
-        ]);
-
-        ActivityLog::create([
-            'admin_id' => Auth::id(),
-            'action'   => 'FAIL_TOPUP',
-            'payload'  => json_encode([
-                'topup_id' => $topup->id,
-                'invoice'  => $topup->invoice,
-                'amount'   => $topup->amount
-            ])
+            'status' => 'failed',
         ]);
 
         return response()->json([
-            'message' => 'Topup ditandai gagal'
+            'message' => 'Topup ditandai gagal',
+            'reason'  => $request->reason
         ]);
     }
 }

@@ -2,15 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 
 class PaymentMethodController extends Controller
 {
     public function index()
     {
-        // Ambil data pembayaran yang aktif
-        $payments = PaymentMethod::where('is_active', true)->get();
-        return response()->json($payments);
+        $payments = PaymentMethod::query()
+            ->where('is_active', true)
+            ->orderBy('name') // opsional, tapi berguna
+            ->get([
+                'id',
+                'name',
+                'code',
+                'category',
+                'image',
+                'admin_fee'
+            ]);
+
+        return response()->json([
+            'data' => $payments
+        ]);
     }
 }

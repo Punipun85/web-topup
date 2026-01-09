@@ -33,15 +33,13 @@ const TopUpGame = ({ game, onBack }) => {
   // 2. FETCH PAYMENT METHODS (DARI API)
   // =========================================
   useEffect(() => {
-      // Mengambil metode pembayaran dinamis dari Backend
-      axios.get("http://127.0.0.1:8000/api/payment-methods")
-          .then((response) => {
-              setPaymentMethods(response.data);
-          })
-          .catch((error) => {
-              console.error("Gagal ambil payment:", error);
-          });
-  }, []);
+  axios.get("http://127.0.0.1:8000/api/payment-methods")
+    .then(res => {
+      setPaymentMethods(res.data?.data ?? []);
+    })
+    .catch(() => setPaymentMethods([]));
+}, []);
+
 
   // =========================================
   // 3. LOGIC & CALCULATIONS
@@ -64,67 +62,57 @@ const TopUpGame = ({ game, onBack }) => {
   const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
   // --- LOGIKA PEMBELIAN (TRANSAKSI KE BACKEND) ---
- const handleBuy = async () => {
+const handleBuy = async () => {
   if (!selectedProduct || !userId || !email || !selectedPayment) {
-    alert("Mohon lengkapi User ID, Email, dan Pilih Pembayaran.");
+    alert("Lengkapi data terlebih dahulu");
     return;
   }
 
   setIsSubmitting(true);
 
-  const payload = {
-    email,
-    game_user_id: userId,
-    zone_id: zoneId,
-    game: game.name,
-    item_name: selectedProduct.name,
-    amount: selectedProduct.amount,
-    price: selectedProduct.price,
-    quantity,
-    total_price: grandTotal,
-    payment_method: selectedPayment.name,
-  };
-
   try {
-    const response = await axios.post(
-      "http://127.0.0.1:8000/api/transaction",
-      payload
+    // 1️⃣ CREATE TOPUP (TRANSAKSI BISNIS)
+    const topupRes = await axios.post(
+      "http://127.0.0.1:8000/api/topups",
+      {
+        game_id: game.id,
+        package_id: selectedProduct.id,
+        player_id: userId,
+        server_id: zoneId || null,
+        email,
+      }
     );
 
-    const trx = response.data.data;
+    const topup = topupRes.data.data;
 
-    // 👉 PINDAH KE CHECKOUT (INI INTINYA)
+    // 2️⃣ CREATE ORDER (PEMBAYARAN)
+    const orderRes = await axios.post(
+      "http://127.0.0.1:8000/api/orders",
+      {
+        topup_id: topup.id,
+        payment_method: selectedPayment.code,
+      }
+    );
+
+    const order = orderRes.data.data;
+
+    // 3️⃣ PINDAH KE CHECKOUT
     navigate("/checkout", {
       state: {
-        invoice: trx.invoice_id,
-        total: trx.total_price,
-        status: trx.status,
-        payment_method: selectedPayment.name,
-        bank: {
-          name: "BCA",
-          account: "123-456-7890",
-          holder: "A6Topup",
-        },
-        customer: {
-          userId,
-          zoneId,
-          email,
-        },
-        item: {
-          name: selectedProduct.name,
-          quantity,
-        },
-      },
+        order,
+        payment: selectedPayment,
+        game,
+        product: selectedProduct,
+        quantity,
+      }
     });
-  } catch (error) {
-    const errorMsg =
-      error.response?.data?.message || "Terjadi kesalahan sistem.";
-    alert("Gagal membuat pesanan: " + errorMsg);
+
+  } catch (err) {
+    alert(err.response?.data?.message || "Gagal membuat pesanan");
   } finally {
     setIsSubmitting(false);
   }
 };
-
 
   // =========================================
   // 4. FETCH PRODUCTS

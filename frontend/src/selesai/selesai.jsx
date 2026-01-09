@@ -6,29 +6,28 @@ import "./selesai.css";
 export default function Selesai() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const invoice = params.get("invoice");
+  const orderNumber = params.get("invoice"); // INI ORDER NUMBER
 
   const [trx, setTrx] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios
-      .get(`http://127.0.0.1:8000/api/transaction/${invoice}`)
-      .then((res) => setTrx(res.data.data))
-      .catch(() => setError("Data transaksi tidak valid"))
-      .finally(() => setLoading(false));
-  }, [invoice]);
+    if (!orderNumber) return;
 
-  if (!invoice) {
+    axios
+      .get(`http://127.0.0.1:8000/api/transaction/order/${orderNumber}`)
+      .then(res => setTrx(res.data.data))
+      .catch(() => setError("Data transaksi tidak ditemukan"))
+      .finally(() => setLoading(false));
+  }, [orderNumber]);
+
+  if (!orderNumber) {
     return (
       <div className="selesai-container">
         <div className="selesai-card">
           <h2>Data Tidak Valid</h2>
-          <p>Invoice tidak ditemukan</p>
-          <button className="btn-home" onClick={() => navigate("/")}>
-            Kembali ke Home
-          </button>
+          <button onClick={() => navigate("/")}>Kembali ke Home</button>
         </div>
       </div>
     );
@@ -42,11 +41,9 @@ export default function Selesai() {
     return (
       <div className="selesai-container">
         <div className="selesai-card">
-          <h2>Data Tidak Valid</h2>
+          <h2>Terjadi Kesalahan</h2>
           <p>{error}</p>
-          <button className="btn-home" onClick={() => navigate("/")}>
-            Kembali ke Home
-          </button>
+          <button onClick={() => navigate("/")}>Kembali ke Home</button>
         </div>
       </div>
     );
@@ -55,39 +52,39 @@ export default function Selesai() {
   return (
     <div className="selesai-container">
       <div className="selesai-card">
-        <h2>Pembayaran Diproses</h2>
+        <h2>Pembayaran Berhasil</h2>
 
         <div className="invoice">{trx.invoice}</div>
 
-        <div className={`status ${trx.status === "PAID" ? "paid" : "waiting"}`}>
+        <div className={`status paid`}>
           Status: {trx.status}
         </div>
 
         <div className="summary">
           <div>
+            <span>Game</span>
+            <span>{trx.game}</span>
+          </div>
+
+          <div>
+            <span>Paket</span>
+            <span>{trx.package}</span>
+          </div>
+
+          <div>
             <span>User ID</span>
-            <span>
-              {trx.customer.userId}
-              {trx.customer.zoneId && ` (${trx.customer.zoneId})`}
-            </span>
+            <span>{trx.player_id}</span>
           </div>
 
           <div>
             <span>Email</span>
-            <span>{trx.customer.email}</span>
-          </div>
-
-          <div>
-            <span>Item</span>
-            <span>
-              {trx.item.name} x{trx.item.quantity}
-            </span>
+            <span>{trx.email}</span>
           </div>
 
           <div>
             <span>Total</span>
             <strong>
-              Rp {trx.total.toLocaleString("id-ID")}
+              Rp {Number(trx.amount).toLocaleString("id-ID")}
             </strong>
           </div>
         </div>

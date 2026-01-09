@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-       Schema::create('topups', function (Blueprint $table) {
+     Schema::create('topups', function (Blueprint $table) {
     $table->id();
 
     // identitas publik
@@ -36,8 +36,8 @@ return new class extends Migration
     // kontak
     $table->string('email')->nullable();
 
-    // snapshot bisnis
-    $table->unsignedInteger('amount'); // harga final saat transaksi
+    // snapshot bisnis FINAL
+    $table->unsignedInteger('amount');
 
     // status TRANSAKSI (bukan payment)
     $table->enum('status', ['pending','success','failed'])

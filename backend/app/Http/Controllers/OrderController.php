@@ -11,13 +11,10 @@ use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
-    /**
-     * Create payment attempt for a topup
-     */
     public function store(Request $request)
     {
         $data = $request->validate([
-            'topup_id'        => 'required|exists:topups,id',
+            'topup_id'       => 'required|exists:topups,id',
             'payment_method' => 'required|string',
         ]);
 
@@ -34,23 +31,24 @@ class OrderController extends Controller
                 ], 400);
             }
 
-            // optional: cegah double pending payment
-            $activeOrder = Order::where('topup_id', $topup->id)
-                ->where('status', 'pending')
+            // 🔒 Cegah double order
+            $existingOrder = Order::where('topup_id', $topup->id)
+                ->whereIn('status', ['pending', 'waiting_confirmation'])
                 ->first();
 
-            if ($activeOrder) {
+            if ($existingOrder) {
                 return response()->json([
                     'message' => 'Masih ada pembayaran yang belum selesai'
                 ], 409);
             }
 
+            // ✅ CREATE ORDER
             $order = Order::create([
                 'order_number'   => 'ORD-' . strtoupper(Str::random(12)),
                 'topup_id'       => $topup->id,
                 'user_id'        => Auth::id(),
                 'payment_method'=> $data['payment_method'],
-                'amount'         => $topup->amount, // snapshot
+                'amount'         => $topup->amount,
                 'status'         => 'pending',
             ]);
 
@@ -58,39 +56,13 @@ class OrderController extends Controller
                 'success' => true,
                 'message' => 'Order pembayaran dibuat',
                 'data' => [
-                    'order_id'      => $order->id,
-                    'order_number'  => $order->order_number,
-                    'payment_method' => $order->payment_method,
-                    'status'        => $order->status,
-                    'amount'        => $order->amount,
+                    'order_id'     => $order->id,
+                    'order_number' => $order->order_number,
+                    'topup_code'   => $topup->topup_code,
+                    'amount'       => $order->amount,
+                    'status'       => $order->status,
                 ]
             ], 201);
         });
-    }
-
-    /**
-     * Check payment attempt status
-     */
-    public function check(Request $request)
-    {
-        $data = $request->validate([
-            'order_number' => 'required|string',
-        ]);
-
-        $order = Order::where('order_number', $data['order_number'])
-            ->first();
-
-        if (!$order) {
-            return response()->json([
-                'message' => 'Order tidak ditemukan'
-            ], 404);
-        }
-
-        return response()->json([
-            'order_number' => $order->order_number,
-            'status'       => $order->status,
-            'amount'       => $order->amount,
-            'created_at'   => $order->created_at->toDateTimeString(),
-        ]);
     }
 }
