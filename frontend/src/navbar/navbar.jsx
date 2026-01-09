@@ -77,7 +77,8 @@ export default function Navbar({ searchTerm, setSearchTerm, games = [] }) {
           />
 
           {showDropdown && searchTerm && (
-            <div className="search-dropdown">
+            <div className="search-dropdown"
+            onMouseDown={(e) => e.preventDefault()}>
               {searchResults.length > 0 ? (
                 searchResults.map((game) => (
                   <div
