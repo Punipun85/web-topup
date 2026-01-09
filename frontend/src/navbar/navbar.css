@@ -31,16 +31,18 @@
 
 /* ================= SEARCH AREA ================= */
 .navbar-search {
-  width: 100%;
-  max-width: 450px;
+  flex: 1; /* PENTING: Ini membuat search bar mengisi sisa ruang kosong */
+  max-width: 999px; /* Batas maksimal agar tidak terlalu panjang di layar besar */
   position: relative;
-  z-index: 100; /* Supaya dropdown search di atas */
+  z-index: 100;
+  margin: 10px; /* Posisi otomatis di tengah antara logo & auth */
+  margin-top: 35px;
 }
 
 .search-icon {
   position: absolute;
-  left: 14px;
-  top: 50%;
+  right: 15px;
+  top: 30%;
   transform: translateY(-50%);
   color: #6b7280;
   pointer-events: none;
