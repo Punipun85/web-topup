@@ -21,6 +21,9 @@ import Checkout from "./Checkout/Checkout";
 import Selesai from "./selesai/selesai";
 import UploadPembayaran from "./Upload/UploadPembayaran";
 
+// --- COMPONENTS USER / PROFILE (BARU DITAMBAHKAN) ---
+import Profile from "./profile/profile"; 
+
 // --- COMPONENTS ARTIKEL ---
 import ArticleNavbar from "./articles/ArticleNavbar";
 import ArticleBanner from "./articles/ArticleBanner";
@@ -33,7 +36,7 @@ import ArticleContent2 from "./articles/ArticleContent2";
 // --- KALKULATOR ---
 import KalkulatorWinRate from "./kalkulator/KalkulatorWinRate";
 import KalkulatorMagicWheel from "./kalkulator/KalkulatorMagicWheel";
-import Kalkulatorzodiac from "./kalkulator/Kalkulatorzodiac"; // Pastikan nama file di folder kalkulator adalah Kalkulatorzodiac.jsx
+import Kalkulatorzodiac from "./kalkulator/Kalkulatorzodiac"; 
 
 // --- AUTH ---
 import Login from "./pages/Login";
@@ -200,6 +203,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             
+            {/* --- ROUTE PROFILE (BARU DITAMBAHKAN) --- */}
+            {/* Akses via /profile */}
+            <Route path="/profile" element={<Profile />} />
+
             {/* ================= ADMIN ================= */}
             <Route
               path="/admin"

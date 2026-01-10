@@ -19,7 +19,7 @@ use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PaymentProofController;
-
+use App\Http\Controllers\Api\DashboardController;
 /*
 |--------------------------------------------------------------------------
 | ADMIN CONTROLLERS
@@ -127,3 +127,11 @@ Route::middleware(['auth:sanctum', 'role:admin,cs'])
         Route::get('/activity-logs', [ActivityLogController::class, 'index']);
         Route::get('/activity-logs/{id}', [ActivityLogController::class, 'show']);
     });
+
+    Route::middleware('auth:sanctum')->group(function () {
+    
+    Route::get('/user/profile', [DashboardController::class, 'profile']);
+    Route::get('/user/stats', [DashboardController::class, 'stats']);
+    Route::get('/transaction/history', [DashboardController::class, 'history']);
+
+});
