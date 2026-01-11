@@ -12,3 +12,4 @@ UPDATE games SET image = '/images/GI.jpg'
 WHERE slug = 'genshin-impact';
 UPDATE games SET image = '/images/valorant.jpg'
 WHERE slug = 'valorant';
+

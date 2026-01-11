@@ -2,51 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LeaderboardController extends Controller
 {
     public function index()
     {
-        // Ceritanya ini data dari Database (nanti kita ganti pakai Model Transaction)
-        $dataSultan = [
-            [
-                'rank' => 1,
-                'username' => 'Raja_Jawa',
-                'total' => 15500000
-            ],
-            [
-                'rank' => 2,
-                'username' => 'pria solo',
-                'total' => 9800000
-            ],
-            [
-                'rank' => 3,
-                'username' => 'buna teddy',
-                'total' => 5200000
-            ],
-            [
-                'rank' => 4,
-                'username' => 'AkuSiapa',
-                'total' => 3100000
-            ],
-            [
-                'rank' => 5,
-                'username' => 'User1231',
-                'total' => 2500000
-            ],
-            [
-                'rank' => 6,
-                'username' => 'TopUp_Murah',
-                'total' => 1800000
-            ],
-            [
-                'rank' => 7,
-                'username' => 'Gacha_Ampas',
-                'total' => 900000
-            ],
-        ];
+        $leaderboard = DB::table('transactions')
+            ->join('topups', 'transactions.topup_id', '=', 'topups.id')
+            ->join('users', 'topups.user_id', '=', 'users.id')
+            ->select(
+                'users.id',
+                'users.name',
+                DB::raw('SUM(transactions.amount) as total')
+            )
+            ->where('transactions.status', 'success')
+            ->whereNotNull('topups.user_id')
+            ->groupBy('users.id', 'users.name')
+            ->orderByDesc('total')
+            ->limit(10)
+            ->get()
+            ->values()
+            ->map(function ($item, $index) {
+                return [
+                    'rank' => $index + 1,
+                    'username' => $item->name,
+                    'total' => (int) $item->total,
+                ];
+            });
 
-        return response()->json($dataSultan);
+        return response()->json($leaderboard);
     }
 }

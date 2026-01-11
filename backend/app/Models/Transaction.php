@@ -32,4 +32,11 @@ class Transaction extends Model
     {
         return $this->belongsTo(\App\Models\Topup::class);
     }
+
+    public function user()
+    {
+        return $this->topup->user();
+    }
 }
+
+    

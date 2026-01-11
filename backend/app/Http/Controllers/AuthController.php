@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -16,9 +15,11 @@ class AuthController extends Controller
     public function register(Request $r)
     {
         $v = Validator::make($r->all(), [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            'name' => 'required|string|max:100',
+            'username' => 'required|string|max:50|unique:users,username',
+            'email' => 'required|email|max:100|unique:users,email',
+            'phone' => 'nullable|string|max:20',
+            'password' => 'required|min:8|confirmed',
         ]);
 
         if ($v->fails()) {
@@ -27,30 +28,44 @@ class AuthController extends Controller
 
         $user = User::create([
             'name' => $r->name,
+            'username' => $r->username,
             'email' => $r->email,
+            'phone' => $r->phone,
             'password' => Hash::make($r->password),
-            'role' => 'user' // selalu user
+            'role' => 'user',
         ]);
 
         return response()->json([
-            'user' => $user,
-            'message' => 'User registered successfully'
+            'message' => 'User registered successfully',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'username' => $user->username,
+                'email' => $user->email,
+            ]
         ], 201);
     }
 
     /**
-     * Login user
+     * Login user (email atau username)
      */
     public function login(Request $r)
     {
-        if (!Auth::attempt($r->only('email', 'password'))) {
+        $r->validate([
+            'login' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        // cari user by email ATAU username
+        $user = User::where('email', $r->login)
+            ->orWhere('username', $r->login)
+            ->first();
+
+        if (!$user || !Hash::check($r->password, $user->password)) {
             return response()->json([
                 'message' => 'Invalid credentials'
             ], 401);
         }
-
-        /** @var User $user */
-        $user = Auth::user();
 
         // hapus token lama
         $user->tokens()->delete();
@@ -58,7 +73,14 @@ class AuthController extends Controller
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'message' => 'Login successful',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role,
+            ],
             'token' => $token
         ]);
     }

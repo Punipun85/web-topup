@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import "./App.css";
 
-// --- COMPONENTS UTAMA ---
+// ===== COMPONENTS UTAMA =====
 import Navbar from "./navbar/navbar";
 import Banner from "./banner/banner";
 import GameGrid from "./gamegrid/gamegrid";
@@ -20,8 +20,10 @@ import Leaderboard from "./leaderboard/Leaderboard";
 import Checkout from "./Checkout/Checkout";
 import Selesai from "./selesai/selesai";
 import UploadPembayaran from "./Upload/UploadPembayaran";
+import ContactUs from "./pages/ContactUs";
+import Profile from "./pages/Profile";
 
-// --- COMPONENTS ARTIKEL ---
+// ===== ARTIKEL =====
 import ArticleNavbar from "./articles/ArticleNavbar";
 import ArticleBanner from "./articles/ArticleBanner";
 import ArticleFooter from "./articles/ArticleFooter";
@@ -30,43 +32,44 @@ import ArticleContent from "./articles/ArticleContent";
 import ArticleContent1 from "./articles/ArticleContent1";
 import ArticleContent2 from "./articles/ArticleContent2";
 
-// --- KALKULATOR ---
+// ===== KALKULATOR =====
 import KalkulatorWinRate from "./kalkulator/KalkulatorWinRate";
 import KalkulatorMagicWheel from "./kalkulator/KalkulatorMagicWheel";
-import Kalkulatorzodiac from "./kalkulator/Kalkulatorzodiac"; // Pastikan nama file di folder kalkulator adalah Kalkulatorzodiac.jsx
+import Kalkulatorzodiac from "./kalkulator/Kalkulatorzodiac";
 
-// --- AUTH ---
+// ===== AUTH =====
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
-// === ADMIN ===
+// ===== ADMIN =====
 import AdminLayout from "./admin/AdminLayout";
 import Dashboard from "./admin/pages/Dashboard";
-import AdminRoute from "./admin/Adminroute"; 
+import AdminRoute from "./admin/Adminroute";
 import Orders from "./admin/pages/Orders";
 import Games from "./admin/pages/Game";
 import Packages from "./admin/pages/Packages";
+import CustomerServiceAdmin from "./admin/pages/CustomerService";
 
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Artikel pakai navbar/footer khusus
+  // ===== PAGE TYPE DETECTION =====
   const isArticlePage = location.pathname.startsWith("/artikel");
+  const isAuthPage = ["/login", "/register"].includes(location.pathname);
 
-  // --- STATE ---
+  // ===== STATE =====
   const [currentBanner, setCurrentBanner] = useState(0);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState(""); 
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // --- FETCH GAME ---
+  // ===== FETCH GAME =====
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/games");
-
-        const formattedData = response.data.map((game) => ({
+        const res = await axios.get("http://127.0.0.1:8000/api/games");
+        const formatted = res.data.map((game) => ({
           id: game.id,
           slug: game.slug,
           name: game.name,
@@ -74,19 +77,17 @@ function App() {
           publisher: game.code,
           banner: `/images/banner-${game.slug}.png`,
         }));
-
-        setGames(formattedData);
-      } catch (error) {
-        console.error("Gagal load data:", error);
+        setGames(formatted);
+      } catch (err) {
+        console.error("Gagal load game:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchGames();
   }, []);
 
-  // --- STATIC DATA ---
+  // ===== STATIC =====
   const daftarBanner = [
     "/images/baner1.png",
     "/images/baner2.png",
@@ -103,17 +104,14 @@ function App() {
     },
   ];
 
-  // --- NAVIGASI GAME ---
+  // ===== GAME NAV =====
   const handleGameClick = (game) => {
     navigate("/buy", { state: { gameData: game } });
   };
 
-  // Wrapper Topup Page
   const TopUpPageWrapper = () => {
     const { state } = useLocation();
-    if (!state || !state.gameData) {
-      return <Navigate to="/" replace />;
-    }
+    if (!state?.gameData) return <Navigate to="/" replace />;
     return (
       <TopUpGamePage
         game={state.gameData}
@@ -122,23 +120,32 @@ function App() {
     );
   };
 
+  useEffect(() => {
+  const theme = localStorage.getItem("theme") || "dark";
+  document.body.dataset.theme = theme;
+}, []);
+
+
   return (
     <>
-      {/* NAVBAR */}
-      {isArticlePage ? (
-        <ArticleNavbar />
-      ) : (
-        <Navbar 
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          games={games} 
-        />
+      {/* ===== NAVBAR ===== */}
+      {!isAuthPage && (
+        isArticlePage ? (
+          <ArticleNavbar />
+        ) : (
+          <Navbar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            games={games}
+          />
+        )
       )}
 
       <div className="app-wrapper">
         <main className="app-main">
           <Routes>
-            {/* HOME */}
+
+            {/* ===== HOME ===== */}
             <Route
               path="/"
               element={
@@ -146,10 +153,7 @@ function App() {
                   <section className="hero-section">
                     <div className="hero-video">
                       <video autoPlay muted loop playsInline>
-                        <source
-                          src="/images/background.mp4"
-                          type="video/mp4"
-                        />
+                        <source src="/images/background.mp4" type="video/mp4" />
                       </video>
                     </div>
 
@@ -163,14 +167,11 @@ function App() {
                   </section>
 
                   {loading ? (
-                    <div style={{ textAlign: "center", padding: "50px", color: "white" }}>
+                    <div style={{ textAlign: "center", padding: 50, color: "white" }}>
                       <h3>Sedang memuat game...</h3>
                     </div>
                   ) : (
-                    <GameGrid
-                      games={games}
-                      onGameClick={handleGameClick}
-                    />
+                    <GameGrid games={games} onGameClick={handleGameClick} />
                   )}
 
                   <ArticleSection isPreview />
@@ -178,29 +179,48 @@ function App() {
               }
             />
 
+            {/* ===== AUTH ===== */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+
+            {/* ===== USER ===== */}
+            <Route path="/profile" element={<Profile />} />
+
+            {/* ===== TRANSAKSI ===== */}
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/selesai" element={<Selesai />} />
             <Route path="/upload-pembayaran" element={<UploadPembayaran />} />
+            <Route path="/cek-transaksi" element={<CekTransaksi transactions={transactions} />} />
 
-            {/* --- ROUTE KALKULATOR --- */}
-            
-            {/* 1. Win Rate */}
+            {/* ===== TOPUP ===== */}
+            <Route path="/buy" element={<TopUpPageWrapper />} />
+
+            {/* ===== LEADERBOARD ===== */}
+            <Route path="/leaderboard" element={<Leaderboard />} />
+
+            {/* ===== KALKULATOR ===== */}
             <Route path="/kalkulator/win-rate" element={<KalkulatorWinRate />} />
-            
-            {/* 2. Magic Wheel */}
             <Route path="/kalkulator/magic-wheel" element={<KalkulatorMagicWheel />} />
-            
-            {/* 3. Zodiac */}
             <Route path="/kalkulator/zodiac" element={<Kalkulatorzodiac />} />
-
-            {/* 4. Redirect Default /kalkulator ke Win Rate */}
             <Route path="/kalkulator" element={<Navigate to="/kalkulator/win-rate" replace />} />
 
-            {/* AUTH */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            
-            {/* ================= ADMIN ================= */}
+            {/* ===== ARTIKEL ===== */}
+            <Route
+              path="/artikel"
+              element={
+                <>
+                  <ArticleBanner />
+                  <div style={{ paddingTop: 40 }}>
+                    <ArticleSection />
+                  </div>
+                </>
+              }
+            />
+            <Route path="/artikel/detail" element={<ArticleContent />} />
+            <Route path="/artikel/detail1" element={<ArticleContent1 />} />
+            <Route path="/artikel/detail2" element={<ArticleContent2 />} />
+
+            {/* ===== ADMIN ===== */}
             <Route
               path="/admin"
               element={
@@ -213,34 +233,12 @@ function App() {
               <Route path="orders" element={<Orders />} />
               <Route path="games" element={<Games />} />
               <Route path="packages" element={<Packages />} />
+              <Route path="customer-service" element={<CustomerServiceAdmin />} />
             </Route>
 
-            {/* TOPUP */}
-            <Route path="/buy" element={<TopUpPageWrapper />} />
+            <Route path="/contact-us" element={<ContactUs />} />
 
-            {/* TRANSAKSI */}
-            <Route path="/cek-transaksi" element={<CekTransaksi transactions={transactions} />} />
-
-            {/* LEADERBOARD */}
-            <Route path="/leaderboard" element={<Leaderboard />} />
-
-            {/* ARTIKEL */}
-            <Route
-              path="/artikel"
-              element={
-                <>
-                  <ArticleBanner />
-                  <div style={{ paddingTop: 40 }}>
-                    <ArticleSection />
-                  </div>
-                </>
-              }
-            />
-            <Route path="/artikel/detail" element={<div style={{ paddingTop: 100 }}><ArticleContent /></div>} />
-            <Route path="/artikel/detail1" element={<div style={{ paddingTop: 100 }}><ArticleContent1 /></div>} />
-            <Route path="/artikel/detail2" element={<div style={{ paddingTop: 100 }}><ArticleContent2 /></div>} />
-
-            {/* 404 */}
+            {/* ===== 404 ===== */}
             <Route
               path="*"
               element={
@@ -249,10 +247,14 @@ function App() {
                 </div>
               }
             />
+
           </Routes>
         </main>
 
-        {isArticlePage ? <ArticleFooter /> : <Footer />}
+        {/* ===== FOOTER ===== */}
+        {!isAuthPage && (
+          isArticlePage ? <ArticleFooter /> : <Footer />
+        )}
       </div>
     </>
   );

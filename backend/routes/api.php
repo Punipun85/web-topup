@@ -21,6 +21,9 @@ use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PaymentProofController;
 use App\Http\Controllers\PublicOrderController;
 use App\Http\Controllers\QrisDummyController;
+use App\Http\Controllers\LookupController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +36,7 @@ use App\Http\Controllers\Admin\AdminGameController;
 use App\Http\Controllers\Admin\TopUpPackageAdminController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +78,8 @@ Route::post('/orders/check', [OrderController::class, 'check'])
 Route::get('/transaction/{invoice}', [TransactionController::class, 'show']);
 Route::get('/transaction/order/{orderNumber}', [TransactionController::class, 'showByOrder']);
 
+Route::get('/lookup/{code}', LookupController::class);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -85,7 +91,13 @@ Route::post('/payment/upload-proof', [PaymentProofController::class, 'store']);
 Route::post('/payment/qris-dummy', [QrisDummyController::class, 'pay']);
 Route::get('/orders/{order_number}', [PublicOrderController::class, 'show']);
 
+/*
+|--------------------------------------------------------------------------
+| Fitur Tambahan: Contact Messages
+|--------------------------------------------------------------------------
+*/
 
+Route::post('/contact-messages', [ContactController::class, 'store']);
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +107,11 @@ Route::get('/orders/{order_number}', [PublicOrderController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::put('/profile', [ProfileController::class, 'update']);
+    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar']);
+    Route::put('/profile/email', [ProfileController::class, 'updateEmail']);
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
 });
 
 /*
@@ -133,4 +150,8 @@ Route::middleware(['auth:sanctum', 'role:admin,cs'])
         // Activity Logs
         Route::get('/activity-logs', [ActivityLogController::class, 'index']);
         Route::get('/activity-logs/{id}', [ActivityLogController::class, 'show']);
+
+        Route::get('/contact-messages', [AdminContactController::class, 'index']);
+        Route::get('/contact-messages/{id}', [AdminContactController::class, 'show']);
+        Route::put('/contact-messages/{id}/status', [AdminContactController::class, 'updateStatus']);
     });

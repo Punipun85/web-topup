@@ -289,3 +289,56 @@ td {
     cursor: pointer;
     z-index: 100;
 }
+
+/* =========================
+   FIX BACKGROUND PUTIH
+   ========================= */
+
+/* area kanan */
+.dashboard-content {
+  background: transparent;
+}
+
+/* CARD PROFILE */
+.profile-card,
+.card {
+  background: #0f172a; /* biru gelap, bukan putih */
+  color: #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* teks sekunder */
+.profile-footer p,
+.form-group label {
+  color: #9ca3af;
+}
+
+/* INPUT */
+.form-group input {
+  background: #020617;
+  border: 1px solid #1f2937;
+  color: #e5e7eb;
+}
+
+.form-group input:focus {
+  border-color: #facc15;
+}
+
+/* BUTTON */
+.btn-primary {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: white;
+  border-radius: 10px;
+  padding: 12px 22px;
+}
+
+/* AVATAR */
+.avatar-img {
+  border: 2px solid #1f2937;
+}
+
+/* SPACING BIAR NAPAS */
+.profile-card {
+  margin-bottom: 28px;
+}
