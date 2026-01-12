@@ -22,6 +22,10 @@ import Selesai from "./selesai/selesai";
 import UploadPembayaran from "./Upload/UploadPembayaran";
 import ContactUs from "./pages/ContactUs";
 import Profile from "./pages/Profile";
+import Transactions from "./pages/account/Transactions";
+import Mutations from "./pages/account/Mutations";
+import Affiliations from "./pages/account/Affiliations";
+import Settings from "./pages/account/Settings";
 
 // ===== ARTIKEL =====
 import ArticleNavbar from "./articles/ArticleNavbar";
