@@ -154,3 +154,56 @@
 .cs-btn:active {
   transform: scale(0.95);
 }
+
+/* ===== CS DROPDOWN ===== */
+.cs-wrapper {
+  position: relative;
+}
+
+.cs-dropdown {
+  position: absolute;
+  bottom: 52px;
+  right: 0;
+  width: 260px;
+  background: #6f6a82;
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  z-index: 10000;
+}
+
+.cs-title {
+  font-weight: 800;
+  padding: 0.6rem 0.75rem;
+  color: #fff;
+  font-size: 14px;
+}
+
+.cs-item {
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cs-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cs-item.highlight {
+  background: rgba(0, 0, 0, 0.25);
+  font-weight: 700;
+}
+
+.cs-item.highlight span {
+  color: #f3f305;
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.cs-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 0.4rem 0;
+}

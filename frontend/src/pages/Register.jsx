@@ -26,9 +26,13 @@ export default function Register() {
 
     try {
       await api.post("/register", {
-        ...form,
-        whatsapp: form.country_code + form.whatsapp,
-      });
+  name: form.name,
+  username: form.username,
+  email: form.email,
+  phone: form.country_code + form.whatsapp,
+  password: form.password,
+  password_confirmation: form.password_confirmation,
+});
 
       alert("Registrasi berhasil, silakan login");
       navigate("/login");

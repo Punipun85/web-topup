@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../services/api";
-import "../assets/login.css";
 import { FaHeadset } from "react-icons/fa";
+import api from "../services/api";
 import { useAuth } from "../Context/useAuth";
+import "../assets/login.css";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // 🔥 INI KUNCINYA
+  const { login: authLogin } = useAuth();
 
   const [form, setForm] = useState({
-    email: "",
+    login: "",
     password: "",
     remember: false,
   });
@@ -28,75 +28,94 @@ export default function Login() {
 
     try {
       const { data } = await api.post("/login", {
-        email: form.email,
+        login: form.login,
         password: form.password,
       });
 
-      // 🔑 SIMPAN TOKEN SESUAI REMEMBER
       const storage = form.remember ? localStorage : sessionStorage;
       storage.setItem("token", data.token);
 
-      // 🔥 UPDATE AUTH STATE (INI YANG BIKIN NAVBAR BERUBAH)
-      login(data.token, data.user);
+      authLogin(data.token, data.user);
 
-      // 🔑 ROLE-BASED REDIRECT
       if (data.user.role === "admin") {
         navigate("/admin");
       } else {
         navigate("/");
       }
-
     } catch (err) {
       console.error(err.response?.data || err);
-      alert("Email atau password salah");
+      alert("Username / email atau kata sandi salah");
     }
   };
 
   return (
-    <div className="login-container">
-      <button className="close-btn" onClick={() => navigate("/")}>✕</button>
+    <div className="auth-wrapper">
+      {/* LEFT */}
+      <div className="auth-left">
+        <button className="close-btn" onClick={() => navigate("/")}>
+          ✕
+        </button>
 
-      <div className="login-left">
-        <h1>Masuk</h1>
-        <p className="subtitle">
-          Masuk dengan akun yang telah kamu daftarkan.
-        </p>
+        <div className="auth-form">
+          <h1>Masuk</h1>
+          <p className="subtitle">
+            Masuk dengan akun yang telah kamu daftarkan.
+          </p>
 
-        <form onSubmit={submit}>
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            onChange={handleChange}
-            required
-          />
+          <form onSubmit={submit}>
+            <label>Username atau Email</label>
+            <input
+              type="text"
+              name="login"
+              placeholder="Username atau Email"
+              value={form.login}
+              onChange={handleChange}
+              required
+            />
 
-          <label>Kata sandi</label>
-          <input
-            type="password"
-            name="password"
-            onChange={handleChange}
-            required
-          />
+            <label>Kata sandi</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Kata sandi"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
 
-          <div className="options">
-            <label className="remember">
-              <input
-                type="checkbox"
-                name="remember"
-                onChange={handleChange}
-              />
-              Ingat akun ku
-            </label>
-          </div>
+            <div className="options">
+              <label className="remember">
+                <input
+                  type="checkbox"
+                  name="remember"
+                  checked={form.remember}
+                  onChange={handleChange}
+                />
+                Ingat akun ku
+              </label>
 
-          <button className="btn-submit" type="submit">
-            Masuk
-          </button>
-        </form>
+              <span
+                className="forgot"
+                onClick={() => navigate("/forgot-password")}
+              >
+                Lupa kata sandi mu?
+              </span>
+            </div>
+
+            <button className="btn-login" type="submit">
+              Masuk
+            </button>
+
+            <p className="register-link">
+              Belum memiliki akun?{" "}
+              <span onClick={() => navigate("/register")}>Daftar</span>
+            </p>
+          </form>
+        </div>
       </div>
 
-      <div className="login-right">
+      {/* RIGHT */}
+      <div className="auth-right">
         <div className="customer-service">
           <FaHeadset />
           <span>CUSTOMER SERVICE</span>
