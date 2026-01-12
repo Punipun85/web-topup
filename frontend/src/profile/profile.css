@@ -1,0 +1,539 @@
+/* ================== GLOBAL RESET ================== */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #0f0f13; 
+  color: #e4e4e7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ================== LAYOUT UTAMA ================== */
+.dashboard-page {
+  display: flex;
+  min-height: 100vh;
+  background: radial-gradient(circle at top center, #1f1f2e 0%, #0f0f13 70%);
+  position: relative;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-y: auto;
+}
+
+/* ================== MODERN PROFILE CARD (GLASSMORPHISM) ================== */
+.profile-card-container {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.modern-profile-card {
+  /* Latar belakang kaca gelap dengan gradien halus */
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%);
+  backdrop-filter: blur(20px); /* Efek blur di belakang kartu */
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08); /* Border tipis transparan */
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    inset 0 0 20px rgba(255, 255, 255, 0.02); /* Bayangan dalam dan luar */
+}
+
+/* Efek Glow/Cahaya di Background */
+.modern-profile-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -20%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(0, 0, 0, 0) 60%);
+  filter: blur(100px);
+  z-index: 0;
+  opacity: 0.8;
+}
+
+/* Efek Cahaya Tambahan di Kanan Bawah */
+.modern-profile-card::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  right: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(0, 0, 0, 0) 60%);
+  filter: blur(100px);
+  z-index: 0;
+  opacity: 0.6;
+}
+
+.card-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  z-index: 1; 
+  width: 100%;
+}
+
+/* Avatar yang lebih keren */
+.avatar-container {
+  position: relative;
+}
+
+.avatar-box {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 800;
+  color: white;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); /* Glow lebih kuat */
+  border: 4px solid rgba(15, 23, 42, 0.8);
+  position: relative;
+  z-index: 2;
+}
+
+/* Cincin Cahaya di Sekitar Avatar */
+.avatar-container::before {
+    content: '';
+    position: absolute;
+    top: -10px; left: -10px; right: -10px; bottom: -10px;
+    background: conic-gradient(from 0deg, transparent, #3b82f6, transparent 30%);
+    border-radius: 50%;
+    z-index: 1;
+    animation: spin-slow 10s linear infinite;
+    opacity: 0.4;
+}
+
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* User Info Text */
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.welcome-text {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 500;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.user-name {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* Badge Premium */
+.badge-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  width: fit-content;
+  text-transform: uppercase;
+  margin: 5px 0;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+}
+
+.contact-info {
+  display: flex;
+  gap: 25px;
+  margin-top: 12px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Consolas', monospace;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Tombol Edit Profile */
+.btn-edit-profile {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 14px 32px;
+  border-radius: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.btn-edit-profile:hover {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.icon-spin {
+  animation: spin 2s infinite linear;
+}
+
+@keyframes spin {
+  from {transform: rotate(0deg);}
+  to {transform: rotate(360deg);}
+}
+
+/* ================== STATS GRID ================== */
+.section-title {
+  color: #fff;
+  font-size: 20px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  border-left: 4px solid #facc15;
+  padding-left: 15px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.stat-box.dark {
+  background: #181820;
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.stat-box.dark:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.stat-box.dark h3 {
+  font-size: 32px;
+  color: #fff;
+  margin: 0 0 5px 0;
+  font-weight: 800;
+}
+
+.stat-box.dark span {
+  color: #a1a1aa;
+  font-size: 14px;
+}
+
+.process-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.p-stat {
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.p-stat:hover { transform: translateY(-5px); }
+.p-stat h1 { margin: 0; font-size: 32px; font-weight: 800; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.p-stat span { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
+
+.p-stat.yellow { background: linear-gradient(135deg, #a16207, #ca8a04); }
+.p-stat.blue   { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+.p-stat.green  { background: linear-gradient(135deg, #15803d, #22c55e); }
+.p-stat.red    { background: linear-gradient(135deg, #be123c, #f43f5e); }
+
+/* ================== TABLE SECTION ================== */
+.table-section {
+  background: transparent;
+  margin-top: 30px;
+}
+
+.table-header h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #fff;
+  border-left: 4px solid #3b82f6; /* Warna biru */
+  padding-left: 15px;
+}
+
+.table-responsive {
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  background-color: #181820; 
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #20202b;
+  color: #a1a1aa;
+  font-weight: 700;
+  text-align: left;
+  padding: 18px 20px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+td {
+  padding: 18px 20px;
+  font-size: 14px;
+  color: #e4e4e7;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  transition: background 0.2s;
+}
+
+tr:hover td {
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+tr:last-child td { border-bottom: none; }
+
+/* Status Badges untuk Tabel */
+.badge-status { padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+.badge-status.success { color: #22c55e; background: rgba(34, 197, 94, 0.1); }
+.badge-status.pending { color: #eab308; background: rgba(234, 179, 8, 0.1); }
+.badge-status.process { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+.badge-status.failed  { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+.badge-status.default { color: #fff; }
+
+.empty-state { text-align: center; padding: 60px 0; }
+.empty-content h4 { margin: 15px 0 5px 0; color: #fff; font-size: 18px; }
+.empty-content p { color: #a1a1aa; }
+
+/* ================== RESPONSIVE ================== */
+@media (max-width: 768px) {
+  .modern-profile-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 25px;
+  }
+  
+  .card-content-wrapper {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .user-details { align-items: center; }
+  
+  .contact-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .btn-edit-profile {
+    width: 100%;
+    justify-content: center;
+    margin-top: 25px;
+  }
+
+  .stats-grid, .process-stats-grid {
+    grid-template-columns: 1fr; /* Stack vertical di HP */
+  }
+}
+
+/* ... di bagian paling bawah file profile.css ... */
+
+/* ================== LEVEL & PROGRESS WIDGET ================== */
+
+/* Container Widget agar posisinya pas di tengah */
+.modern-profile-card {
+  gap: 30px; /* Jarak antar elemen utama di dalam kartu */
+}
+
+.card-content-wrapper {
+  flex: 1; /* Membiarkan bagian info user mengambil ruang yang tersedia */
+}
+
+.btn-edit-profile {
+  flex-shrink: 0; /* Mencegah tombol mengecil */
+}
+
+/* Styling Widget Utama */
+.level-progress-widget {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  min-width: 240px;
+  overflow: hidden; /* Agar glow tidak keluar batas */
+}
+
+/* Efek Cahaya di belakang widget */
+.widget-glow {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+  filter: blur(40px);
+  z-index: 0;
+  opacity: 0.7;
+}
+
+.level-header, .progress-container, .xp-details {
+  position: relative;
+  z-index: 1; /* Agar teks di atas glow */
+}
+
+/* Bagian Header Level */
+.level-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.level-label {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.level-number {
+  display: flex;
+  align-items: baseline;
+  color: #fff;
+}
+
+.lvl-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #3b82f6; /* Warna biru */
+  margin-right: 4px;
+}
+
+.lvl-value {
+  font-size: 28px;
+  font-weight: 800;
+  text-shadow: 0 0 15px rgba(59, 130, 246, 0.6); /* Teks menyala */
+}
+
+/* Progress Bar */
+.progress-container {
+  margin-bottom: 10px;
+}
+
+.progress-bar-bg {
+  height: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 5px;
+  position: relative;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); /* Bar menyala */
+}
+
+/* Kilauan bergerak pada progress bar */
+.progress-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: progress-shine 2s infinite linear;
+}
+
+@keyframes progress-shine {
+  0% { left: -30px; }
+  100% { left: 100%; }
+}
+
+/* Detail XP di bawah */
+.xp-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.xp-to-go {
+  color: #3b82f6;
+}
+
+/* Responsif untuk HP */
+@media (max-width: 768px) {
+  .modern-profile-card {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .level-progress-widget {
+    width: 100%;
+    min-width: auto;
+    order: 2; /* Taruh widget di bawah info user di HP */
+  }
+  
+  .btn-edit-profile {
+    order: 3; /* Tombol paling bawah di HP */
+  }
+}

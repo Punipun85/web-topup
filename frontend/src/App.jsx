@@ -22,10 +22,6 @@ import Selesai from "./selesai/selesai";
 import UploadPembayaran from "./Upload/UploadPembayaran";
 import ContactUs from "./pages/ContactUs";
 import Profile from "./pages/Profile";
-import Transactions from "./pages/account/Transactions";
-import Mutations from "./pages/account/Mutations";
-import Affiliations from "./pages/account/Affiliations";
-import Settings from "./pages/account/Settings";
 
 // ===== ARTIKEL =====
 import ArticleNavbar from "./articles/ArticleNavbar";
@@ -39,7 +35,7 @@ import ArticleContent2 from "./articles/ArticleContent2";
 // ===== KALKULATOR =====
 import KalkulatorWinRate from "./kalkulator/KalkulatorWinRate";
 import KalkulatorMagicWheel from "./kalkulator/KalkulatorMagicWheel";
-import Kalkulatorzodiac from "./kalkulator/Kalkulatorzodiac";
+import Kalkulatorzodiac from "./kalkulator/Kalkulatorzodiac"; 
 
 // ===== AUTH =====
 import Login from "./pages/Login";
@@ -125,9 +121,9 @@ function App() {
   };
 
   useEffect(() => {
-  const theme = localStorage.getItem("theme") || "dark";
-  document.body.dataset.theme = theme;
-}, []);
+    const theme = localStorage.getItem("theme") || "dark";
+    document.body.dataset.theme = theme;
+  }, []);
 
 
   return (
@@ -187,7 +183,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            {/* ===== USER ===== */}
+            {/* ===== USER / PROFILE ===== */}
             <Route path="/profile" element={<Profile />} />
             <Route path="/transaksi" element={<Transactions />} />
             <Route path="/mutasi" element={<Mutations />} />
