@@ -47,7 +47,7 @@ import AdminLayout from "./admin/AdminLayout";
 import Dashboard from "./admin/pages/Dashboard";
 import AdminRoute from "./admin/Adminroute"; 
 import Orders from "./admin/pages/Orders";
-import Games from "./admin/pages/Games";
+import Games from "./admin/pages/Game";
 import Packages from "./admin/pages/Packages";
 
 function App() {

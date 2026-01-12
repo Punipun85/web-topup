@@ -14,10 +14,6 @@ export default function AdminSidebar() {
           Orders
         </NavLink>
 
-        <NavLink to="/admin/payment">
-          Manual Payment
-        </NavLink>
-
         <NavLink to="/admin/packages">
           Packages
         </NavLink>

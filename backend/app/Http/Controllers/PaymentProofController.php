@@ -2,43 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Models\Transaction;
-use Illuminate\Support\Facades\Storage;
 
 class PaymentProofController extends Controller
 {
     public function store(Request $request)
     {
         $request->validate([
-            'invoice' => 'required|string',
-            'proof'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'order_number' => 'required|exists:orders,order_number',
+            'proof'        => 'required|image|mimes:jpg,jpeg,png|max:8192', // max 8MB
         ]);
 
-        // Cari transaksi
-        $transaction = Transaction::where('invoice_id', $request->invoice)->first();
+        $order = Order::where('order_number', $request->order_number)->firstOrFail();
 
-        if (!$transaction) {
+        // hanya order pending yang boleh upload bukti
+        if ($order->status !== 'pending') {
             return response()->json([
-                'message' => 'Invoice tidak ditemukan'
-            ], 404);
+                'message' => 'Order sudah diproses'
+            ], 409);
         }
 
-        // Simpan file
         $path = $request->file('proof')->store('payment_proofs', 'public');
 
-        // Update transaksi
-        $transaction->update([
+        $order->update([
             'payment_proof' => $path,
-            'status' => 'WAITING_CONFIRMATION',
+            'status'        => 'waiting_confirmation',
         ]);
 
         return response()->json([
-            'message' => 'Bukti pembayaran berhasil diupload',
+            'message' => 'Bukti pembayaran berhasil dikirim',
             'data' => [
-                'invoice' => $transaction->invoice_id,
-                'status' => $transaction->status,
-                'proof_url' => asset('storage/' . $path),
+                'order_number' => $order->order_number,
+                'status'       => $order->status,
+                'proof_url'    => asset('storage/' . $path),
             ]
         ]);
     }

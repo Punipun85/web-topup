@@ -7,16 +7,39 @@ use Carbon\Carbon;
 
 class TopUpPackage extends Model
 {
-    protected $casts = [
-        'meta' => 'array',
+    protected $table = 'topup_packages';
+
+    protected $fillable = [
+        'price',
+        'promo_enabled',
+        'meta',
+        'active'
     ];
 
-     protected $table = 'topup_packages';
+    protected $casts = [
+        'meta' => 'array',
+        'promo_enabled' => 'boolean',
+        'active' => 'boolean',
+    ];
 
+    /**
+     * RELASI KE GAME (INI YANG KURANG)
+     */
+    public function game()
+    {
+        return $this->belongsTo(Game::class);
+    }
+
+    /**
+     * Promo yang benar-benar aktif
+     */
     public function getActivePromoAttribute()
     {
-        $promo = $this->meta['promo'] ?? null;
+        if (!$this->promo_enabled) {
+            return null;
+        }
 
+        $promo = $this->meta['promo'] ?? null;
         if (!$promo) return null;
 
         $now = Carbon::now();
@@ -34,3 +57,4 @@ class TopUpPackage extends Model
         return null;
     }
 }
+    

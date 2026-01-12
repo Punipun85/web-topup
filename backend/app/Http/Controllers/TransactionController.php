@@ -2,54 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Models\Transaction;
-use Illuminate\Support\Str;
 
 class TransactionController extends Controller
 {
-    public function store(Request $request)
+    /**
+     * Ambil transaksi berdasarkan ORDER NUMBER
+     */
+    public function showByOrder(string $orderNumber)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'game_user_id' => 'required',
-            'game' => 'required',
-            'item_name' => 'required',
-            'amount' => 'required',
-            'price' => 'required|numeric',
-            'quantity' => 'required|numeric',
-            'total_price' => 'required|numeric',
-            'payment_method' => 'required|string',
-        ]);
+        $order = Order::with(['topup.transaction', 'topup.game', 'topup.package'])
+            ->where('order_number', $orderNumber)
+            ->first();
 
-        $invoice = 'TRX-' . strtoupper(Str::random(5)) . '-' . time();
-
-        try {
-            $transaction = Transaction::create([
-                'invoice_id' => $invoice,
-                'email' => $request->email,
-                'game_user_id' => $request->game_user_id,
-                'zone_id' => $request->zone_id,
-                'game' => $request->game,
-                'item_name' => $request->item_name,
-                'amount' => $request->amount,
-                'price' => $request->price,
-                'quantity' => $request->quantity,
-                'total_price' => $request->total_price,
-                'payment_method' => $request->payment_method,
-                'status' => 'PENDING',
-            ]);
-
+        if (!$order || !$order->topup || !$order->topup->transaction) {
             return response()->json([
-                'success' => true,
-                'data' => $transaction
-            ], 201);
-
-        } catch (\Throwable $e) {
-            return response()->json([
-                'message' => 'Gagal membuat transaksi',
-                'error' => $e->getMessage()
-            ], 500);
+                'message' => 'Data transaksi tidak ditemukan'
+            ], 404);
         }
+
+        $topup = $order->topup;
+        $trx   = $topup->transaction;
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'order_number' => $order->order_number,
+                'invoice'      => $trx->invoice_id,
+                'status'       => $order->status,
+                'amount'       => $trx->amount,
+                'payment_method' => $trx->payment_method,
+                'game'         => $topup->game->name ?? '-',
+                'package'      => $topup->package->name ?? '-',
+                'player_id'    => $topup->player_id,
+                'email'        => $topup->email,
+                'paid_at'      => $order->paid_at,
+            ]
+        ]);
     }
 }

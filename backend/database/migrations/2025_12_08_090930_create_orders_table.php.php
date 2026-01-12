@@ -6,54 +6,56 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+       Schema::create('orders', function (Blueprint $table) {
     $table->id();
 
     $table->string('order_number')->unique();
 
-    // 🔗 relasi ke transaksi utama
+    // RELASI WAJIB
     $table->foreignId('topup_id')
         ->constrained('topups')
         ->cascadeOnDelete();
 
-    // siapa yang mencoba bayar
+    // siapa yang membayar (opsional)
     $table->foreignId('user_id')
         ->nullable()
         ->constrained()
         ->nullOnDelete();
 
     // payment info
-    $table->string('payment_method'); // midtrans, manual, dll
+    $table->string('payment_method'); // qris, bca_transfer, dll
     $table->unsignedInteger('amount'); // snapshot amount saat bayar
 
     // status KHUSUS PAYMENT
     $table->enum('status', [
         'pending',
+        'waiting_confirmation', // manual transfer
         'paid',
         'failed',
         'expired',
         'cancelled'
-    ])->default('pending');
+    ])->default('pending')->index();
 
-    // raw payload dari gateway
+    // bukti transfer (manual)
+    $table->string('payment_proof')->nullable();
+
+    // raw payload dari gateway / admin
     $table->json('payment_payload')->nullable();
+
+    // waktu payment final
+    $table->timestamp('paid_at')->nullable();
 
     $table->timestamps();
 
-    $table->index(['topup_id', 'status']);
+    $table->index(['topup_id', 'payment_method']);
 });
+
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('orders');
     }
 };

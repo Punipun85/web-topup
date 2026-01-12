@@ -9,34 +9,27 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected $table = 'transactions';
+
     protected $fillable = [
         'topup_id',
         'invoice_id',
-        'email',
-        'payer_email', // Masukkan keduanya agar aman
-        'game_user_id',
-        'zone_id',
-        'game',
-        'game_name',
-        'item_name',
-        'package_name',
         'amount',
-        'price',
-        'quantity',
-        'total_price',
         'payment_method',
-        'status',
-        'payment_proof',
-        'snap_token',
+        'status',        // success | failed
         'finalized_at',
     ];
 
     protected $casts = [
+        'amount' => 'integer',
         'finalized_at' => 'datetime',
     ];
 
+    /**
+     * Transaction selalu milik satu topup
+     */
     public function topup()
     {
-        return $this->belongsTo(Topup::class);
+        return $this->belongsTo(\App\Models\Topup::class);
     }
 }
