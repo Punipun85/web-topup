@@ -7,32 +7,61 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+// ✅ TAMBAHKAN MODEL TRANSACTION
+use App\Models\Transaction; 
 
 class ProfileController extends Controller
 {
     /**
-     * GET /api/profile
-     * Ambil data profile user yang sedang login
+     * GET /api/user/profile
      */
     public function show(Request $request)
     {
         $user = $request->user();
 
+        // ✅ PERBAIKAN: Bungkus dengan 'data' agar terbaca di React (res.data.data)
         return response()->json([
-            'id'       => $user->id,
-            'name'     => $user->name,
-            'username' => $user->username,
-            'email'    => $user->email,
-            'phone'    => $user->phone,
-            'role'     => $user->role,
-            'avatar'   => $user->avatar,
-            'created_at' => $user->created_at,
+            'data' => [
+                'id'       => $user->id,
+                'name'     => $user->name,
+                'username' => $user->username,
+                'email'    => $user->email,
+                'phone'    => $user->phone,
+                'role'     => $user->role, // Pastikan kolom ini ada di DB user
+                'avatar'   => $user->avatar,
+                'created_at' => $user->created_at,
+            ]
         ]);
     }
 
     /**
-     * PUT /api/profile
-     * Update data profile (nama & phone saja)
+     * GET /api/user/stats
+     * ✅ FUNGSI BARU: Untuk mengisi kotak statistik & Level di Dashboard
+     */
+    public function stats(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        // Query Builder untuk performa lebih cepat
+        $query = Transaction::where('user_id', $userId);
+
+        $stats = [
+            'total_trx'   => $query->count(),
+            // Pastikan kolom harga di DB namanya 'amount' atau 'price' (sesuaikan di sini)
+            'total_sales' => $query->where('status', 'Success')->sum('amount'), 
+            'pending'     => $query->where('status', 'Pending')->count(),
+            'process'     => $query->whereIn('status', ['Processing', 'Process'])->count(),
+            'success'     => $query->where('status', 'Success')->count(),
+            'failed'      => $query->whereIn('status', ['Failed', 'Canceled'])->count(),
+        ];
+
+        return response()->json([
+            'data' => $stats
+        ]);
+    }
+
+    /**
+     * PUT /api/user/profile
      */
     public function update(Request $request)
     {
@@ -47,7 +76,7 @@ class ProfileController extends Controller
 
         return response()->json([
             'message' => 'Profile updated successfully',
-            'user' => [
+            'data' => [ // Konsisten pakai wrapper 'data'
                 'name'  => $user->name,
                 'phone' => $user->phone,
             ]
@@ -55,8 +84,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * POST /api/profile/avatar
-     * Upload / ganti foto profil
+     * POST /api/user/profile/avatar
      */
     public function updateAvatar(Request $request)
     {
@@ -66,7 +94,6 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        // hapus avatar lama kalau ada
         if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
             Storage::disk('public')->delete($user->avatar);
         }
@@ -78,13 +105,12 @@ class ProfileController extends Controller
 
         return response()->json([
             'message' => 'Avatar updated successfully',
-            'avatar'  => $path,
+            'data' => ['avatar' => $path]
         ]);
     }
 
     /**
-     * PUT /api/profile/password
-     * Ganti password user
+     * PUT /api/user/profile/password
      */
     public function updatePassword(Request $request)
     {
@@ -108,40 +134,33 @@ class ProfileController extends Controller
             'message' => 'Password updated successfully',
         ]);
     }
-public function updateEmail(Request $request)
-{
-    $request->validate([
-        'email' => [
-            'required',
-            'email',
-            Rule::unique('users')->ignore($request->user()->id),
-        ],
-        'password' => 'required',
-    ]);
 
-    $user = $request->user();
+    public function updateEmail(Request $request)
+    {
+        $request->validate([
+            'email' => [
+                'required', 'email', Rule::unique('users')->ignore($request->user()->id),
+            ],
+            'password' => 'required',
+        ]);
 
-    // cek password
-    if (!Hash::check($request->password, $user->password)) {
+        $user = $request->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Password salah'], 422);
+        }
+
+        if ($user->email === $request->email) {
+            return response()->json(['message' => 'Email sama dengan sebelumnya'], 200);
+        }
+
+        $user->email = $request->email;
+        $user->email_verified_at = null;
+        $user->save();
+
         return response()->json([
-            'message' => 'Password salah',
-        ], 422);
+            'message' => 'Email updated successfully',
+            'data'    => ['email' => $user->email],
+        ]);
     }
-
-    // kalau email sama, tidak usah update
-    if ($user->email === $request->email) {
-        return response()->json([
-            'message' => 'Email sama dengan sebelumnya',
-        ], 200);
-    }
-
-    $user->email = $request->email;
-    $user->email_verified_at = null; // reset verifikasi
-    $user->save();
-
-    return response()->json([
-        'message' => 'Email updated successfully',
-        'email'   => $user->email,
-    ]);
-}
 }

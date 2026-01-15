@@ -19,7 +19,6 @@ use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PaymentProofController;
-use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\PublicOrderController;
 use App\Http\Controllers\QrisDummyController;
 use App\Http\Controllers\LookupController;
@@ -156,11 +155,3 @@ Route::middleware(['auth:sanctum', 'role:admin,cs'])
         Route::get('/contact-messages/{id}', [AdminContactController::class, 'show']);
         Route::put('/contact-messages/{id}/status', [AdminContactController::class, 'updateStatus']);
     });
-
-    Route::middleware('auth:sanctum')->group(function () {
-    
-    Route::get('/user/profile', [DashboardController::class, 'profile']);
-    Route::get('/user/stats', [DashboardController::class, 'stats']);
-    Route::get('/transaction/history', [DashboardController::class, 'history']);
-
-});
