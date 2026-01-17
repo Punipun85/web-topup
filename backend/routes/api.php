@@ -86,6 +86,7 @@ Route::post('/orders/check', [OrderController::class, 'check'])
 
 Route::get('/transaction/{invoice}', [TransactionController::class, 'show']);
 Route::get('/transaction/order/{orderNumber}', [TransactionController::class, 'showByOrder']);
+Route::get('/transaction/ref/{ref}', [TransactionController::class, 'showByRef']);
 
 Route::get('/lookup/{code}', LookupController::class);
 

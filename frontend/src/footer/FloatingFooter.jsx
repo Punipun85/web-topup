@@ -1,13 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Sun, Headset } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./footer.css";
 
 export default function FloatingFooter() {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
-  const navigate = useNavigate();
 
   // ===== CLOSE DROPDOWN KLIK LUAR =====
   useEffect(() => {
@@ -16,34 +15,17 @@ export default function FloatingFooter() {
         setOpen(false);
       }
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
   }, []);
 
   // ===== DARK / LIGHT MODE =====
-  const toggleTheme = () => {
+  const toggleTheme = (e) => {
+    e.stopPropagation();
     const current = document.body.dataset.theme || "dark";
     const next = current === "dark" ? "light" : "dark";
-
     document.body.dataset.theme = next;
     localStorage.setItem("theme", next);
-  };
-
-  // ===== CUSTOMER SERVICE ACTIONS =====
-  const openWA = () => {
-    window.open(
-      "https://wa.me/6281234567890?text=Halo%20saya%20butuh%20bantuan",
-      "_blank"
-    );
-  };
-
-  const openIG = () => {
-    window.open("https://instagram.com/a6topup", "_blank");
-  };
-
-  const sendEmail = () => {
-    window.location.href =
-      "mailto:support@a6topup.com?subject=Laporan%20Masalah";
   };
 
   return createPortal(
@@ -55,55 +37,79 @@ export default function FloatingFooter() {
 
         <div className="floating-actions">
           {/* ===== THEME TOGGLE ===== */}
-          <button className="icon-btn" onClick={toggleTheme}>
+          <button
+            type="button"
+            className="icon-btn"
+            onClick={toggleTheme}
+          >
             <Sun size={20} />
           </button>
 
           {/* ===== CUSTOMER SERVICE ===== */}
           <div className="cs-wrapper">
             <button
+              type="button"
               className="cs-btn"
-              onClick={() => setOpen((v) => !v)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen((v) => !v);
+              }}
             >
               <Headset size={20} strokeWidth={3} />
               CUSTOMER SERVICE
             </button>
 
             {open && (
-              <div className="cs-dropdown">
+              <div
+                className="cs-dropdown"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="cs-title">Customer Service</div>
 
-                {/* FORM LAPORAN */}
-                <div
+                {/* ===== INTERNAL ROUTE ===== */}
+                <Link
+                  to="/contact-us"
                   className="cs-item highlight"
-                  onClick={() => {
-                    setOpen(false);
-                    navigate("/contact-us");
-                  }}
+                  onClick={() => setOpen(false)}
                 >
                   Formulir Laporan <span>(Rekomendasi)</span>
-                </div>
+                </Link>
 
-                {/* WHATSAPP */}
-                <div className="cs-item" onClick={openWA}>
+                {/* ===== EXTERNAL LINKS ===== */}
+                <a
+                  href="https://wa.me/6285391272277?text=Halo%20saya%20butuh%20bantuan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cs-item"
+                >
                   WhatsApp
-                </div>
+                </a>
 
-                {/* INSTAGRAM */}
-                <div className="cs-item" onClick={openIG}>
+                <a
+                  href="https://www.instagram.com/_rmaaa._?igsh=MTJ1NmlwZ3kzajFxbA=="
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cs-item"
+                >
                   Instagram
-                </div>
+                </a>
 
-                {/* EMAIL */}
-                <div className="cs-item" onClick={sendEmail}>
+                <a
+                  href="mailto:support@a6topup.com?subject=Laporan%20Masalah"
+                  className="cs-item"
+                >
                   Email
-                </div>
+                </a>
 
                 <div className="cs-divider" />
 
-                <div className="cs-item">
+                <button
+                  type="button"
+                  className="cs-item disabled"
+                  disabled
+                >
                   Jasa Rekber &amp; Jual Beli Akun
-                </div>
+                </button>
               </div>
             )}
           </div>

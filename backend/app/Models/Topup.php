@@ -47,7 +47,7 @@ class Topup extends Model
      */
     public function game()
     {
-        return $this->belongsTo(Game::class);
+        return $this->belongsTo(Game::class, 'game_id');
     }
 
     /**
