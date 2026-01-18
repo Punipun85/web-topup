@@ -129,4 +129,49 @@ public function showByRef(string $ref)
     ]);
 }
 
+    public function checkStatus(Request $request)
+    {
+        // 1. Ambil order_number dari body request frontend
+        $ref = $request->input('order_number');
+
+        if (!$ref) {
+            return response()->json(['message' => 'Order Number is required'], 400);
+        }
+
+        $trx = null;
+
+        // 2. Logika pencarian (mirip showByRef)
+        // Jika formatnya INV-... cari di tabel transactions
+        if (str_starts_with($ref, 'INV-')) {
+            $trx = Transaction::where('invoice_id', $ref)->first();
+        }
+        // Jika formatnya ORD-... cari di tabel orders -> topup -> transaction
+        elseif (str_starts_with($ref, 'ORD-')) {
+            $order = Order::with('topup.transaction')->where('order_number', $ref)->first();
+            $trx = $order?->topup?->transaction;
+        }
+
+        // 3. Jika Transaksi tidak ketemu
+        if (!$trx) {
+            return response()->json([
+                'status' => 'error', 
+                'message' => 'Transaksi tidak ditemukan'
+            ], 404);
+        }
+
+        // 4. Cek Status (PAID / SUCCESS)
+        // Sesuaikan string status ini dengan database Anda (case-sensitive)
+        if (strtoupper($trx->status) === 'PAID' || strtoupper($trx->status) === 'SUCCESS') {
+            return response()->json([
+                'status' => 'PAID',
+                'message' => 'Pembayaran berhasil diterima'
+            ], 200); // 200 OK
+        }
+
+        // 5. Jika masih PENDING
+        return response()->json([
+            'status' => 'PENDING',
+            'message' => 'Pembayaran belum terdeteksi'
+        ], 400); // 400 Bad Request (agar frontend tau ini belum lunas)
+    }
 }

@@ -99,7 +99,7 @@ Route::post('/payment/webhook', [PaymentWebhookController::class, 'webhook']);
 Route::post('/payment/upload-proof', [PaymentProofController::class, 'store']);
 Route::post('/payment/qris-dummy', [QrisDummyController::class, 'pay']);
 Route::get('/orders/{order_number}', [PublicOrderController::class, 'show']);
-
+Route::post('/payment/check-status', [TransactionController::class, 'checkStatus']);
 /*
 |--------------------------------------------------------------------------
 | Fitur Tambahan: Contact Messages

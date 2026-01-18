@@ -21,7 +21,12 @@ import Checkout from "./Checkout/Checkout";
 import Selesai from "./selesai/selesai";
 import UploadPembayaran from "./Upload/UploadPembayaran";
 import ContactUs from "./pages/ContactUs";
-import Profile from "./pages/Profile";
+
+// PERBAIKAN: Path profile sekarang diarahkan ke folder /profile/ sesuai pemindahanmu
+import Profile from "./profile/profile"; 
+
+// PERBAIKAN: Jika folder 'pages/account' masih ada, biarkan. 
+// Jika sudah dipindah ke folder lain, sesuaikan path di bawah ini:
 import Transactions from "./pages/account/Transactions";
 import Mutations from "./pages/account/Mutations";
 import Affiliations from "./pages/account/Affiliations";

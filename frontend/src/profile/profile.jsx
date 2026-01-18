@@ -1,225 +1,208 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom"; 
-import axios from "axios"; 
-import { FaHeadset, FaCog, FaChartBar, FaUserCircle } from "react-icons/fa"; 
-import "./profile.css"; // Pastikan file CSS ini ada (lihat di bawah)
+import { Link, useNavigate } from "react-router-dom"; // Tambah useNavigate buat kick kalau belum login
+import { motion } from "framer-motion";
+import Footer from "../footer/footer";
+import { 
+  FaHeadset, FaCog, FaShieldAlt, FaPhoneAlt, 
+  FaCrown, FaEnvelopeOpenText, FaArrowRight, FaUser 
+} from "react-icons/fa"; 
+import "./profile.css";
 
-// ✅ Konfigurasi URL Backend
-const API_BASE_URL = "http://127.0.0.1:8000/api";
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+};
+
+const staggerContainer = {
+  visible: { transition: { staggerChildren: 0.1 } }
+};
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  
+  // STATE DATA USER (Sesuai kolom DB kamu: username, phone)
+  const [profile, setProfile] = useState({
+    name: "",      // Akan diisi kolom 'username' atau 'name' dari DB
+    phone: "",     // Akan diisi kolom 'phone' dari DB
+    email: "",     // Akan diisi kolom 'email' dari DB
+    isPremium: false, // Karena di DB belum ada kolom 'role/premium', nanti kita set default dulu
+    initial: "?"
+  });
+
   const [loading, setLoading] = useState(true);
 
-  // --- STATE DATA (Diberi nilai awal agar tidak crash) ---
-  const [profile, setProfile] = useState({
-    name: "Loading...", 
-    email: "-", 
-    phone: "-", 
-    role_label: "Member", 
-    avatar: ""
-  });
-
-  const [stats, setStats] = useState({
-    total_trx: 0, total_sales: 0, pending: 0, process: 0, success: 0, failed: 0
-  });
-
-  const [transactions, setTransactions] = useState([]);
-
-  // State Level Gamifikasi
-  const [gameStats, setGameStats] = useState({
-    currentLevel: 1, currentXP: 0, nextLevelXP: 100000, progressPercent: 0
-  });
-
-  // --- FETCH DATA ---
+  // --- FUNGSI AMBIL DATA ASLI (FETCH) ---
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserData = async () => {
       try {
-        const token = localStorage.getItem("token");
+        // 1. AMBIL TOKEN (Biasanya disimpan pas login)
+        const token = localStorage.getItem("token"); 
 
-        // 1. Cek Token
+        // Kalau tidak ada token, tendang ke login (Security)
         if (!token) {
-          navigate("/login"); 
+          // navigate("/login"); // Uncomment ini kalau mau auto-kick user yang belum login
+          console.log("User belum login / Token tidak ditemukan");
+          setLoading(false);
           return;
         }
 
-        const config = { headers: { Authorization: `Bearer ${token}` } };
+        // 2. PANGGIL API BACKEND KAMU
+        // GANTI URL INI sesuai endpoint backend kamu (Misal: /api/user/me atau /api/profile)
+        const response = await fetch("http://localhost:5000/api/me", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, // Kirim token biar backend tau ini siapa
+            "Content-Type": "application/json"
+          }
+        });
 
-        // 2. Request Paralel (Lebih Cepat)
-        const [resUser, resStats, resTrx] = await Promise.all([
-            axios.get(`${API_BASE_URL}/user/profile`, config),
-            axios.get(`${API_BASE_URL}/user/stats`, config),
-            axios.get(`${API_BASE_URL}/transaction/history`, config)
-        ]);
-
-        // 3. Set Profile Data (Safe Guarding)
-        const userData = resUser.data.data || resUser.data; 
-        if (userData) {
-            setProfile({
-                name: userData.name || "User Tanpa Nama", 
-                email: userData.email || "-", 
-                phone: userData.no_hp || userData.phone || "-",
-                role_label: userData.role || "Member",
-                avatar: userData.avatar || ""
-            });
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data user");
         }
 
-        // 4. Set Stats & Hitung Level
-        const dataStats = resStats.data.data || resStats.data;
-        if(dataStats) {
-            setStats(dataStats);
-            calculateLevel(dataStats.total_sales); // Hitung level
-        }
+        const dbData = await response.json();
+        // dbData adalah JSON yang dikirim backend dari tabel 'users'
 
-        // 5. Set Riwayat Transaksi
-        const dataTrx = resTrx.data.data || resTrx.data;
-        setTransactions(Array.isArray(dataTrx) ? dataTrx : []);
+        // 3. MASUKKAN DATA DB KE STATE REACT
+        setProfile({
+          name: dbData.username || dbData.name, // Prioritas tampilkan username (sesuai screenshot 'rammm')
+          phone: dbData.phone || "-",           // Ambil kolom phone
+          email: dbData.email,
+          isPremium: false,                     // Default False karena di DB kamu belum ada kolom 'role'
+          initial: (dbData.username || "U").charAt(0).toUpperCase()
+        });
+        
+        setLoading(false);
 
       } catch (error) {
-        console.error("Error Fetching Data:", error);
-        
-        // --- AUTO LOGOUT JIKA 401 ---
-        if (error.response && error.response.status === 401) {
-            localStorage.removeItem("token");
-            navigate("/login");
-        }
-      } finally {
+        console.error("Error Fetching:", error);
         setLoading(false);
       }
     };
 
-    fetchData();
+    fetchUserData();
   }, [navigate]);
 
-  // --- LOGIKA LEVELING ---
-  const calculateLevel = (totalSales) => {
-    const xp = parseInt(totalSales) || 0;
-    let level = 1;
-    let target = 100000; 
-
-    // Tier Level
-    if (xp >= 10000000) { level = 5; target = 20000000; }
-    else if (xp >= 5000000) { level = 4; target = 10000000; }
-    else if (xp >= 2500000) { level = 3; target = 5000000; }
-    else if (xp >= 1000000) { level = 2; target = 2500000; }
-    
-    // Hitung Persentase Bar
-    let percent = (xp / target) * 100;
-    if(percent > 100) percent = 100;
-
-    setGameStats({
-        currentLevel: level,
-        currentXP: xp,
-        nextLevelXP: target,
-        progressPercent: percent
-    });
-  };
-
-  // --- FORMATTERS ---
-  const formatRupiah = (num) => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(num);
-  const formatNumber = (num) => new Intl.NumberFormat("id-ID").format(num);
-  const formatDate = (date) => date ? new Date(date).toLocaleDateString("id-ID", { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : "-";
-  
-  const getStatusBadge = (status) => {
-    const s = status ? status.toLowerCase() : "";
-    if (s === 'sukses' || s === 'success') return <span className="badge success">Sukses</span>;
-    if (s === 'pending') return <span className="badge pending">Pending</span>;
-    if (s === 'failed' || s === 'gagal') return <span className="badge failed">Gagal</span>;
-    return <span className="badge process">{status}</span>;
-  };
-
-  if (loading) return <div className="loading-screen">Sedang memuat data...</div>;
-
   return (
-    <div className="dashboard-container">
-      {/* HEADER PROFILE */}
-      <div className="profile-header-card">
-        <div className="profile-content">
-            <div className="avatar-area">
-                <div className="avatar-circle">
-                    {profile.name.charAt(0).toUpperCase()}
+    <div className="dashboard-page luxury-theme">
+      <motion.div 
+        className="dashboard-content"
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+      >
+        
+        {/* ALERT SECTION */}
+        <motion.div className="security-alert-gold" variants={fadeInUp}>
+          <FaShieldAlt className="gold-text" />
+          <div className="alert-text">
+            <span className="gold-label">PROTEKSI SISTEM AKTIF:</span> 
+            Halo {loading ? "..." : profile.name}, terminal aman. <Link to="/settings" className="gold-link">Konfigurasi</Link>
+          </div>
+        </motion.div>
+
+        {/* HERO GRID */}
+        <div className="hero-grid-modern">
+          
+          {/* KARTU PROFIL (DATA ASLI DARI DB) */}
+          <motion.div className="card-lux profile-card-pos" variants={fadeInUp} whileHover={{ y: -5 }}>
+            <div className="card-accent-line"></div>
+            
+            <Link to="/settings" className="cog-icon-top-right">
+                <FaCog className="cog-icon-rotate" />
+            </Link>
+
+            <div className="profile-flex">
+              {/* AVATAR */}
+              <div className="avatar-wrapper">
+                {loading ? (
+                  <div className="skeleton-avatar"></div>
+                ) : (
+                  <div className="avatar-gold">{profile.initial}</div>
+                )}
+              </div>
+
+              {/* USER META */}
+              <div className="user-meta">
+                <div className="name-row">
+                  {loading ? (
+                    <div className="skeleton-text name"></div>
+                  ) : (
+                    <h4>{profile.name}</h4>
+                  )}
                 </div>
-            </div>
-            <div className="info-area">
-                <h4>Selamat Datang,</h4>
-                <h2>{profile?.name}</h2>
-                <span className="role-badge"><FaHeadset/> {profile?.role_label}</span>
-                <div className="contact-small">
-                    <small>{profile?.email} • {profile?.phone}</small>
+
+                {/* STATUS MEMBER (Hardcode Basic dulu karena di DB gak ada kolom status) */}
+                {loading ? (
+                   <div className="skeleton-text badge"></div>
+                ) : (
+                   profile.isPremium ? (
+                    <div className="badge-premium">
+                      <FaCrown /> PREMIUM MEMBER
+                    </div>
+                   ) : (
+                    <div className="badge-basic">
+                      <FaUser /> MEMBER
+                    </div>
+                   )
+                )}
+
+                <div className="phone-info">
+                  {loading ? (
+                    <div className="skeleton-text phone"></div>
+                  ) : (
+                    <>
+                      <FaPhoneAlt size={10} /> {profile.phone}
+                    </>
+                  )}
                 </div>
+              </div>
             </div>
-            <div className="action-area">
-                <Link to="/settings" className="btn-edit"><FaCog/> Edit</Link>
+          </motion.div>
+
+          {/* KARTU PESAN MASUK */}
+          <motion.div className="card-lux" variants={fadeInUp} whileHover={{ y: -5 }}>
+            <div className="card-accent-line"></div>
+            <div className="inbox-header">
+              <div className="inbox-title">
+                <FaEnvelopeOpenText className="gold-text" /> 
+                <span>Email & Pesan</span>
+              </div>
+              <button className="btn-view-all">LIHAT SEMUA</button>
             </div>
+            <div className="inbox-body">
+              <div className="empty-inbox-state">
+                <div className="icon-bg">
+                   <FaEnvelopeOpenText className="gold-dim" size={30} />
+                </div>
+                <p className="text-dim">
+                  {loading ? "Memuat..." : `Email terdaftar: ${profile.email || "Tidak ada"}`}
+                </p>
+              </div>
+            </div>
+          </motion.div>
         </div>
 
-        {/* GAMIFICATION BAR */}
-        <div className="xp-container">
-            <div className="xp-header">
-                <span>Level {gameStats.currentLevel}</span>
-                <span>{formatNumber(gameStats.currentXP)} / {formatNumber(gameStats.nextLevelXP)} XP</span>
-            </div>
-            <div className="xp-bar-bg">
-                <div className="xp-bar-fill" style={{ width: `${gameStats.progressPercent}%` }}></div>
-            </div>
-        </div>
-      </div>
+        {/* TRANSAKSI SECTION */}
+        <motion.h3 className="section-title-lux" variants={fadeInUp}>TRANSAKSI HARI INI</motion.h3>
+        
+        <motion.div className="stats-row-single" variants={fadeInUp}>
+          <div className="stat-box-lux-large">
+            <p className="stat-label">TOTAL TRANSAKSI</p>
+            <motion.h2 className="gold-text-large">0</motion.h2>
+          </div>
+        </motion.div>
 
-      {/* STATS CARDS */}
-      <div className="stats-grid">
-        <div className="card-stat dark">
-            <h3>Total Transaksi</h3>
-            <h1>{stats.total_trx}</h1>
-        </div>
-        <div className="card-stat dark">
-            <h3>Total Pengeluaran</h3>
-            <h1>{formatRupiah(stats.total_sales)}</h1>
-        </div>
-      </div>
+        <motion.div className="status-grid-lux" variants={fadeInUp}>
+          {['Menunggu', 'Proses', 'Sukses', 'Gagal'].map((label, i) => (
+            <motion.div key={i} className={`status-pill ${label.toLowerCase()}`}>
+                <strong>0</strong> <span>{label}</span>
+            </motion.div>
+          ))}
+        </motion.div>
 
-      <div className="status-grid">
-        <div className="stat-item yellow"><h3>{stats.pending}</h3><small>Pending</small></div>
-        <div className="stat-item blue"><h3>{stats.process}</h3><small>Proses</small></div>
-        <div className="stat-item green"><h3>{stats.success}</h3><small>Sukses</small></div>
-        <div className="stat-item red"><h3>{stats.failed}</h3><small>Gagal</small></div>
-      </div>
-
-      {/* TRANSACTION TABLE */}
-      <div className="table-wrapper">
-        <h3>Riwayat Transaksi Terakhir</h3>
-        <div className="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Invoice</th>
-                        <th>Produk</th>
-                        <th>Tujuan</th>
-                        <th>Harga</th>
-                        <th>Status</th>
-                        <th>Tanggal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {transactions.length > 0 ? (
-                        transactions.map((trx, i) => (
-                            <tr key={i}>
-                                <td>#{trx.invoice_number || trx.id}</td>
-                                <td>{trx.item_name || "Produk Digital"}</td>
-                                <td>{trx.target_id || trx.target}</td>
-                                <td>{formatRupiah(trx.price)}</td>
-                                <td>{getStatusBadge(trx.status)}</td>
-                                <td>{formatDate(trx.created_at)}</td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="6" className="text-center">Belum ada transaksi</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        </div>
-      </div>
+      </motion.div>
+      <Footer />
     </div>
   );
 }
