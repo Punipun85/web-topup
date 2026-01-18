@@ -1,165 +1,142 @@
-import { useEffect, useState } from "react";
-import api from "../services/api";
-import Navbar from "../navbar/navbar";
+import React from "react";
+import { Link } from "react-router-dom"; // Import Link untuk navigasi
 import Footer from "../footer/footer";
-import { FaCog } from "react-icons/fa";
-import ProfileSidebar from "../sidebar/ProfileSidebar";
+import Sidebar from "../sidebar/ProfileSidebar";
+import { FaHeadset, FaCog, FaChartBar } from "react-icons/fa"; 
 import "../assets/dashboard.css";
 
-export default function Profile() {
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-  });
-
-  // =====================
-  // FETCH PROFILE
-  // =====================
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await api.get("/profile");
-        setProfile(res.data);
-        setForm({
-          name: res.data.name || "",
-          phone: res.data.phone || "",
-        });
-      } catch (err) {
-        console.error("Gagal ambil profile:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, []);
-
-  // =====================
-  // UPDATE PROFILE
-  // =====================
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await api.put("/profile", form);
-      alert("Profile berhasil diperbarui");
-    } catch (err) {
-      console.error(err);
-      alert("Gagal update profile");
-    }
-  };
-
-  // =====================
-  // UPLOAD AVATAR
-  // =====================
-  const handleAvatarChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("avatar", file);
-
-    try {
-      const res = await api.post("/profile/avatar", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      setProfile((prev) => ({
-        ...prev,
-        avatar: res.data.avatar,
-      }));
-    } catch (err) {
-      console.error("Upload avatar gagal:", err);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div style={{ padding: 100, color: "white" }}>
-        Loading profile...
-      </div>
-    );
-  }
-
+export default function Dashboard() {
   return (
     <>
       <div className="dashboard-page">
-        {/* SIDEBAR KHUSUS PROFILE */}
-        <ProfileSidebar />
+        <Sidebar />
 
         <div className="dashboard-content">
-          {/* ================= PROFILE CARD ================= */}
-          <div className="card profile-card">
-            <div className="profile-details">
-              <label htmlFor="avatar-upload" style={{ cursor: "pointer" }}>
-                <img
-                  src={
-                    profile?.avatar
-                      ? `http://127.0.0.1:8000/storage/${profile.avatar}`
-                      : "/default-avatar.png"
-                  }
-                  alt="Avatar"
-                  className="avatar-img"
-                />
-              </label>
+          
+          {/* ALERT SECTION */}
+          <div className="security-alert">
+            <div className="alert-content">
+              <h3>Tingkatkan keamanan!</h3>
+              {/* Menggunakan Link untuk navigasi ke /settings */}
+              <p>
+                Klik <Link to="/settings" style={{ color: 'inherit', fontWeight: 'bold' }}>disini</Link> untuk melakukan pengaturan!
+              </p>
+            </div>
+            <div className="shield-icon">🛡️</div>
+          </div>
 
-              <input
-                type="file"
-                id="avatar-upload"
-                hidden
-                accept="image/*"
-                onChange={handleAvatarChange}
-              />
-
-              <div className="info">
-                <div className="name-row">
-                  <h4>{profile.name}</h4>
-                  <FaCog />
+          {/* HERO SECTION (PROFILE & COIN) */}
+          <div className="hero-grid">
+            
+            {/* CARD 1: USER PROFILE */}
+            <div className="card profile-card">
+              <div className="profile-details">
+                <div className="avatar">D</div>
+                <div className="info">
+                  <div className="name-row">
+                    <h4>Djenar priya asoka</h4>
+                    {/* Gear icon juga biasanya diarahkan ke settings */}
+                    <Link to="/settings" style={{ color: 'inherit' }}>
+                      <FaCog className="settings-icon" />
+                    </Link>
+                  </div>
+                  <span className="badge-member">Member</span>
                 </div>
-                <span className="badge-member">{profile.role}</span>
+              </div>
+              <div className="profile-footer">
+                <p className="phone">📞 +62 817 7944 7038</p>
               </div>
             </div>
 
-            <div className="profile-footer">
-              <p>📧 {profile.email}</p>
-              <p>📞 {profile.phone || "-"}</p>
+            {/* CARD 2: COINPEDIA */}
+            <div className="card coin-card">
+              <div className="coin-header">
+                <div className="coin-title">
+                  <span className="coin-icon-sm">A6</span> Asixcoin
+                </div>
+                <div className="coin-actions">
+                  <button className="btn-topup">Top Up</button>
+                  <button className="btn-redeem">Redeem</button>
+                </div>
+              </div>
+              <div className="coin-balance">
+                <h2>0 <span>ASIXCOIN</span> <small>IDR</small></h2>
+              </div>
             </div>
           </div>
 
-          {/* ================= EDIT FORM ================= */}
-          <div className="card" style={{ marginTop: 30 }}>
-            <h3>Edit Profile</h3>
+          {/* STATS SECTION */}
+          <h3 className="section-title">Transaksi Hari Ini</h3>
+          <div className="stats-grid">
+            <div className="stat-box dark">
+              <h3>0</h3>
+              <span>Total Transaksi</span>
+            </div>
+            <div className="stat-box dark">
+              <h3>0</h3>
+              <span>Total Penjualan</span>
+            </div>
+          </div>
+          
+          <div className="process-stats-grid">
+             <div className="p-stat yellow">
+                <h1>0</h1>
+                <span>Menunggu</span>
+             </div>
+             <div className="p-stat blue">
+                <h1>0</h1>
+                <span>Dalam Proses</span>
+             </div>
+             <div className="p-stat green">
+                <h1>0</h1>
+                <span>Sukses</span>
+             </div>
+             <div className="p-stat red">
+                <h1>0</h1>
+                <span>Gagal</span>
+             </div>
+          </div>
 
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Nama</label>
-                <input
-                  type="text"
-                  value={form.name}
-                  onChange={(e) =>
-                    setForm({ ...form, name: e.target.value })
-                  }
-                />
-              </div>
 
-              <div className="form-group">
-                <label>Nomor HP</label>
-                <input
-                  type="text"
-                  value={form.phone}
-                  onChange={(e) =>
-                    setForm({ ...form, phone: e.target.value })
-                  }
-                />
-              </div>
-
-              <button type="submit" className="btn-primary">
-                Simpan Perubahan
-              </button>
-            </form>
+          {/* TABLE SECTION */}
+          <div className="table-section">
+            <div className="table-header">
+                <h3>Riwayat Transaksi Terbaru Hari Ini</h3>
+            </div>
+            <div className="table-responsive">
+                <table>
+                <thead>
+                    <tr>
+                    <th>Nomor Invoice</th>
+                    <th>ID Trx</th>
+                    <th>Item</th>
+                    <th>User Input</th>
+                    <th>Harga</th>
+                    <th>Tanggal</th>
+                    <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td colSpan="7" className="empty-state">
+                        <div className="empty-content">
+                            <FaChartBar size={40} style={{opacity: 0.3, marginBottom: '10px'}}/>
+                            <h4>Data tidak ditemukan!</h4>
+                            <p>Tidak ada aktifitasi data.</p>
+                        </div>
+                    </td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* FLOAT CS */}
+      <div className="customer-service-float">
+        <FaHeadset />
+        <span>CUSTOMER SERVICE</span>
       </div>
 
       <Footer />

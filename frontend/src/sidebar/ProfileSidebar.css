@@ -1,33 +1,100 @@
-.sidebar {
-  width: 240px;
-  background: #0f172a;
-  color: white;
+/* ===== SIDEBAR WRAPPER ===== */
+.profile-sidebar {
+  width: 260px;
   min-height: 100vh;
-  padding: 20px 0;
-}
-
-.sidebar-header {
-  text-align: center;
-  font-weight: bold;
-  margin-bottom: 30px;
-}
-
-.sidebar-menu {
+  background: linear-gradient(180deg, #020617, #0f172a);
+  border-right: 1px solid rgba(255,255,255,0.06);
   display: flex;
   flex-direction: column;
+  padding: 24px 0;
 }
 
-.sidebar-link {
+/* ===== HEADER ===== */
+.profile-sidebar-header {
+  padding: 0 24px 24px;
+}
+
+.profile-sidebar-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #e5e7eb;
+}
+
+.sidebar-subtitle {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ===== MENU ===== */
+.profile-sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 12px;
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+.profile-link svg {
+  font-size: 16px;
+  opacity: 0.85;
+}
+
+/* ===== HOVER ===== */
+.profile-link:hover {
+  background: rgba(255,255,255,0.05);
+  color: #ffffff;
+}
+
+/* ===== ACTIVE ===== */
+.profile-link.active {
+  background: linear-gradient(
+    90deg,
+    rgba(250,204,21,0.18),
+    rgba(250,204,21,0.05)
+  );
+  color: #facc15;
+  font-weight: 600;
+}
+
+.profile-link.active svg {
+  color: #facc15;
+}
+
+/* ===== FOOTER ===== */
+.profile-sidebar-footer {
+  margin-top: auto;
+  padding: 20px 24px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.logout-btn {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 20px;
-  color: #cbd5e1;
-  text-decoration: none;
+  background: transparent;
+  border: none;
+  color: #f87171;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
-.sidebar-link:hover,
-.sidebar-link.active {
-  background: #1e293b;
-  color: #fff;
+.logout-btn:hover {
+  background: rgba(248,113,113,0.12);
 }

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 | PUBLIC CONTROLLERS
 |--------------------------------------------------------------------------
 */
-use App\Http\Controllers\AuthController;
+
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TopUpPackageController;
@@ -23,7 +23,15 @@ use App\Http\Controllers\PublicOrderController;
 use App\Http\Controllers\QrisDummyController;
 use App\Http\Controllers\LookupController;
 use App\Http\Controllers\ContactController;
+
+/*
+|--------------------------------------------------------------------------
+| User Only
+|--------------------------------------------------------------------------
+*/
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +85,7 @@ Route::post('/orders/check', [OrderController::class, 'check'])
 
 Route::get('/transaction/{invoice}', [TransactionController::class, 'show']);
 Route::get('/transaction/order/{orderNumber}', [TransactionController::class, 'showByOrder']);
+Route::get('/transaction/ref/{ref}', [TransactionController::class, 'showByRef']);
 
 Route::get('/lookup/{code}', LookupController::class);
 
@@ -112,6 +121,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar']);
     Route::put('/profile/email', [ProfileController::class, 'updateEmail']);
     Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
+    Route::get('/account/transactions', [AccountController::class, 'transactions']);
+    Route::get('/account/mutations', [AccountController::class, 'mutations']);
+    Route::get('/account/affiliates', [AccountController::class, 'affiliates']);
+    Route::get('/account/settings', [AccountController::class, 'settings']);
 });
 
 /*

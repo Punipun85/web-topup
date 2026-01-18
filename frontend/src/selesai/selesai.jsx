@@ -6,23 +6,23 @@ import "./selesai.css";
 export default function Selesai() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const orderNumber = params.get("invoice"); // INI ORDER NUMBER
+
+  // Bisa ORD / INV
+  const ref = params.get("invoice");
 
   const [trx, setTrx] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!orderNumber) return;
+    if (!ref) return;
 
     axios
-      .get(`http://127.0.0.1:8000/api/transaction/order/${orderNumber}`)
+      .get(`http://127.0.0.1:8000/api/transaction/ref/${ref}`)
       .then(res => setTrx(res.data.data))
-      .catch(() => setError("Data transaksi tidak ditemukan"))
-      .finally(() => setLoading(false));
-  }, [orderNumber]);
+      .catch(() => navigate("/")); // ❗ gagal → pulang
+  }, [ref, navigate]);
 
-  if (!orderNumber) {
+  // ❌ PARAM TIDAK ADA
+  if (!ref) {
     return (
       <div className="selesai-container">
         <div className="selesai-card">
@@ -33,22 +33,16 @@ export default function Selesai() {
     );
   }
 
-  if (loading) {
-    return <div className="selesai-container">Memuat transaksi...</div>;
-  }
-
-  if (error || !trx) {
+  // ⏳ BELUM ADA DATA
+  if (!trx) {
     return (
       <div className="selesai-container">
-        <div className="selesai-card">
-          <h2>Terjadi Kesalahan</h2>
-          <p>{error}</p>
-          <button onClick={() => navigate("/")}>Kembali ke Home</button>
-        </div>
+        <div className="selesai-card">Memuat transaksi...</div>
       </div>
     );
   }
 
+  // ✅ SUCCESS
   return (
     <div className="selesai-container">
       <div className="selesai-card">
@@ -56,31 +50,15 @@ export default function Selesai() {
 
         <div className="invoice">{trx.invoice}</div>
 
-        <div className={`status paid`}>
+        <div className="status paid">
           Status: {trx.status}
         </div>
 
         <div className="summary">
-          <div>
-            <span>Game</span>
-            <span>{trx.game}</span>
-          </div>
-
-          <div>
-            <span>Paket</span>
-            <span>{trx.package}</span>
-          </div>
-
-          <div>
-            <span>User ID</span>
-            <span>{trx.player_id}</span>
-          </div>
-
-          <div>
-            <span>Email</span>
-            <span>{trx.email}</span>
-          </div>
-
+          <div><span>Game</span><span>{trx.game}</span></div>
+          <div><span>Paket</span><span>{trx.package}</span></div>
+          <div><span>User ID</span><span>{trx.player_id}</span></div>
+          <div><span>Email</span><span>{trx.email}</span></div>
           <div>
             <span>Total</span>
             <strong>

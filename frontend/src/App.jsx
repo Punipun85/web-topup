@@ -22,6 +22,10 @@ import Selesai from "./selesai/selesai";
 import UploadPembayaran from "./Upload/UploadPembayaran";
 import ContactUs from "./pages/ContactUs";
 import Profile from "./pages/Profile";
+import Transactions from "./pages/account/Transactions";
+import Mutations from "./pages/account/Mutations";
+import Affiliations from "./pages/account/Affiliations";
+import Settings from "./pages/account/Settings";
 
 // ===== ARTIKEL =====
 import ArticleNavbar from "./articles/ArticleNavbar";
@@ -185,6 +189,11 @@ function App() {
 
             {/* ===== USER ===== */}
             <Route path="/profile" element={<Profile />} />
+            <Route path="/transaksi" element={<Transactions />} />
+            <Route path="/mutasi" element={<Mutations />} />
+            <Route path="/afiliasi" element={<Affiliations />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/contact-us" element={<ContactUs />} />
 
             {/* ===== TRANSAKSI ===== */}
             <Route path="/checkout" element={<Checkout />} />
@@ -235,8 +244,6 @@ function App() {
               <Route path="packages" element={<Packages />} />
               <Route path="customer-service" element={<CustomerServiceAdmin />} />
             </Route>
-
-            <Route path="/contact-us" element={<ContactUs />} />
 
             {/* ===== 404 ===== */}
             <Route
