@@ -13,13 +13,12 @@ return new class extends Migration
     {
        Schema::table('transactions', function (Blueprint $table) {
     $table->foreignId('user_id')
-        ->nullable()
         ->constrained()
-        ->nullOnDelete();
+        ->cascadeOnDelete();
 });
 
     }
-
+    
     /**
      * Reverse the migrations.
      */

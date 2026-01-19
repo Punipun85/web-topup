@@ -103,14 +103,19 @@ export default function Dashboard() {
 
         const data = await res.json();
 
-        // 🔥 FILTER HARI INI
-        const todayLocal = new Date().toLocaleDateString("en-CA");
+const fmt = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Asia/Jakarta",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
 
-const todayTx = data.filter(
-  (t) =>
-    new Date(t.created_at).toLocaleDateString("en-CA") === todayLocal
-);
+const todayWIB = fmt.format(new Date());
+
+const todayTx = data.filter((t) => fmt.format(new Date(t.created_at)) === todayWIB);
+
 setTransactions(todayTx);
+
 
       } catch (err) {
         console.error(err);

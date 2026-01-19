@@ -57,6 +57,7 @@ class TransactionService
 
             // 3️⃣ insert ledger (ONLY ONCE)
             Transaction::create([
+                'user_id'      => $order->user_id ?? $topup->user_id,
                 'topup_id'      => $topup->id,
                 'invoice_id'    => $order->order_number,
                 'game_name'     => $topup->game->name,
