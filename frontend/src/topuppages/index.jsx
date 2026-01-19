@@ -73,13 +73,13 @@ const handleBuy = async () => {
   try {
     const token = localStorage.getItem("token");
 
-    // 🔥 PILIH ENDPOINT SESUAI KONDISI
-    const endpoint = token
+    // ===== TOPUP =====
+    const topupEndpoint = token
       ? "http://127.0.0.1:8000/api/topups"
       : "http://127.0.0.1:8000/api/topups/guest";
 
     const topupRes = await axios.post(
-      endpoint,
+      topupEndpoint,
       {
         game_id: game.id,
         package_id: selectedProduct.id,
@@ -88,37 +88,46 @@ const handleBuy = async () => {
         email,
         quantity,
       },
-      token
-        ? { headers: { Authorization: `Bearer ${token}` } }
-        : {}
+      token ? { headers: { Authorization: `Bearer ${token}` } } : {}
     );
 
     const topup = topupRes.data.data;
 
-    // ORDER SELALU PUBLIC
+    // ===== ORDER =====
+    const orderEndpoint = token
+      ? "http://127.0.0.1:8000/api/orders"
+      : "http://127.0.0.1:8000/api/orders/guest";
+
     const orderRes = await axios.post(
-      "http://127.0.0.1:8000/api/orders",
+      orderEndpoint,
       {
         topup_id: topup.id,
         payment_method: selectedPayment.code,
-      }
+      },
+      token ? { headers: { Authorization: `Bearer ${token}` } } : {}
     );
 
     const order = orderRes.data.data;
 
-    navigate("/checkout", {
-      state: {
-        order,
-        payment: selectedPayment,
-        game,
-        product: selectedProduct,
-        quantity,
-      },
-    });
+    // ===== NAVIGATE =====
+   navigate("/checkout", {
+  state: {
+    order,
+    payment: selectedPayment,
+    game,
+    product: {
+      ...selectedProduct,
+      quantity
+    }
+  }
+});
+
+
   } catch (err) {
-    alert(err.response?.data?.message || "Gagal membuat pesanan");
+    console.error(err.response?.data || err.message);
+    alert("Terjadi kesalahan saat memproses pesanan");
   } finally {
-    setIsSubmitting(false);
+    setIsSubmitting(false); // ✅ HURUF KECIL
   }
 };
 

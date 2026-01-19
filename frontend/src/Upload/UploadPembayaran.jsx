@@ -1,99 +1,46 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import "./upload.css";
 
 export default function UploadPembayaran() {
-  const { state } = useLocation();
+  const { orderNumber } = useParams();
   const navigate = useNavigate();
 
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  if (!state) {
-    return <div className="upload-error">Data tidak ditemukan.</div>;
-  }
-
-  const { invoice, customer, item } = state;
-
   const handleSubmit = async () => {
-  if (!file) {
-    alert("Silakan upload bukti pembayaran.");
-    return;
-  }
+    if (!file) return alert("Upload bukti pembayaran dulu");
 
-  if (!file.type.startsWith("image/")) {
-    alert("File harus berupa gambar.");
-    return;
-  }
+    const formData = new FormData();
+    formData.append("order_number", orderNumber);
+    formData.append("proof", file);
 
-  const formData = new FormData();
-  formData.append("invoice", invoice);
-  formData.append("proof", file);
+    try {
+      setLoading(true);
+      await axios.post(
+        "http://127.0.0.1:8000/api/payment/upload-proof",
+        formData
+      );
 
-  try {
-    setLoading(true);
-    await axios.post(
-      "http://127.0.0.1:8000/api/upload-payment",
-      formData
-    );
-
-    navigate("/selesai", {
-      state: {
-        invoice,
-        status: "WAITING_CONFIRMATION",
-        customer,
-        item,
-      },
-    });
-  } catch {
-    alert("Gagal mengupload bukti pembayaran.");
-  } finally {
-    setLoading(false);
-  }
-};
+      // 🔥 LANGSUNG KE SELESAI
+      navigate(`/selesai?ref=${orderNumber}`);
+    } catch  {
+      alert("Gagal upload bukti pembayaran");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="upload-container">
+    <div>
       <h2>Upload Bukti Pembayaran</h2>
 
-      <div className="upload-card">
-        <div className="row">
-          <span>Invoice</span>
-          <strong>{invoice}</strong>
-        </div>
+      <input type="file" onChange={e => setFile(e.target.files[0])} />
 
-        <div className="row">
-          <span>Item</span>
-          <strong>
-            {item.name} x{item.quantity}
-          </strong>
-        </div>
-
-        <div className="row">
-          <span>User ID</span>
-          <strong>
-            {customer.userId}
-            {customer.zoneId && ` (${customer.zoneId})`}
-          </strong>
-        </div>
-
-        <hr />
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setFile(e.target.files[0])}
-        />
-
-        <button
-          className="btn-submit"
-          onClick={handleSubmit}
-          disabled={loading}
-        >
-          {loading ? "Mengupload..." : "Kirim Bukti Pembayaran"}
-        </button>
-      </div>
+      <button disabled={loading} onClick={handleSubmit}>
+        {loading ? "Mengupload..." : "Kirim Bukti"}
+      </button>
     </div>
   );
 }

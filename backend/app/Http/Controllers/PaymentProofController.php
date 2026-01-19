@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PaymentProofController extends Controller
 {
@@ -11,32 +14,50 @@ class PaymentProofController extends Controller
     {
         $request->validate([
             'order_number' => 'required|exists:orders,order_number',
-            'proof'        => 'required|image|mimes:jpg,jpeg,png|max:8192', // max 8MB
+            'proof' => 'required|image'
         ]);
 
-        $order = Order::where('order_number', $request->order_number)->firstOrFail();
+        return DB::transaction(function () use ($request) {
 
-        // hanya order pending yang boleh upload bukti
-        if ($order->status !== 'pending') {
+            $order = Order::where('order_number', $request->order_number)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $topup = $order->topup;
+
+            // simpan file
+            $path = $request->file('proof')->store('payment_proofs', 'public');
+
+            // ORDER → PAID
+            $order->update([
+                'status' => 'paid',
+            ]);
+
+            // TOPUP → SUCCESS
+            if ($topup) {
+                $topup->update([
+                    'status' => 'success'
+                ]);
+            }
+
+            // TRANSACTION → SUCCESS
+           $trx = Transaction::updateOrCreate(
+    ['topup_id' => $topup->id],
+    [
+        'user_id'        => $order->user_id,
+        'invoice_id'     => 'INV-' . strtoupper(Str::random(12)),
+        'amount'         => $order->amount,
+        'payment_method' => $order->payment_method,
+        'status'         => 'success',
+        'payment_proof'  => $path,
+        'finalized_at'   => now(),
+    ]
+);
+
             return response()->json([
-                'message' => 'Order sudah diproses'
-            ], 409);
-        }
-
-        $path = $request->file('proof')->store('payment_proofs', 'public');
-
-        $order->update([
-            'payment_proof' => $path,
-            'status'        => 'waiting_confirmation',
-        ]);
-
-        return response()->json([
-            'message' => 'Bukti pembayaran berhasil dikirim',
-            'data' => [
-                'order_number' => $order->order_number,
-                'status'       => $order->status,
-                'proof_url'    => asset('storage/' . $path),
-            ]
-        ]);
+                'success' => true,
+                'invoice' => $trx->invoice_id
+            ]);
+        });
     }
 }

@@ -51,17 +51,23 @@ class PaymentWebhookController extends Controller
                 }
 
                 // 3️⃣ LEDGER (ONCE)
-                Transaction::firstOrCreate(
-                    ['topup_id' => $topup?->id],
-                    [
-                        'invoice_id'     => 'INV-' . strtoupper(Str::random(12)),
-                        'amount'         => $order->amount,
-                        'payment_method' => $order->payment_method,
-                        'status'         => 'success',
-                        'finalized_at'   => now(),
-                    ]
-                );
+               $trx = Transaction::firstOrCreate(
+    ['topup_id' => $topup->id],
+    [
+        'invoice_id'     => 'INV-' . strtoupper(Str::random(12)),
+        'amount'         => $order->amount,
+        'payment_method' => $order->payment_method,
+        'status'         => 'success',
+        'finalized_at'   => now(),
+    ]
+);
 
+// 🔧 FIX USER_ID (WAJIB)
+if ($trx->user_id === null) {
+    $trx->update([
+        'user_id' => $order->user_id ?? $topup->user_id
+    ]);
+}   
             } else {
 
                 // PAYMENT FAILED
@@ -89,38 +95,51 @@ class PaymentWebhookController extends Controller
      * 🔥 QRIS DUMMY (FRONTEND SIMULATION)
      */
     public function qrisDummy(Request $request)
-    {
-        $request->validate([
-            'order_id' => 'required|exists:orders,id'
+{
+    $request->validate([
+        'order_number' => 'required|exists:orders,order_number'
+    ]);
+
+    return DB::transaction(function () use ($request) {
+
+        $order = Order::where('order_number', $request->order_number)
+            ->lockForUpdate()
+            ->firstOrFail();
+
+        if ($order->status !== 'pending') {
+            return response()->json([
+                'message' => 'Order sudah diproses'
+            ], 422);
+        }
+
+        // ORDER → PAID
+        $order->update([
+            'status'  => 'paid',
+            'paid_at' => now()
         ]);
 
-        return DB::transaction(function () use ($request) {
-
-            $order = Order::lockForUpdate()->findOrFail($request->order_id);
-
-            if ($order->status !== 'pending') {
-                return response()->json([
-                    'message' => 'Order sudah diproses'
-                ], 422);
-            }
-
-            // 1️⃣ ORDER → PAID
-            $order->update([
-                'status'  => 'paid',
-                'paid_at' => now()
+        // TOPUP → SUCCESS
+        $topup = $order->topup;
+        if ($topup) {
+            $topup->update([
+                'status' => 'success'
             ]);
+        }
 
-            // 2️⃣ TOPUP → SUCCESS
-            $topup = Topup::where('order_id', $order->id)->first();
-            if ($topup) {
-                $topup->update([
-                    'status' => 'success'
-                ]);
-            }
+        // TRANSACTION (PASTIKAN ADA)
+        Transaction::firstOrCreate(
+            ['topup_id' => $topup->id],
+            [
+                'user_id'        => $order->user_id,
+                'invoice_id'     => 'INV-' . strtoupper(Str::random(12)),
+                'amount'         => $order->amount,
+                'payment_method' => $order->payment_method,
+                'status'         => 'success',
+                'finalized_at'   => now(),
+            ]
+        );
 
-            return response()->json([
-                'success' => true
-            ]);
-        });
-    }
+        return response()->json(['success' => true]);
+    });
+}
 }

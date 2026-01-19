@@ -1,7 +1,7 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { motion } from "framer-motion"; // Library Animasi
+import { motion as Motion} from "framer-motion"; // Library Animasi
 import { FaCheckCircle, FaHome, FaCopy, FaSpinner, FaGamepad, FaBoxOpen } from "react-icons/fa"; // Library Icon
 import toast, { Toaster } from "react-hot-toast"; // Library Notifikasi
 import "./selesai.css";
@@ -11,7 +11,7 @@ export default function Selesai() {
   const navigate = useNavigate();
 
   // Ambil parameter invoice dari URL
-  const ref = params.get("invoice");
+  const ref = params.get("ref");
   const [trx, setTrx] = useState(null);
   const [error, setError] = useState(false);
 
@@ -41,7 +41,7 @@ export default function Selesai() {
   if (!ref || error) {
     return (
       <div className="selesai-container">
-        <motion.div 
+        <Motion.div 
             className="selesai-card error-state"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -51,7 +51,7 @@ export default function Selesai() {
           <button className="btn-retry" onClick={() => navigate("/")}>
              Kembali ke Beranda
           </button>
-        </motion.div>
+        </Motion.div>
       </div>
     );
   }
@@ -73,7 +73,7 @@ export default function Selesai() {
     <div className="selesai-container">
       <Toaster position="top-center" reverseOrder={false} />
       
-      <motion.div 
+      <Motion.div 
         className="selesai-card"
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -82,13 +82,13 @@ export default function Selesai() {
         
         {/* Header Icon Animasi */}
         <div className="success-header">
-            <motion.div
+            <Motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             >
                 <FaCheckCircle className="icon-success-animate" />
-            </motion.div>
+            </Motion.div>
             <h2>Pembayaran Berhasil</h2>
             <p className="sub-message">Terima kasih, pesanan Anda sedang diproses.</p>
         </div>
@@ -154,7 +154,7 @@ export default function Selesai() {
           <FaHome /> Kembali ke Home
         </button>
 
-      </motion.div>
+      </Motion.div>
     </div>
   );
 }

@@ -95,7 +95,6 @@ export default function Dashboard() {
           {
             headers: {
               Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
             },
           }
         );
@@ -105,12 +104,14 @@ export default function Dashboard() {
         const data = await res.json();
 
         // 🔥 FILTER HARI INI
-        const today = new Date().toISOString().slice(0, 10);
-        const todayTx = data.filter(
-          (t) => t.created_at.slice(0, 10) === today
-        );
+        const todayLocal = new Date().toLocaleDateString("en-CA");
 
-        setTransactions(todayTx);
+const todayTx = data.filter(
+  (t) =>
+    new Date(t.created_at).toLocaleDateString("en-CA") === todayLocal
+);
+setTransactions(todayTx);
+
       } catch (err) {
         console.error(err);
       } finally {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Topup;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -32,35 +33,48 @@ class OrderController extends Controller
             }
 
             // 🔒 Cegah double order
-            $existingOrder = Order::where('topup_id', $topup->id)
-                ->whereIn('status', ['pending', 'waiting_confirmation'])
-                ->first();
-
+            $existingOrder = Order::where('topup_id', $topup->id)->first();
             if ($existingOrder) {
                 return response()->json([
-                    'message' => 'Masih ada pembayaran yang belum selesai'
+                    'message' => 'Order sudah ada'
                 ], 409);
             }
 
-            // ✅ CREATE ORDER
+            // ✅ ORDER
             $order = Order::create([
-                'order_number'   => 'ORD-' . strtoupper(Str::random(12)),
-                'topup_id'       => $topup->id,
+                'order_number'    => 'ORD-' . strtoupper(Str::random(12)),
+                'topup_id'        => $topup->id,
+                'user_id'         => Auth::id(),
+                'payment_method' => $data['payment_method'],
+                'amount'          => $topup->amount,
+                'status'          => 'paid', // ⬅️ langsung paid
+            ]);
+
+            // ✅ TOPUP → SUCCESS
+            $topup->update([
+                'status' => 'success',
+            ]);
+
+            // ✅ TRANSACTION → SUCCESS (INI YANG HILANG DARI HIDUPMU)
+            $transaction = Transaction::create([
                 'user_id'        => Auth::id(),
-                'payment_method'=> $data['payment_method'],
-                'amount'         => $topup->amount,
-                'status'         => 'pending',
+                'topup_id'       => $topup->id,
+                'invoice_id'     => 'INV-' . strtoupper(Str::random(10)),
+                'amount'         => $order->amount,
+                'payment_method' => $order->payment_method,
+                'status'         => 'success',
+                'finalized_at'   => now(),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Order pembayaran dibuat',
+                'message' => 'Order berhasil dibuat',
                 'data' => [
                     'order_id'     => $order->id,
                     'order_number' => $order->order_number,
-                    'topup_code'   => $topup->topup_code,
-                    'amount'       => $order->amount,
-                    'status'       => $order->status,
+                    'invoice_id'   => $transaction->invoice_id,
+                    'amount'       => $transaction->amount,
+                    'status'       => 'SUCCESS',
                 ]
             ], 201);
         });

@@ -23,6 +23,8 @@ use App\Http\Controllers\PublicOrderController;
 use App\Http\Controllers\QrisDummyController;
 use App\Http\Controllers\LookupController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\GuestOrderController;
+use App\Http\Controllers\GuestTransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,9 +81,16 @@ Route::post('/topups/guest', [TopUpController::class, 'storeGuest']);
 Route::post('/topups/check', [TopUpController::class, 'check']);
 Route::get('/topups/public/{topup_code}', [TopUpController::class, 'publicShow']);
 
-Route::post('/orders', [OrderController::class, 'store']);
-Route::post('/orders/check', [OrderController::class, 'check'])
-    ->middleware('throttle:10,1');
+Route::post('/orders/guest', [GuestOrderController::class, 'store']);
+Route::get('guest/transaction/ref/{ref}', [GuestTransactionController::class, 'showByRef']);
+// GUEST
+Route::get('/guest/transaction/order/{orderNumber}', 
+    [GuestTransactionController::class, 'showByOrder']
+);
+// USER
+Route::get('/transaction/order/{orderNumber}', 
+    [TransactionController::class, 'showByOrder']
+);
 
 Route::get('/transaction/{invoice}', [TransactionController::class, 'show']);
 Route::get('/transaction/order/{orderNumber}', [TransactionController::class, 'showByOrder']);
@@ -126,6 +135,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/account/affiliates', [AccountController::class, 'affiliates']);
     Route::get('/account/settings', [AccountController::class, 'settings']);
     Route::post('/topups', [TopUpController::class, 'storeAuth']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::post('/orders/check', [OrderController::class, 'check'])
+    ->middleware('throttle:10,1');
 });
 
 /*

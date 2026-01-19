@@ -12,59 +12,57 @@ use Illuminate\Support\Str;
 class QrisDummyController extends Controller
 {
     public function pay(Request $request)
-    {
-        $data = $request->validate([
-            'order_number' => 'required|exists:orders,order_number'
+{
+    $request->validate([
+        'order_number' => 'required|exists:orders,order_number'
+    ]);
+
+    return DB::transaction(function () use ($request) {
+
+        $order = Order::where('order_number', $request->order_number)
+            ->lockForUpdate()
+            ->firstOrFail();
+
+        // 🔥 JANGAN BLOKIR
+        if (in_array($order->status, ['paid', 'success'])) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Order sudah sukses'
+            ]);
+        }
+
+        $topup = $order->topup;
+
+        // ORDER → PAID
+        $order->update([
+            'status'  => 'paid',
+            'paid_at'=> now(),
         ]);
 
-        return DB::transaction(function () use ($data) {
-
-            // 🔒 LOCK ORDER
-            $order = Order::where('order_number', $data['order_number'])
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            if ($order->status !== 'pending') {
-                return response()->json([
-                    'message' => 'Order sudah diproses'
-                ], 422);
-            }
-
-            // 🔍 AMBIL TOPUP (WAJIB SEBELUM DIPAKAI)
-            $topup = Topup::where('id', $order->topup_id)
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            // ✅ ORDER → PAID
-            $order->update([
-                'status'  => 'paid',
-                'paid_at'=> now(),
-            ]);
-
-            // ✅ TOPUP → PROCESS
+        // TOPUP → SUCCESS
+        if ($topup) {
             $topup->update([
-                'status' => 'process',
+                'status' => 'success',
             ]);
+        }
 
-            // ✅ TRANSACTION → PROCESS
-            $transaction = Transaction::updateOrCreate(
-                ['topup_id' => $topup->id],
-                [
-                    'user_id'        => $topup->user_id,
-                    'invoice_id'     => 'INV-' . strtoupper(Str::random(10)),
-                    'amount'         => $order->amount,
-                    'payment_method' => 'QRIS',
-                    'status'         => 'success',
-                    'finalized_at'   => null,
-                ]
-            );
+        // TRANSACTION → SUCCESS
+        $trx = Transaction::firstOrCreate(
+            ['topup_id' => $topup->id],
+            [
+                'user_id'        => $order->user_id,
+                'invoice_id'     => 'INV-' . strtoupper(Str::random(10)),
+                'amount'         => $order->amount,
+                'payment_method' => 'QRIS',
+                'status'         => 'success',
+                'finalized_at'   => now(),
+            ]
+        );
 
-            return response()->json([
-                'success'      => true,
-                'order_number' => $order->order_number,
-                'invoice_id'   => $transaction->invoice_id,
-                'status'       => 'process'
-            ]);
-        });
-    }
+        return response()->json([
+            'success' => true,
+            'invoice' => $trx->invoice_id
+        ]);
+    });
+}
 }

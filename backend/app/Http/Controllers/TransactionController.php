@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -64,52 +65,98 @@ class TransactionController extends Controller
      * GET /api/transaction/order/{orderNumber}
      */
     public function showByOrder(string $orderNumber)
-    {
-        $order = Order::where('order_number', $orderNumber)
-            ->with('topup.transaction')
-            ->first();
+{
+    $order = Order::where('order_number', $orderNumber)
+        ->with(['topup', 'topup.transaction'])
+        ->first();
 
-        if (!$order || !$order->topup || !$order->topup->transaction) {
-            return response()->json(['message' => 'Invoice tidak ditemukan'], 404);
-        }
-
-        $trx = $order->topup->transaction;
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'order_number' => $order->order_number,
-                'invoice'      => $trx->invoice_id,
-                'amount'       => $trx->amount,
-                'status'       => strtoupper($trx->status),
-                'created_at'   => $trx->created_at,
-            ]
-        ]);
+    if (!$order || !$order->topup) {
+        return response()->json(['message' => 'Order tidak ditemukan'], 404);
     }
+
+    $trx = $order->topup->transaction;
+
+    return response()->json([
+    'success' => true,
+    'data' => [
+        'order_number' => $order->order_number,
+        'invoice'      => $trx->invoice_id,
+        'amount'       => $trx->amount,
+        'status'       => strtoupper($trx->status ?? $order->status),
+        'created_at'   => $trx->created_at
+            ->timezone('Asia/Jakarta')
+            ->format('Y-m-d H:i:s'),
+    ]
+]);
+
+}
+
     /**
  * Cari transaction by REF (ORD / INV)
  * GET /api/transaction/ref/{ref}
  */
 public function showByRef(string $ref)
 {
-    if (str_starts_with($ref, 'INV-')) {
-        $trx = Transaction::where('invoice_id', $ref)->first();
-    } elseif (str_starts_with($ref, 'ORD-')) {
-        $order = Order::with('topup.transaction')
-            ->where('order_number', $ref)
-            ->first();
-        $trx = $order?->topup?->transaction;
-    } else {
+    try {
         $trx = null;
-    }
 
-    if (!$trx) {
+        // ORD-xxxx
+        if (str_starts_with($ref, 'ORD-')) {
+            $order = Order::with('topup.transaction')->where('order_number', $ref)->first();
+
+            if (!$order || !$order->topup || !$order->topup->transaction) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaksi belum tersedia'
+                ], 404);
+            }
+
+            $trx = $order->topup->transaction;
+        }
+
+        // INV-xxxx
+        elseif (str_starts_with($ref, 'INV-')) {
+            $trx = Transaction::with('topup')->where('invoice_id', $ref)->first();
+        }
+
+        if (!$trx) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaksi tidak ditemukan'
+            ], 404);
+        }
+
         return response()->json([
-            'message' => 'Transaksi tidak ditemukan'
-        ], 404);
-    }
+            'success' => true,
+            'data' => [
+                // FIELD LAMA (JANGAN DIHAPUS)
+                'invoice'   => $trx->invoice_id,
+                'status'    => strtoupper($trx->status),
+                'amount'    => $trx->amount,
+                'game'      => $trx->topup?->game?->name ?? null,
+                'package'   => $trx->topup?->package?->name ?? null,
+                'player_id' => $trx->topup?->player_id ?? null,
+                'email'     => $trx->topup?->email ?? null,
 
-    return response()->json($trx);
+                // FIELD BARU
+                'payment_method' => $trx->payment_method,
+                'created_at'     => $trx->created_at
+                    ->timezone('Asia/Jakarta')
+                    ->format('Y-m-d H:i:s'),
+            ]
+        ]);
+    } catch (\Throwable $e) {
+        // ⛑️ AGAR TIDAK 500 DI USER
+        Log::error('showByRef error', [
+            'ref' => $ref,
+            'error' => $e->getMessage()
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan server'
+        ], 500);
+    }
 }
 
     public function checkStatus(Request $request)
@@ -144,9 +191,9 @@ public function showByRef(string $ref)
 
         // 4. Cek Status (PAID / SUCCESS)
         // Sesuaikan string status ini dengan database Anda (case-sensitive)
-        if (strtoupper($trx->status) === 'PAID' || strtoupper($trx->status) === 'SUCCESS') {
+        if (strtoupper($trx->status) === 'SUCCESS') {
             return response()->json([
-                'status' => 'PAID',
+                'status' => 'SUCCESS',
                 'message' => 'Pembayaran berhasil diterima'
             ], 200); // 200 OK
         }

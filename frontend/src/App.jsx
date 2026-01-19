@@ -205,7 +205,7 @@ function App() {
             {/* ===== TRANSAKSI ===== */}
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/selesai" element={<Selesai />} />
-            <Route path="/upload-pembayaran" element={<UploadPembayaran />} />
+            <Route path="/payment/upload/:orderNumber" element={<UploadPembayaran />} />
             <Route path="/cek-transaksi" element={<CekTransaksi transactions={transactions} />} />
 
             {/* ===== TOPUP ===== */}
