@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHeadset } from "react-icons/fa";
+// Icon FaHeadset dihapus karena CS sudah tidak dipakai
 import api from "../services/api";
 import { useAuth } from "../Context/useAuth";
 import "../assets/login.css";
@@ -50,7 +50,7 @@ export default function Login() {
 
   return (
     <div className="auth-wrapper">
-      {/* LEFT */}
+      {/* LEFT PANEL */}
       <div className="auth-left">
         <button className="close-btn" onClick={() => navigate("/")}>
           ✕
@@ -63,26 +63,31 @@ export default function Login() {
           </p>
 
           <form onSubmit={submit}>
-            <label>Username atau Email</label>
-            <input
-              type="text"
-              name="login"
-              placeholder="Username atau Email"
-              value={form.login}
-              onChange={handleChange}
-              required
-            />
+            <div>
+              <label>Username atau Email</label>
+              <input
+                type="text"
+                name="login"
+                placeholder="Username atau Email"
+                value={form.login}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-            <label>Kata sandi</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Kata sandi"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
+            <div>
+              <label>Kata sandi</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Kata sandi"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
+            {/* BAGIAN INGAT AKUN & LUPA PASSWORD */}
             <div className="options">
               <label className="remember">
                 <input
@@ -91,7 +96,7 @@ export default function Login() {
                   checked={form.remember}
                   onChange={handleChange}
                 />
-                Ingat akun ku
+                <span>Ingat akun ku</span>
               </label>
 
               <span
@@ -114,12 +119,9 @@ export default function Login() {
         </div>
       </div>
 
-      {/* RIGHT */}
+      {/* RIGHT PANEL (KOSONG / KUNING POLOS) */}
       <div className="auth-right">
-        <div className="customer-service">
-          <FaHeadset />
-          <span>CUSTOMER SERVICE</span>
-        </div>
+        {/* Customer Service dihapus sesuai permintaan */}
       </div>
     </div>
   );

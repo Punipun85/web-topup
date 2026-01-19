@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHeadset } from "react-icons/fa";
+// import { FaHeadset } from "react-icons/fa"; // Dihapus karena tidak dipakai lagi
 import api from "../services/api";
 import "../assets/register.css";
 
@@ -26,13 +26,13 @@ export default function Register() {
 
     try {
       await api.post("/register", {
-  name: form.name,
-  username: form.username,
-  email: form.email,
-  phone: form.country_code + form.whatsapp,
-  password: form.password,
-  password_confirmation: form.password_confirmation,
-});
+        name: form.name,
+        username: form.username,
+        email: form.email,
+        phone: form.country_code + form.whatsapp,
+        password: form.password,
+        password_confirmation: form.password_confirmation,
+      });
 
       alert("Registrasi berhasil, silakan login");
       navigate("/login");
@@ -49,7 +49,7 @@ export default function Register() {
         ✕
       </button>
 
-      {/* LEFT */}
+      {/* LEFT SIDE (FORM) */}
       <div className="register-left">
         <h1>Daftar</h1>
         <p className="subtitle">
@@ -124,25 +124,24 @@ export default function Register() {
 
           {/* TERMS */}
           <div className="terms">
-          <input type="checkbox" required />
-          <label>
-            Saya setuju dengan{" "}
-            <span
-              className="terms-link"
-              onClick={() => navigate("/terms")}
-            >
-              Syarat & Ketentuan
-            </span>
-            {" "}dan{" "}
-            <span
-              className="terms-link"
-              onClick={() => navigate("/terms")}
-            >
-              kebijakan privasi
-            </span>
+            <input type="checkbox" required />
+            <label>
+              Saya setuju dengan{" "}
+              <span
+                className="terms-link"
+                onClick={() => navigate("/terms")}
+              >
+                Syarat & Ketentuan
+              </span>{" "}
+              dan{" "}
+              <span
+                className="terms-link"
+                onClick={() => navigate("/privacy")}
+              >
+                kebijakan privasi
+              </span>
             </label>
-            </div>
-
+          </div>
 
           {/* SUBMIT */}
           <button className="btn-submit" type="submit">
@@ -157,13 +156,10 @@ export default function Register() {
         </form>
       </div>
 
-      {/* RIGHT */}
-<div className="register-right">
-  <div className="customer-service">
-    <FaHeadset />
-    <span>CUSTOMER SERVICE</span>
-  </div>
-</div>
+      {/* RIGHT SIDE (KUNING KOSONG) */}
+      <div className="register-right">
+        {/* Element Customer Service dihapus sesuai permintaan */}
+      </div>
     </div>
   );
 }

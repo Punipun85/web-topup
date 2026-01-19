@@ -217,8 +217,7 @@ const handleBuy = async () => {
                 <div className="nominal-grid">
                   {products.map((product) => (
                     <div key={product.id} className={`item-card ${selectedProduct?.id === product.id ? 'active' : ''}`} onClick={() => setSelectedProduct(product)}>
-                       {product.meta && product.meta.promo && <div className="flash-badge">{product.meta.promo.label || "PROMO"}</div>}
-                       {!product.meta && product.active && <div className="flash-badge">HOT</div>}
+                      {/* LOGIC BADGE "Bonus Diamonds" & "HOT" TELAH DIHAPUS DISINI */}
                       <div className="item-name">{product.name}</div>
                       <div className="price-area"><div className="price-main">{formatRupiah(product.price)}</div></div>
                     </div>

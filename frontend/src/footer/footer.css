@@ -1,5 +1,5 @@
 /* =========================================================
-   FOOTER UTAMA (STATIC FOOTER)
+   FOOTER UTAMA (STATIC FOOTER) - TIDAK DIUBAH
    ========================================================= */
 .footer {
   background: #000;
@@ -75,17 +75,21 @@
   right: 0;
   padding: 1.5rem;
   z-index: 9999;
-  pointer-events: none; /* background tembus klik */
+  pointer-events: none; /* Container utama tembus klik */
 }
 
-/* ===== CONTAINER AKTIF ===== */
+/* ===== CONTAINER FLEX ===== */
 .floating-container {
   max-width: 1400px;
   margin: 0 auto;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  pointer-events: auto; /* 🔥 INI KUNCI */
+  
+  /* UPDATE PENTING:
+     Kita set ini ke 'none' agar ruang kosong di tengah tembus klik.
+     Hanya elemen anak (copyright & actions) yang kita set 'auto'. */
+  pointer-events: none; 
 }
 
 /* ===== COPYRIGHT ===== */
@@ -97,14 +101,16 @@
   padding: 0.4rem 0.8rem;
   border-radius: 0.5rem;
   border: 1px solid rgba(255,255,255,0.05);
+  
+  pointer-events: auto; /* 🔥 Agar Copyright bisa di-select/klik */
 }
 
-/* ===== ACTIONS ===== */
+/* ===== ACTIONS (KANAN) ===== */
 .floating-actions {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  pointer-events: auto;
+  pointer-events: auto; /* 🔥 Agar Tombol bisa diklik */
 }
 
 /* =========================================================
@@ -165,7 +171,7 @@
 
 .cs-dropdown {
   position: absolute;
-  bottom: 56px;
+  bottom: 56px; /* Muncul di atas tombol */
   right: 0;
   width: 260px;
   background: #1f1f2b;
@@ -173,7 +179,9 @@
   padding: 0.5rem;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
   z-index: 10000;
-  pointer-events: auto; /* 🔥 WAJIB */
+  
+  /* Pastikan dropdown bisa diklik */
+  pointer-events: auto; 
 }
 
 .cs-title {
@@ -185,11 +193,12 @@
 
 /* ===== ITEM (BUTTON SAFE) ===== */
 .cs-item {
-  all: unset; /* reset total */
+  all: unset;
   display: block;
   width: 100%;
   padding: 0.65rem 0.75rem;
-  border-radius: 8px;
+  border-radius: 8px; /* Box-sizing sudah di-handle oleh * reset */
+  box-sizing: border-box; 
   color: #fff;
   font-size: 14px;
   cursor: pointer;

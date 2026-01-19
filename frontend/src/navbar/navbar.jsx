@@ -148,7 +148,15 @@ export default function Navbar({ searchTerm, setSearchTerm, games = [] }) {
         <NavItem label="Topup" icon={<ShoppingBag size={18} />} to="/" active={isActive('/')} />
         <NavItem label="Cek Transaksi" icon={<SearchCode size={18} />} to="/cek-transaksi" active={isActive('/cek-transaksi')} />
         <NavItem label="Leaderboard" icon={<Trophy size={18} />} to="/leaderboard" active={isActive('/leaderboard')} />
-        <NavItem label="Artikel" icon={<Megaphone size={18} />} to="/artikel" active={isActive('/artikel')} />
+        
+        {/* 🔥 UPDATE DI SINI: Saya menambahkan prop 'external' agar membuka tab baru */}
+        <NavItem 
+            label="Artikel" 
+            icon={<Megaphone size={18} />} 
+            to="/artikel" 
+            active={isActive('/artikel')} 
+            external={true} 
+        />
         
         {/* --- CUSTOM DROPDOWN KALKULATOR (PREMIUM STYLE - CLEAN JSX) --- */}
         <div className="relative group h-full flex items-center z-50">

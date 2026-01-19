@@ -31,10 +31,12 @@ export default function FloatingFooter() {
   return createPortal(
     <div className="footer-floating">
       <div className="floating-container" ref={ref}>
+        {/* BAGIAN KIRI */}
         <span className="copyright">
           © 2025 A6TOPUP. All rights reserved.
         </span>
 
+        {/* BAGIAN KANAN */}
         <div className="floating-actions">
           {/* ===== THEME TOGGLE ===== */}
           <button
