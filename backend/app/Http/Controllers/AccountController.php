@@ -8,19 +8,26 @@ use App\Models\Transaction;
 class AccountController extends Controller
 {
     public function transactions(Request $request)
-    {
-        return Transaction::where('user_id', $request->user()->id)
-            ->latest()
-            ->get();
-    }
+{
+    return Transaction::where('user_id', $request->user()->id)
+        ->latest()
+        ->get();
+}
+
 
     public function mutations(Request $request)
     {
-        return Transaction::where('user_id', $request->user()->id)
-            ->where('status', 'success')
-            ->select('amount', 'status', 'created_at')
-            ->latest()
-            ->get();
+        return Transaction::query()
+        ->join('topups', 'transactions.topup_id', '=', 'topups.id')
+        ->where('topups.user_id', $request->user()->id)
+        ->where('transactions.status', 'success')
+        ->select(
+            'transactions.amount',
+            'transactions.status',
+            'transactions.created_at'
+        )
+        ->latest('transactions.created_at')
+        ->get();
     }
 
     public function affiliates(Request $request)

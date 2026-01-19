@@ -12,6 +12,7 @@ class Topup extends Model
     protected $fillable = [
     'topup_code',
     'user_id',
+    'reference',
     'game_id',
     'package_id',
     'player_id',

@@ -21,13 +21,14 @@ import Checkout from "./Checkout/Checkout";
 import Selesai from "./selesai/selesai";
 import UploadPembayaran from "./Upload/UploadPembayaran";
 import ContactUs from "./pages/ContactUs";
+import Invoice from "./invoice/Invoice";
+import Transactions from "./Transactions/Transactions";
 
 // PERBAIKAN: Path profile sekarang diarahkan ke folder /profile/ sesuai pemindahanmu
 import Profile from "./profile/profile"; 
 
 // PERBAIKAN: Jika folder 'pages/account' masih ada, biarkan. 
 // Jika sudah dipindah ke folder lain, sesuaikan path di bawah ini:
-import Transactions from "./pages/account/Transactions";
 import Mutations from "./pages/account/Mutations";
 import Affiliations from "./pages/account/Affiliations";
 import Settings from "./pages/account/Settings";
@@ -194,11 +195,12 @@ function App() {
 
             {/* ===== USER ===== */}
             <Route path="/profile" element={<Profile />} />
-            <Route path="/transaksi" element={<Transactions />} />
+            <Route path="/transactions" element={<Transactions />} />
             <Route path="/mutasi" element={<Mutations />} />
             <Route path="/afiliasi" element={<Affiliations />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/invoice/:invoiceId" element={<Invoice />} />
 
             {/* ===== TRANSAKSI ===== */}
             <Route path="/checkout" element={<Checkout />} />

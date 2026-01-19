@@ -75,7 +75,7 @@ Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
 | TOPUP & TRANSACTION (PUBLIC)
 |--------------------------------------------------------------------------
 */
-Route::post('/topups', [TopUpController::class, 'store']);
+Route::post('/topups/guest', [TopUpController::class, 'storeGuest']);
 Route::post('/topups/check', [TopUpController::class, 'check']);
 Route::get('/topups/public/{topup_code}', [TopUpController::class, 'publicShow']);
 
@@ -125,6 +125,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/account/mutations', [AccountController::class, 'mutations']);
     Route::get('/account/affiliates', [AccountController::class, 'affiliates']);
     Route::get('/account/settings', [AccountController::class, 'settings']);
+    Route::post('/topups', [TopUpController::class, 'storeAuth']);
 });
 
 /*

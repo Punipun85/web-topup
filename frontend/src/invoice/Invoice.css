@@ -1,0 +1,44 @@
+.invoice-page {
+  min-height: 100vh;
+  background: #0b0e11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.invoice-card {
+  width: 420px;
+  background: #151a21;
+  border-radius: 14px;
+  padding: 24px;
+  color: #fff;
+  box-shadow: 0 10px 40px rgba(0,0,0,.5);
+}
+
+.invoice-card h2 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.invoice-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.status.success { color: #51cf66; }
+.status.process { color: #ffd43b; }
+.status.pending { color: #74c0fc; }
+.status.failed  { color: #ff6b6b; }
+
+.btn-back {
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px;
+  background: #ffd600;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}

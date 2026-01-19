@@ -71,21 +71,31 @@ const handleBuy = async () => {
   setIsSubmitting(true);
 
   try {
-    // 1️⃣ CREATE TOPUP (TRANSAKSI BISNIS)
+    const token = localStorage.getItem("token");
+
+    // 🔥 PILIH ENDPOINT SESUAI KONDISI
+    const endpoint = token
+      ? "http://127.0.0.1:8000/api/topups"
+      : "http://127.0.0.1:8000/api/topups/guest";
+
     const topupRes = await axios.post(
-      "http://127.0.0.1:8000/api/topups",
+      endpoint,
       {
         game_id: game.id,
         package_id: selectedProduct.id,
         player_id: userId,
         server_id: zoneId || null,
         email,
-      }
+        quantity,
+      },
+      token
+        ? { headers: { Authorization: `Bearer ${token}` } }
+        : {}
     );
 
     const topup = topupRes.data.data;
 
-    // 2️⃣ CREATE ORDER (PEMBAYARAN)
+    // ORDER SELALU PUBLIC
     const orderRes = await axios.post(
       "http://127.0.0.1:8000/api/orders",
       {
@@ -96,7 +106,6 @@ const handleBuy = async () => {
 
     const order = orderRes.data.data;
 
-    // 3️⃣ PINDAH KE CHECKOUT
     navigate("/checkout", {
       state: {
         order,
@@ -104,9 +113,8 @@ const handleBuy = async () => {
         game,
         product: selectedProduct,
         quantity,
-      }
+      },
     });
-
   } catch (err) {
     alert(err.response?.data?.message || "Gagal membuat pesanan");
   } finally {
@@ -183,11 +191,11 @@ const handleBuy = async () => {
             <div className="input-row">
               <div className="input-group">
                   <label>User ID</label>
-                  <input type="text" placeholder="Ketikan User ID" className="custom-input" value={userId} onChange={(e) => setUserId(e.target.value)} />
+                  <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={20} placeholder="Ketikan User ID" className="custom-input" value={userId} onChange={(e) => setUserId(e.target.value)} />
               </div>
               <div className="input-group">
                   <label>Zone ID (Opsional)</label>
-                  <input type="text" placeholder="Ketikan Zone ID" className="custom-input" value={zoneId} onChange={(e) => setZoneId(e.target.value)} />
+                  <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={10} placeholder="Ketikan Zone ID" className="custom-input" value={zoneId} onChange={(e) => setZoneId(e.target.value)} />
               </div>
             </div>
             <p className="helper-text">*Cek User ID Anda di bagian profil menu game.</p>

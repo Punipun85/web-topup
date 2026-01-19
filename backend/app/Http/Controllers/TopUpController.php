@@ -10,53 +10,96 @@ use Illuminate\Support\Str;
 
 class TopUpController extends Controller
 {
-    /**
-     * Create business transaction (TOPUP)
-     * Payment handled later via Order
-     */
-    public function store(Request $request)
+    private function validateTopup(Request $request)
     {
-        $data = $request->validate([
+        return $request->validate([
             'game_id'    => 'required|exists:games,id',
             'package_id' => 'required|exists:topup_packages,id',
-            'player_id'  => 'required|string',
-            'server_id'  => 'nullable|string',
-            'email'      => 'nullable|email',
-        ]);
+            'player_id'  => [
+            'required',
+            'regex:/^[0-9]+$/',
+            'max:20',
+        ],
 
-        // Validasi paket sesuai game
-        $package = TopUpPackage::where('id', $data['package_id'])
+        'server_id'  => [
+            'nullable',
+            'regex:/^[0-9]+$/',
+            'max:10',
+        ],
+            'email'      => 'nullable|email',
+            'quantity'   => 'required|integer|min:1|max:100',
+        ]);
+    }
+
+    private function resolvePackage(array $data)
+    {
+        return TopUpPackage::where('id', $data['package_id'])
             ->where('game_id', $data['game_id'])
             ->where('active', true)
-            ->first();
+            ->firstOrFail();
+    }
 
-        if (!$package) {
-            return response()->json([
-                'message' => 'Paket topup tidak valid'
-            ], 400);
-        }
+    /**
+     * =========================
+     * TOPUP GUEST
+     * =========================
+     */
+    public function storeGuest(Request $request)
+    {
+        $data = $this->validateTopup($request);
+        $package = $this->resolvePackage($data);
+
+        $quantity = $data['quantity'];
+        $totalAmount = $package->price * $quantity;
 
         $topup = Topup::create([
             'topup_code' => 'TP-' . strtoupper(Str::random(10)),
-            'user_id'    => Auth::id(), // null untuk guest
+            'user_id'    => null,
             'game_id'    => $data['game_id'],
             'package_id' => $package->id,
             'player_id'  => $data['player_id'],
             'server_id'  => $data['server_id'] ?? null,
             'email'      => $data['email'] ?? null,
-            'amount'     => $package->price,
+            'amount'     => $totalAmount,
             'status'     => 'pending',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Topup berhasil dibuat',
-            'data' => [
-                'id'         => $topup->id,
-                'topup_code' => $topup->topup_code,
-                'amount'     => $topup->amount,
-                'status'     => $topup->status,
-            ]
+            'type'    => 'guest',
+            'data'    => $topup,
+        ], 201);
+    }
+
+    /**
+     * =========================
+     * TOPUP AUTH
+     * =========================
+     */
+    public function storeAuth(Request $request)
+    {
+        $data = $this->validateTopup($request);
+        $package = $this->resolvePackage($data);
+
+        $quantity = $data['quantity'];
+        $totalAmount = $package->price * $quantity;
+
+        $topup = Topup::create([
+            'topup_code' => 'TP-' . strtoupper(Str::random(10)),
+            'user_id'    => Auth::id(),
+            'game_id'    => $data['game_id'],
+            'package_id' => $package->id,
+            'player_id'  => $data['player_id'],
+            'server_id'  => $data['server_id'] ?? null,
+            'email'      => Auth::user()->email,
+            'amount'     => $totalAmount,
+            'status'     => 'pending',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'type'    => 'auth',
+            'data'    => $topup,
         ], 201);
     }
 }

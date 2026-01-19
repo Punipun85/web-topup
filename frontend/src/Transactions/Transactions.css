@@ -1,0 +1,86 @@
+.transactions-page {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.transactions-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #ffd600;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transaction-card {
+  background: #151a21;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.transaction-card:hover {
+  background: #1d232c;
+}
+
+.tx-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tx-icon {
+  color: #ffd600;
+  font-size: 20px;
+}
+
+.tx-invoice {
+  font-weight: bold;
+}
+
+.tx-date {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.tx-right {
+  text-align: right;
+}
+
+.tx-amount {
+  font-weight: bold;
+}
+
+.tx-status {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.tx-status.success { color: #51cf66; }
+.tx-status.process { color: #ffd43b; }
+.tx-status.pending { color: #74c0fc; }
+.tx-status.failed  { color: #ff6b6b; }
+
+.loading-text,
+.empty-text {
+  opacity: 0.7;
+  text-align: center;
+  margin-top: 40px;
+}

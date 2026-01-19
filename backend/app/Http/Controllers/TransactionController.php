@@ -92,41 +92,24 @@ class TransactionController extends Controller
  */
 public function showByRef(string $ref)
 {
-    // INVOICE
     if (str_starts_with($ref, 'INV-')) {
-        $trx = Transaction::with('topup.game', 'topup.package')
-            ->where('invoice_id', $ref)
-            ->first();
-    }
-
-    // ORDER NUMBER
-    if (str_starts_with($ref, 'ORD-')) {
-        $order = Order::with('topup.transaction.topup.game', 'topup.transaction.topup.package')
+        $trx = Transaction::where('invoice_id', $ref)->first();
+    } elseif (str_starts_with($ref, 'ORD-')) {
+        $order = Order::with('topup.transaction')
             ->where('order_number', $ref)
             ->first();
-
-        $trx = $order?->topup?->transaction ?? null;
+        $trx = $order?->topup?->transaction;
+    } else {
+        $trx = null;
     }
 
-    if (!$trx || !$trx->topup) {
+    if (!$trx) {
         return response()->json([
             'message' => 'Transaksi tidak ditemukan'
         ], 404);
     }
 
-    return response()->json([
-        'success' => true,
-        'data' => [
-            'invoice'   => $trx->invoice_id,
-            'amount'    => $trx->amount,
-            'status'    => strtoupper($trx->status),
-            'created_at'=> $trx->created_at,
-            'game'      => $trx->topup->game->name ?? '-',
-            'package'   => $trx->topup->package->name ?? '-',
-            'player_id' => $trx->topup->player_id,
-            'email'     => $trx->topup->email,
-        ]
-    ]);
+    return response()->json($trx);
 }
 
     public function checkStatus(Request $request)

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Topup;
 use App\Models\Transaction;
@@ -20,15 +19,10 @@ class QrisDummyController extends Controller
 
         return DB::transaction(function () use ($data) {
 
+            // 🔒 LOCK ORDER
             $order = Order::where('order_number', $data['order_number'])
                 ->lockForUpdate()
-                ->first();
-
-            if (!$order) {
-                return response()->json([
-                    'message' => 'Order tidak ditemukan'
-                ], 404);
-            }
+                ->firstOrFail();
 
             if ($order->status !== 'pending') {
                 return response()->json([
@@ -36,34 +30,40 @@ class QrisDummyController extends Controller
                 ], 422);
             }
 
+            // 🔍 AMBIL TOPUP (WAJIB SEBELUM DIPAKAI)
+            $topup = Topup::where('id', $order->topup_id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
             // ✅ ORDER → PAID
             $order->update([
-                'status'   => 'paid',
-                'paid_at' => now()
+                'status'  => 'paid',
+                'paid_at'=> now(),
             ]);
 
-            // ✅ TOPUP → SUCCESS
-            $topup = Topup::find($order->topup_id);
-            if ($topup) {
-                $topup->update(['status' => 'success']);
-            }
+            // ✅ TOPUP → PROCESS
+            $topup->update([
+                'status' => 'process',
+            ]);
 
-            // ✅ TRANSACTION
-            $transaction = Transaction::firstOrCreate(
-                ['topup_id' => $topup?->id],
+            // ✅ TRANSACTION → PROCESS
+            $transaction = Transaction::updateOrCreate(
+                ['topup_id' => $topup->id],
                 [
+                    'user_id'        => $topup->user_id,
                     'invoice_id'     => 'INV-' . strtoupper(Str::random(10)),
                     'amount'         => $order->amount,
                     'payment_method' => 'QRIS',
                     'status'         => 'success',
-                    'finalized_at'   => now(),
+                    'finalized_at'   => null,
                 ]
             );
 
             return response()->json([
                 'success'      => true,
                 'order_number' => $order->order_number,
-                'invoice_id'   => $transaction->invoice_id
+                'invoice_id'   => $transaction->invoice_id,
+                'status'       => 'process'
             ]);
         });
     }
