@@ -23,7 +23,7 @@ export default function Transactions() {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          "http://localhost:8000/api/account/transactions",
+          "http:///api/account/transactions",
           {
             headers: {
               Authorization: `Bearer ${token}`,

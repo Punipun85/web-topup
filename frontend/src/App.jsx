@@ -23,6 +23,8 @@ import UploadPembayaran from "./Upload/UploadPembayaran";
 import ContactUs from "./pages/ContactUs";
 import Invoice from "./invoice/Invoice";
 import Transactions from "./Transactions/Transactions";
+import ResetPassword from "./password/ResetPassword";
+import ForgotPassword from "./password/ForgotPassword";
 
 // PERBAIKAN: Path profile sekarang diarahkan ke folder /profile/ sesuai pemindahanmu
 import Profile from "./profile/profile"; 
@@ -192,6 +194,8 @@ function App() {
             {/* ===== AUTH ===== */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* ===== USER ===== */}
             <Route path="/profile" element={<Profile />} />

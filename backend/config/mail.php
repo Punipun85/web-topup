@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'smtp_host' => 'smtp.gmail.com',
+  'smtp_port' => 587,
+  'smtp_user' => getenv('GMAIL_SMTP_USER'),
+  'smtp_pass' => getenv('GMAIL_SMTP_APP_PASS'),
+  'from_name' => getenv('APP_NAME') ?: 'Aplikasi Kamu',
 
     /*
     |--------------------------------------------------------------------------

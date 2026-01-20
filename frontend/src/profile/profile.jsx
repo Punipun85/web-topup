@@ -52,7 +52,7 @@ export default function Dashboard() {
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/me", {
+        const res = await fetch("http:///api/me", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -91,7 +91,7 @@ export default function Dashboard() {
     const fetchTransactions = async () => {
       try {
         const res = await fetch(
-          "http://localhost:8000/api/account/transactions",
+          "http:///api/account/transactions",
           {
             headers: {
               Authorization: `Bearer ${token}`,

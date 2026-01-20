@@ -20,7 +20,7 @@ export default function Invoice() {
     const fetchInvoice = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8000/api/transaction/ref/${invoiceId}`,
+          `http:///api/transaction/ref/${invoiceId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

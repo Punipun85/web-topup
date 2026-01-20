@@ -25,6 +25,7 @@ use App\Http\Controllers\LookupController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GuestOrderController;
 use App\Http\Controllers\GuestTransactionController;
+use App\Http\Controllers\Api\PasswordOtpController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +56,11 @@ use App\Http\Controllers\Admin\AdminContactController;
 */
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password/otp', [PasswordOtpController::class, 'sendOtp'])
+    ->middleware('throttle:5,15');
+
+Route::post('/reset-password/otp', [PasswordOtpController::class, 'verifyAndReset'])
+    ->middleware('throttle:10,15');
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +136,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar']);
     Route::put('/profile/email', [ProfileController::class, 'updateEmail']);
     Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
+    Route::put('/profile/phone', [ProfileController::class, 'updatePhone']);
     Route::get('/account/transactions', [AccountController::class, 'transactions']);
     Route::get('/account/mutations', [AccountController::class, 'mutations']);
     Route::get('/account/affiliates', [AccountController::class, 'affiliates']);

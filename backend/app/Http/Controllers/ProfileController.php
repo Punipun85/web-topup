@@ -163,4 +163,20 @@ class ProfileController extends Controller
             'data'    => ['email' => $user->email],
         ]);
     }
+    public function updatePhone(Request $request)
+{
+    $request->validate([
+        'phone' => ['required', 'string', 'max:20'],
+    ]);
+
+    $user = $request->user();
+    $user->phone = $request->phone;
+    $user->save();
+
+    return response()->json([
+        'message' => 'Nomor HP berhasil diperbarui',
+        'data' => ['phone' => $user->phone],
+    ]);
+}
+
 }

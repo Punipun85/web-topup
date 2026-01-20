@@ -1,2 +1,2 @@
 <?php
-$API_BASE = "http://localhost:8000/api";
+$API_BASE = "http:///api";
