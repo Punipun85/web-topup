@@ -1,0 +1,98 @@
+.article-navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 64px;
+  background: #000000;
+  border-bottom: 1px solid #f9f9f9;
+  z-index: 1000;
+}
+
+.article-navbar-inner {
+  max-width: 1200px;
+  margin: auto;
+  height: 100%;
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* LOGO */
+.article-logo img {
+  height: 34px;
+}
+
+/* MENU */
+.article-menu {
+  display: flex;
+  gap: 20px;
+}
+
+/* LINK MENU */
+.article-menu a {
+  position: relative;
+  font-weight: 600;
+  color: #e5e7eb; /* abu terang biar kontras */
+  text-decoration: none;
+  padding: 6px 2px;
+  transition: color 0.2s ease;
+}
+
+/* garis bawah */
+.article-menu a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background: #fbff00; /* senada dengan border */
+  transition: width 0.25s ease;
+}
+
+/* HOVER */
+.article-menu a:hover {
+  color: #fff8f8;
+}
+
+.article-menu a:hover::after {
+  width: 100%;
+}
+
+/* SEARCH */
+.article-search {
+  margin-left: auto;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #374151;
+  width: 240px;
+  outline: none;
+  background: #0f172a;
+  color: #fff;
+}
+
+.article-search::placeholder {
+  color: #9ca3af;
+}
+
+.article-search:focus {
+  border-color: #fbff00;
+}
+
+/* CTA */
+.article-cta {
+  background: #fbff00;
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.article-cta:hover {
+  background: #ffffff;
+}

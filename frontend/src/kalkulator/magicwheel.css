@@ -1,0 +1,450 @@
+/* =========================================
+   MAGIC WHEEL CALCULATOR - EPIC THEME
+   ========================================= */
+
+/* --- Wrapper & Background --- */
+.magic-calc-wrapper {
+    min-height: 100vh;
+    /* Gambar latar belakang dari public/images/ */
+    background-image: url('/images/magicwheel.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Overlay Gelap & Blur untuk Background */
+.magic-calc-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Overlay gelap dengan hint ungu */
+    background: rgba(15, 10, 30, 0.75);
+    /* Efek blur pada gambar latar */
+    backdrop-filter: blur(8px);
+    z-index: 0;
+}
+
+/* --- Container --- */
+.magic-calc-container {
+    width: 100%;
+    max-width: 1024px;
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .magic-calc-container {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+    }
+}
+
+/* --- Cards (Glassmorphism) --- */
+.magic-calc-card,
+.magic-result-card {
+    /* Latar belakang transparan */
+    background: rgba(30, 25, 45, 0.6);
+    /* Efek kaca buram */
+    backdrop-filter: blur(20px);
+    /* Border ungu halus */
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Efek hover pada kartu */
+.magic-calc-card:hover,
+.magic-result-card:hover {
+    border-color: rgba(168, 85, 247, 0.4);
+    box-shadow: 0 30px 60px -15px rgba(168, 85, 247, 0.2);
+}
+
+/* --- Header --- */
+.magic-calc-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.magic-icon-wrapper {
+    padding: 0.75rem;
+    /* Latar belakang ikon ungu transparan */
+    background: rgba(168, 85, 247, 0.2);
+    border-radius: 12px;
+    color: #c084fc; /* Warna ikon ungu muda */
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+.magic-calc-title h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    /* Gradient teks ungu-emas */
+    background: linear-gradient(to right, #e9d5ff, #fde047);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.magic-calc-title p {
+    color: #a78bfa; /* Teks deskripsi ungu pudar */
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* --- Form Elements --- */
+.magic-input-group {
+    margin-bottom: 1.5rem;
+}
+
+.magic-input-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #d8b4fe; /* Label ungu pudar */
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+.text-accent {
+    color: #c084fc; /* Aksen ungu muda */
+}
+
+.magic-input-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.magic-calc-input {
+    width: 100%;
+    /* Input background gelap transparan */
+    background-color: rgba(15, 10, 30, 0.5);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    color: white;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    font-family: monospace;
+    font-size: 1.1rem;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.magic-calc-input:focus {
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+}
+
+.magic-input-suffix {
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a78bfa;
+    font-weight: 600;
+}
+
+/* --- Slider --- */
+.magic-slider-container {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.magic-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    /* Track slider ungu gelap */
+    background: rgba(15, 10, 30, 0.5);
+    border-radius: 5px;
+    outline: none;
+    /* Gradient track aktif ungu-emas */
+    background-image: linear-gradient(to right, #a855f7, #fde047);
+    background-repeat: no-repeat;
+    cursor: pointer;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+/* Thumb (Handle) Slider */
+.magic-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    /* Warna thumb ungu terang */
+    background: #c084fc;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 0 15px rgba(192, 132, 252, 0.7);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.magic-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(192, 132, 252, 0.9);
+}
+
+.magic-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #c084fc;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 0 15px rgba(192, 132, 252, 0.7);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.magic-slider::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(192, 132, 252, 0.9);
+}
+
+.magic-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    color: #a78bfa;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.magic-helper-text {
+    font-size: 0.75rem;
+    color: #a78bfa;
+    margin-top: 0.5rem;
+}
+
+/* --- Error Box --- */
+.magic-error-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    color: #fca5a5;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+/* --- Buttons --- */
+.magic-btn-group {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+}
+
+.magic-btn-primary {
+    flex: 1;
+    /* Gradient tombol ungu-emas */
+    background: linear-gradient(to right, #9333ea, #eab308);
+    color: white;
+    font-weight: 700;
+    padding: 1rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 20px -5px rgba(147, 51, 234, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.magic-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px -5px rgba(147, 51, 234, 0.6);
+}
+
+.magic-btn-reset {
+    padding: 0 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    color: #d8b4fe;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.magic-btn-reset:hover {
+    background: rgba(168, 85, 247, 0.1);
+    color: white;
+    border-color: #c084fc;
+}
+
+/* --- Result Card Content --- */
+.magic-result-wrapper {
+    height: 100%;
+}
+
+.magic-result-card {
+    height: 100%;
+    min-height: 450px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Border lebih terang untuk kartu hasil */
+    border-color: rgba(168, 85, 247, 0.4);
+}
+
+.magic-result-inner {
+    width: 100%;
+    text-align: center;
+}
+
+.magic-res-label {
+    color: #a78bfa;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.5rem;
+    display: block;
+    font-weight: 600;
+}
+
+.magic-res-number {
+    font-size: 4.5rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    /* Gradient teks hasil putih-ungu-emas */
+    background: linear-gradient(to bottom, #ffffff, #c084fc, #fde047);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 5px 15px rgba(168, 85, 247, 0.3));
+}
+
+.magic-res-subtitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #e9d5ff;
+    margin-bottom: 2.5rem;
+}
+
+.magic-res-details {
+    background: rgba(15, 10, 30, 0.4);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.magic-detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    color: #d8b4fe;
+}
+
+.magic-detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.magic-text-mono {
+    font-family: monospace;
+    color: white;
+}
+
+.text-accent-bold {
+    color: #fde047; /* Aksen emas untuk poin yang dibutuhkan */
+    font-weight: bold;
+}
+
+.magic-res-quote {
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    color: #a78bfa;
+    font-style: italic;
+}
+
+.magic-btn-cta {
+    width: 100%;
+    /* Gradient tombol CTA emas-oranye */
+    background: linear-gradient(to right, #facc15, #fb923c);
+    color: #4c1d95; /* Teks ungu gelap agar kontras */
+    font-weight: 800;
+    padding: 1rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 20px -5px rgba(234, 179, 8, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.magic-btn-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px -5px rgba(234, 179, 8, 0.6);
+}
+
+/* --- Empty State --- */
+.magic-empty-state {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #a78bfa;
+    padding: 3rem;
+    border: 2px dashed rgba(168, 85, 247, 0.3);
+    border-radius: 24px;
+    background: rgba(15, 10, 30, 0.3);
+}
+
+.magic-empty-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(168, 85, 247, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: #c084fc;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.2);
+}
+
+.magic-empty-state h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: #e9d5ff;
+}
+
+.magic-empty-state p {
+    font-size: 1rem;
+    max-width: 300px;
+    line-height: 1.5;
+}
+
+/* --- Remove Spinner from Number Input --- */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}

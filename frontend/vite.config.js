@@ -1,15 +1,22 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
+// https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    chunkSizeWarningLimit: 2000,
+  },
   plugins: [react()],
   server: {
     proxy: {
-      "/api": {
-        target: "http://localhost:8000",
+      '/api': {
+        target: 'http://localhost:8000', // Port Laravel Anda
         changeOrigin: true,
-        secure: false,
+        headers: {
+          Accept: 'application/json',
+          "Content-Type": "application/json",
+        },
       },
     },
   },
-});
+})

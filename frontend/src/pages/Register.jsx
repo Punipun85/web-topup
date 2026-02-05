@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHeadset } from "react-icons/fa";
-import axios from "axios";
-import "../assets/LoginRegister.css";
+// import { FaHeadset } from "react-icons/fa"; // Dihapus karena tidak dipakai lagi
+import api from "../services/api";
+import "../assets/register.css";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -18,27 +18,18 @@ export default function Register() {
   });
 
   const handleChange = (e) => {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const submit = async (e) => {
     e.preventDefault();
 
-    // validasi dasar frontend (WAJIB)
-    if (form.password !== form.password_confirmation) {
-      alert("Kata sandi dan konfirmasi tidak sama");
-      return;
-    }
-
     try {
-      await axios.post("/api/register", {
+      await api.post("/register", {
         name: form.name,
         username: form.username,
         email: form.email,
-        whatsapp: form.country_code + form.whatsapp,
+        phone: form.country_code + form.whatsapp,
         password: form.password,
         password_confirmation: form.password_confirmation,
       });
@@ -46,25 +37,43 @@ export default function Register() {
       alert("Registrasi berhasil, silakan login");
       navigate("/login");
     } catch (err) {
-      console.error("Registrasi gagal:", err);
+      console.error(err);
       alert("Registrasi gagal");
     }
   };
 
   return (
     <div className="register-container">
-      <button className="close-btn" onClick={() => navigate("/")}>✕</button>
+      {/* CLOSE BUTTON */}
+      <button className="close-btn" onClick={() => navigate("/")}>
+        ✕
+      </button>
 
+      {/* LEFT SIDE (FORM) */}
       <div className="register-left">
         <h1>Daftar</h1>
-        <p className="subtitle">Masukkan informasi pendaftaran yang valid.</p>
+        <p className="subtitle">
+          Masukkan informasi pendaftaran yang valid.
+        </p>
 
         <form onSubmit={submit}>
+          {/* NAME & USERNAME */}
           <div className="row">
-            <input name="name" placeholder="Nama lengkap" onChange={handleChange} required />
-            <input name="username" placeholder="Username" onChange={handleChange} required />
+            <input
+              name="name"
+              placeholder="Nama lengkap"
+              onChange={handleChange}
+              required
+            />
+            <input
+              name="username"
+              placeholder="Username"
+              onChange={handleChange}
+              required
+            />
           </div>
 
+          {/* EMAIL */}
           <input
             type="email"
             name="email"
@@ -73,11 +82,13 @@ export default function Register() {
             required
           />
 
+          {/* PHONE */}
           <div className="phone-group">
             <select
               name="country_code"
               value={form.country_code}
               onChange={handleChange}
+              required
             >
               <option value="+62">ID (+62)</option>
               <option value="+60">MY (+60)</option>
@@ -93,6 +104,7 @@ export default function Register() {
             />
           </div>
 
+          {/* PASSWORD */}
           <div className="row">
             <input
               type="password"
@@ -110,15 +122,33 @@ export default function Register() {
             />
           </div>
 
+          {/* TERMS */}
           <div className="terms">
             <input type="checkbox" required />
             <label>
-              Saya setuju dengan <span>Syarat & Ketentuan</span>
+              Saya setuju dengan{" "}
+              <span
+                className="terms-link"
+                onClick={() => navigate("/terms")}
+              >
+                Syarat & Ketentuan
+              </span>{" "}
+              dan{" "}
+              <span
+                className="terms-link"
+                onClick={() => navigate("/privacy")}
+              >
+                kebijakan privasi
+              </span>
             </label>
           </div>
 
-          <button className="btn-submit" type="submit">Daftar</button>
+          {/* SUBMIT */}
+          <button className="btn-submit" type="submit">
+            Daftar
+          </button>
 
+          {/* LOGIN */}
           <p className="login-link">
             Sudah memiliki akun?{" "}
             <span onClick={() => navigate("/login")}>Masuk</span>
@@ -126,11 +156,9 @@ export default function Register() {
         </form>
       </div>
 
+      {/* RIGHT SIDE (KUNING KOSONG) */}
       <div className="register-right">
-        <div className="customer-service">
-          <FaHeadset />
-          <span>CUSTOMER SERVICE</span>
-        </div>
+        {/* Element Customer Service dihapus sesuai permintaan */}
       </div>
     </div>
   );

@@ -2,112 +2,81 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Order;
-use Illuminate\Support\Str;
+use App\Models\Topup;
+use App\Models\Transaction;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
-    /**
-     * CREATE ORDER FROM TOPUP (PUBLIC)
-     */
-    public function store(Request $r)
+    public function store(Request $request)
     {
-        $r->validate([
-            'topup_id'        => 'required|exists:topups,id',
-            'payment_method' => 'required|string'
+        $data = $request->validate([
+            'topup_id'       => 'required|exists:topups,id',
+            'payment_method' => 'required|string',
         ]);
 
-        return DB::transaction(function () use ($r) {
+        return DB::transaction(function () use ($data) {
 
-            $topup = DB::table('topups')
-                ->where('id', $r->topup_id)
+            $topup = Topup::where('id', $data['topup_id'])
+                ->where('status', 'pending')
                 ->lockForUpdate()
                 ->first();
 
             if (!$topup) {
                 return response()->json([
-                    'status'  => 'error',
-                    'message' => 'Topup tidak ditemukan'
-                ], 404);
-            }
-
-            if ($topup->status !== 'pending') {
-                return response()->json([
-                    'status'  => 'error',
-                    'message' => 'Topup tidak bisa diproses'
+                    'message' => 'Topup tidak ditemukan atau sudah diproses'
                 ], 400);
             }
 
-            // CREATE ORDER
+            // 🔒 Cegah double order
+            $existingOrder = Order::where('topup_id', $topup->id)->first();
+            if ($existingOrder) {
+                return response()->json([
+                    'message' => 'Order sudah ada'
+                ], 409);
+            }
+
+            // ✅ ORDER
             $order = Order::create([
-                'order_number'      => 'ORD-' . now()->format('YmdHis') . '-' . Str::upper(Str::random(5)),
-                'user_id'           => $topup->user_id,
-                'topup_package_id'  => $topup->package_id,
-                'player_id'         => $topup->player_id,
-                'amount'            => $topup->amount,
-                'status'            => 'pending',
-                'payment_payload'   => [
-                    'method'    => $r->payment_method,
-                    'topup_id'  => $topup->id
-                ]
+                'order_number'    => 'ORD-' . strtoupper(Str::random(12)),
+                'topup_id'        => $topup->id,
+                'user_id'         => Auth::id(),
+                'payment_method' => $data['payment_method'],
+                'amount'          => $topup->amount,
+                'status'          => 'paid', // ⬅️ langsung paid
             ]);
 
-            // CREATE TRANSACTION
-            $order->transaction()->create([
-                'amount' => $topup->amount,
-                'status' => 'pending',
-                'payment_method' => $r->payment_method,
-                'provider' => 'dummy'
+            // ✅ TOPUP → SUCCESS
+            $topup->update([
+                'status' => 'success',
             ]);
 
-            // UPDATE TOPUP STATUS
-            DB::table('topups')
-                ->where('id', $topup->id)
-                ->update([
-                    'status' => 'waiting_payment',
-                    'updated_at' => now()
-                ]);
+            // ✅ TRANSACTION → SUCCESS (INI YANG HILANG DARI HIDUPMU)
+            $transaction = Transaction::create([
+                'user_id'        => Auth::id(),
+                'topup_id'       => $topup->id,
+                'invoice_id'     => 'INV-' . strtoupper(Str::random(10)),
+                'amount'         => $order->amount,
+                'payment_method' => $order->payment_method,
+                'status'         => 'success',
+                'finalized_at'   => now(),
+            ]);
 
             return response()->json([
-                'status'        => 'pending_payment',
-                'message'       => 'Order pembayaran berhasil dibuat',
-                'order_number'  => $order->order_number,
-                'payment_method' => $r->payment_method,
-                'amount'        => $order->amount
+                'success' => true,
+                'message' => 'Order berhasil dibuat',
+                'data' => [
+                    'order_id'     => $order->id,
+                    'order_number' => $order->order_number,
+                    'invoice_id'   => $transaction->invoice_id,
+                    'amount'       => $transaction->amount,
+                    'status'       => 'SUCCESS',
+                ]
             ], 201);
         });
-    }
-
-    /**
-     * CHECK ORDER (PUBLIC)
-     */
-    public function check(Request $r)
-    {
-        $r->validate([
-            'order_number' => 'required|string',
-            'player_id'    => 'required|string'
-        ]);
-
-        $order = Order::where('order_number', $r->order_number)
-            ->where('player_id', $r->player_id)
-            ->with('transaction:id,order_id,status')
-            ->first();
-
-        if (!$order) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Order tidak ditemukan'
-            ], 404);
-        }
-
-        return response()->json([
-            'order_number'   => $order->order_number,
-            'status'         => $order->status,
-            'amount'         => $order->amount,
-            'payment_status' => $order->transaction?->status,
-            'created_at'     => $order->created_at->toDateTimeString()
-        ]);
     }
 }

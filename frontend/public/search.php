@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../config/api.php";
 
 $q = $_GET["q"] ?? "";
 if (!$q) {
@@ -7,9 +7,9 @@ if (!$q) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT * FROM invoices WHERE invoice_number LIKE ?");
-$stmt->execute(["%$q%"]);
-$results = $stmt->fetchAll();
+$url = $API_BASE . "/games?search=" . urlencode($q);
+$json = file_get_contents($url);
+$result = json_decode($json, true);
 ?>
 
 <!DOCTYPE html>

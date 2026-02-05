@@ -1,0 +1,65 @@
+.cs-admin {
+  padding: 2rem;
+  color: white;
+}
+
+.cs-admin-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1.5rem;
+}
+
+.cs-list {
+  background: #1c1c24;
+  border-radius: 12px;
+  overflow-y: auto;
+}
+
+.cs-item {
+  padding: 1rem;
+  border-bottom: 1px solid #2a2a35;
+  cursor: pointer;
+}
+
+.cs-item.new {
+  background: rgba(255, 255, 0, 0.05);
+}
+
+.cs-item.read {
+  opacity: 0.7;
+}
+
+.cs-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.cs-detail {
+  background: #1c1c24;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.cs-detail .message {
+  margin: 1rem 0;
+  background: #2a2a35;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.actions button {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.actions .resolve {
+  background: #22c55e;
+  color: black;
+  font-weight: 700;
+}

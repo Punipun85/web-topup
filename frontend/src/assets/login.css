@@ -1,0 +1,234 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+/* WRAPPER UTAMA */
+.auth-wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* --- BAGIAN KIRI (GELAP) --- */
+.auth-left {
+  width: 45%; 
+  background-color: #363945; /* Sama dengan Register */
+  color: white;
+  position: relative;
+  padding: 40px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Container Form */
+.auth-form {
+  width: 100%;
+  max-width: 400px; /* Lebar dibatasi agar rapi */
+  margin: 0 auto;
+}
+
+/* Typography */
+.auth-form h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #a0a3b1;
+  margin-bottom: 2.5rem;
+  line-height: 1.5;
+}
+
+/* Form Layout */
+.auth-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Label Input */
+.auth-form label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #e0e0e0;
+}
+
+/* --- INPUT STYLING (HARD FIX) --- */
+/* Hanya target text dan password agar checkbox tidak rusak */
+.auth-form input[type="text"],
+.auth-form input[type="password"] {
+  width: 100%;
+  padding: 14px 16px !important;
+  height: 50px !important;
+  background-color: #464957 !important;
+  border: 1px solid #5a5d6b !important;
+  border-radius: 8px !important;
+  
+  /* WARNA FONT PUTIH & JELAS */
+  color: #ffffff !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: 0.3s;
+}
+
+/* Autofill Fix */
+.auth-form input:-webkit-autofill,
+.auth-form input:-webkit-autofill:hover, 
+.auth-form input:-webkit-autofill:focus, 
+.auth-form input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #464957 inset !important;
+    -webkit-text-fill-color: white !important;
+}
+
+.auth-form input::placeholder {
+  color: #888b99 !important;
+}
+
+.auth-form input:focus {
+  border-color: #ffe600 !important;
+  background-color: #505361 !important;
+}
+
+/* --- OPTIONS (Remember & Forgot) --- */
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  color: #a0a3b1;
+}
+
+/* FIX UNTUK CHECKBOX "INGAT AKUN KU" */
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-bottom: 0 !important; /* Reset margin label bawaan */
+}
+
+/* Pastikan ukuran checkbox normal */
+.remember input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px !important;
+  accent-color: #ffe600;
+  cursor: pointer;
+  margin: 0;
+  border: 1px solid #fff;
+}
+
+.remember span {
+  margin-top: 1px; /* Sedikit penyesuaian vertikal */
+}
+
+.forgot {
+  color: #ffe600;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.forgot:hover {
+  text-decoration: underline;
+}
+
+/* --- LOGIN BUTTON --- */
+.btn-login {
+  background-color: #ffe600; 
+  color: #000;
+  font-weight: 800;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  text-transform: uppercase;
+  margin-top: 10px;
+  transition: transform 0.2s;
+}
+
+.btn-login:hover {
+  background-color: #e6cf00;
+  transform: translateY(-2px);
+}
+
+/* --- REGISTER LINK --- */
+.register-link {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #a0a3b1;
+  margin-top: 10px;
+}
+
+.register-link span {
+  color: #ffe600;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+/* --- BAGIAN KANAN (KUNING POLOS) --- */
+.auth-right {
+  flex: 1; 
+  background-color: #ffe600; 
+  /* Tidak ada konten lagi di sini */
+}
+
+/* --- RESPONSIF --- */
+@media (max-width: 900px) {
+  .auth-wrapper {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .auth-left {
+    width: 100%;
+    order: 2;
+    padding: 30px 20px;
+  }
+
+  .auth-right {
+    height: 80px; 
+    order: 1;
+  }
+}

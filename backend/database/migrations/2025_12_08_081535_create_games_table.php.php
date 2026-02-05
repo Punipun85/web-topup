@@ -9,14 +9,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('games', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->string('image')->nullable();
-            $table->string('code')->unique(); // internal code, contoh: ML, FF
-            $table->boolean('active')->default(true);
-            $table->timestamps();
-        });
+    $table->id();
+    $table->string('name', 100);
+    $table->string('slug')->unique();
+    $table->string('code')->unique(); // ML, FF, dll
+    $table->string('image')->nullable(); // path image
+    $table->boolean('active')->default(true)->index();
+    $table->timestamps();
+});
+
     }
 
     public function down(): void

@@ -3,49 +3,68 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\TopUpPackage;
+use Illuminate\Http\Request;
 
 class TopUpPackageAdminController extends Controller
 {
     /**
-     * Update harga + promo
+     * List packages + game info
      */
-    public function update(Request $request, $id)
+    public function index()
     {
-        $request->validate([
-            'price' => 'required|integer|min:0',
-            'promo_label' => 'nullable|string',
-            'bonus' => 'nullable|integer|min:0',
-            'starts_at' => 'nullable|date',
-            'ends_at' => 'nullable|date|after:starts_at',
+        return response()->json([
+            'data' => TopUpPackage::with('game:id,code,name')
+                ->orderBy('game_id')
+                ->orderBy('id')
+                ->get()
         ]);
+    }
 
-        $package = TopUpPackage::findOrFail($id);
+    /**
+     * Update harga / promo
+     */
+   public function update(Request $request, $id)
+{
+    $data = $request->validate([
+        'price' => 'required|integer|min:0',
+        'promo_enabled' => 'boolean',
+        'promo_price' => 'nullable|integer|min:0',
+    ]);
 
+    $package = TopUpPackage::findOrFail($id);
+
+    // update harga normal
+    $package->price = $data['price'];
+
+    // toggle promo
+    if (array_key_exists('promo_enabled', $data)) {
+        $package->promo_enabled = $data['promo_enabled'];
+    }
+
+    // simpan harga promo ke meta
+    if (isset($data['promo_price'])) {
         $meta = $package->meta ?? [];
+        $meta['promo']['price'] = $data['promo_price'];
+        $package->meta = $meta;
+    }
 
-        // Kalau promo diisi
-        if ($request->promo_label) {
-            $meta['promo'] = [
-                'label' => $request->promo_label,
-                'bonus_amount' => (int) $request->bonus,
-                'starts_at' => $request->starts_at,
-                'ends_at' => $request->ends_at,
-            ];
-        } else {
-            // Kalau promo dikosongkan → hapus promo
-            unset($meta['promo']);
-        }
+    $package->save();
 
-        $package->update([
-            'price' => (int) $request->price,
-            'meta' => $meta,
-        ]);
+    return response()->json([
+        'message' => 'Package updated'
+    ]);
+}
+
+    /**
+     * Delete package
+     */
+    public function destroy($id)
+    {
+        TopUpPackage::findOrFail($id)->delete();
 
         return response()->json([
-            'message' => 'Package updated',
-            'data' => $package
+            'message' => 'Package deleted'
         ]);
     }
 }

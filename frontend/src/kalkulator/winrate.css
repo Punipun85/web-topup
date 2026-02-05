@@ -1,0 +1,355 @@
+/* ================= GLOBAL KALKULATOR ================= */
+.calc-wrapper {
+  min-height: 100vh;
+  background-color: #0f0f11;
+  color: white;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Blobs (Efek Cahaya Belakang) */
+.calc-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+}
+.blob-purple {
+  top: 0; left: 0;
+  width: 500px; height: 500px;
+  background: rgba(147, 51, 234, 0.2);
+  transform: translate(-50%, -50%);
+}
+.blob-blue {
+  bottom: 0; right: 0;
+  width: 400px; height: 400px;
+  background: rgba(37, 99, 235, 0.1);
+  transform: translate(33%, 33%);
+}
+
+/* Container Utama */
+.calc-container {
+  width: 100%;
+  max-width: 1024px;
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+/* Responsive Grid (Desktop) */
+@media (min-width: 1024px) {
+  .calc-container {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+/* ================= KARTU INPUT (KIRI) ================= */
+.calc-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Garis Glow Halus di Atas Kartu */
+.calc-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.5), transparent);
+  opacity: 0.5;
+}
+
+/* Header Section */
+.calc-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.icon-wrapper {
+  padding: 0.75rem;
+  background: rgba(168, 85, 247, 0.2);
+  border-radius: 12px;
+  color: #c084fc; /* Purple-400 */
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+}
+
+.calc-title h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+.calc-title p {
+  color: #9ca3af; /* Gray-400 */
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* --- FORM INPUTS --- */
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #d1d5db; /* Gray-300 */
+  margin-bottom: 0.5rem;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.calc-input {
+  width: 100%;
+  background-color: #1a1a1e;
+  border: 1px solid #374151; /* Gray-700 */
+  color: white;
+  border-radius: 12px;
+  padding: 1rem 1rem;
+  font-family: monospace; /* Font coding untuk angka */
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.calc-input:focus {
+  border-color: #a855f7;
+  box-shadow: 0 0 0 1px #a855f7;
+}
+
+/* Warna khusus focus border per tipe */
+.calc-input.wr-input:focus { border-color: #eab308; box-shadow: 0 0 0 1px #eab308; } /* Kuning */
+.calc-input.target-input:focus { border-color: #ef4444; box-shadow: 0 0 0 1px #ef4444; } /* Merah */
+
+.input-suffix {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-weight: bold;
+}
+
+/* --- BUTTONS --- */
+.btn-group {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.btn-primary {
+  flex: 1;
+  background: linear-gradient(to right, #9333ea, #4f46e5);
+  color: white;
+  font-weight: 700;
+  padding: 1rem;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 15px -3px rgba(88, 28, 135, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 20px -3px rgba(88, 28, 135, 0.5);
+}
+
+.btn-reset {
+  padding: 0 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #d1d5db;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.btn-reset:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Error Alert */
+.error-box {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ================= RESULT SECTION (KANAN) ================= */
+.result-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.result-card {
+  height: 100%;
+  min-height: 400px;
+  background: linear-gradient(to bottom right, rgba(88, 28, 135, 0.5), #0f0f11);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 24px;
+  padding: 4px; /* Untuk border dalam */
+  position: relative;
+  overflow: hidden;
+  animation: slideUp 0.5s ease-out;
+}
+
+.result-inner {
+  background: rgba(19, 19, 22, 0.8);
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Typography Hasil */
+.res-label {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.res-number {
+  font-size: 5rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(to bottom, #ffffff, #9ca3af);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.res-subtitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 2rem;
+}
+
+/* Kotak Detail Kecil di Bawah Hasil */
+.res-details {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+.detail-row:last-child { margin-bottom: 0; }
+
+.text-mono { font-family: monospace; }
+.text-purple { color: #c084fc; font-weight: bold; }
+
+.res-quote {
+  margin-top: 2rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Empty State */
+.empty-state {
+  display: none; /* Hidden on mobile by default logic, but CSS handles flex */
+  height: 100%;
+  border: 2px dashed rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 24px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #6b7280;
+  padding: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .empty-state { display: flex; }
+}
+
+.empty-icon {
+  width: 6rem;
+  height: 6rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  color: #4b5563;
+}
+
+/* Animasi */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= TAMBAHAN: HILANGKAN SPINNER ================= */
+
+/* Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

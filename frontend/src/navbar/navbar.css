@@ -1,0 +1,328 @@
+/* ================= NAVBAR WRAPPER ================= */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 9999;        /* SAYA NAIKKAN BIAR PALING ATAS */
+  isolation: isolate; 
+  background: rgba(13, 13, 13, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: visible !important; /* WAJIB ADA: Biar dropdown tidak terpotong */
+}
+
+/* ================= TOP BAR ================= */
+.navbar-top {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* LOGO */
+.navbar-logo {
+  height: 36px;
+  cursor: pointer;
+  display: block;
+}
+
+/* ================= SEARCH AREA ================= */
+.navbar-search {
+  flex: 1; /* PENTING: Ini membuat search bar mengisi sisa ruang kosong */
+  max-width: 999px; /* Batas maksimal agar tidak terlalu panjang di layar besar */
+  position: relative;
+  z-index: 100;
+  margin: 10px; /* Posisi otomatis di tengah antara logo & auth */
+  margin-top: 35px;
+}
+
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 30%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* INPUT STYLE */
+.search-input {
+  width: 100%;
+  height: 42px;
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 0 1rem 0 2.5rem;
+  font-size: 14px;
+  color: white;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.search-input:focus {
+  border-color: #f3f305;
+  background: #252525;
+  box-shadow: 0 0 10px rgba(243, 243, 5, 0.1);
+}
+
+/* ================= DROPDOWN HASIL SEARCH ================= */
+.search-dropdown {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  z-index: 1000;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.search-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+.search-dropdown::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 3px;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #2a2a2a;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-item:hover {
+  background-color: #333;
+}
+
+.search-item:last-child {
+  border-bottom: none;
+}
+
+/* ================= AUTH BUTTONS ================= */
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-shrink: 0;
+}
+
+.auth-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  color: #e5e7eb;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.auth-btn:hover {
+  color: #f3f305;
+}
+
+/* ================= BOTTOM MENU ================= */
+.navbar-menu {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  gap: 2rem;
+  padding: 0 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  /* overflow-x: auto;  <-- HAPUS ATAU GANTI INI. INI PENYEBAB DROPDOWN HILANG */
+  overflow: visible !important; /* GANTI JADI VISIBLE */
+}
+
+/* Hilangkan scrollbar di menu */
+.navbar-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-item {
+  position: relative;
+  padding: 16px 0;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.nav-item:hover {
+  color: white;
+}
+
+.nav-item.active {
+  color: #f3f305;
+}
+
+/* Indikator Garis Bawah Kuning */
+.nav-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #f3f305;
+  box-shadow: 0 0 10px rgba(243, 243, 5, 0.5);
+}
+
+/* ================= PREMIUM DROPDOWN STYLE ================= */
+
+/* Container Dropdown Utama */
+.premium-dropdown {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 90%; /* Jarak dari navbar */
+  width: 340px;
+  display: none; /* Default hidden */
+  padding-top: 15px; /* Jarak aman agar mouse tidak lepas */
+  z-index: 99999;
+}
+
+/* Tampilkan saat di-hover (Parent Group Logic) */
+.group:hover .premium-dropdown,
+.premium-dropdown:hover {
+  display: block;
+  animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Kotak Kaca (Glassmorphism) */
+.dropdown-glass {
+  background: rgba(15, 15, 17, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* Header Kecil (Tools Populer) */
+.dropdown-header {
+  padding: 8px 12px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 4px;
+}
+
+/* --- ITEM CARD STYLE --- */
+.menu-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  position: relative;
+  text-decoration: none;
+  transition: background 0.3s ease;
+  overflow: hidden;
+}
+
+.menu-card:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Efek Glow Background saat Hover */
+.menu-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+/* Warna Glow per Tipe */
+.menu-card.purple::before { background: linear-gradient(to right, rgba(147, 51, 234, 0.1), transparent); }
+.menu-card.blue::before   { background: linear-gradient(to right, rgba(37, 99, 235, 0.1), transparent); }
+.menu-card.pink::before   { background: linear-gradient(to right, rgba(219, 39, 119, 0.1), transparent); }
+
+/* --- ICON BOX --- */
+.icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Efek membal */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.menu-card:hover .icon-box {
+  transform: scale(1.1) rotate(3deg); /* Efek Zoom & Miring dikit */
+}
+
+/* Gradients Icon */
+.icon-box.purple { background: linear-gradient(135deg, #7c3aed, #4f46e5); box-shadow: 0 8px 20px rgba(124, 58, 237, 0.25); }
+.icon-box.blue   { background: linear-gradient(135deg, #06b6d4, #2563eb); box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25); }
+.icon-box.pink   { background: linear-gradient(135deg, #e11d48, #db2777); box-shadow: 0 8px 20px rgba(219, 39, 119, 0.25); }
+
+/* SVG Icon dalam Box */
+.icon-box svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+/* --- TEXT CONTENT --- */
+.text-content {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.menu-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  transition: color 0.3s;
+}
+
+.menu-desc {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 2px 0 0 0;
+  line-height: 1.4;
+}
+
+/* Hover Text Colors */
+.menu-card.purple:hover .menu-title { color: #c084fc; }
+.menu-card.blue:hover .menu-title   { color: #67e8f9; }
+.menu-card.pink:hover .menu-title   { color: #f472b6; }
+
+/* Animasi Muncul */
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}

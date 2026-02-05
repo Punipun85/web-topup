@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "../assets/LoginRegister.css";
-import { FaHeadset } from "react-icons/fa";
+// Icon FaHeadset dihapus karena CS sudah tidak dipakai
+import api from "../services/api";
+import { useAuth } from "../Context/useAuth";
+import "../assets/login.css";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login: authLogin } = useAuth();
 
   const [form, setForm] = useState({
-    username: "",
+    login: "",
     password: "",
     remember: false,
   });
@@ -21,65 +23,105 @@ export default function Login() {
     }));
   };
 
-const submit = async (e) => {
-  e.preventDefault();
+  const submit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const { data } = await axios.post("/api/login", {
-      username: form.username,
-      password: form.password,
-    });
+    try {
+      const { data } = await api.post("/login", {
+        login: form.login,
+        password: form.password,
+      });
 
-    if (!data.token) throw new Error("Token tidak ada");
+      const storage = form.remember ? localStorage : sessionStorage;
+      storage.setItem("token", data.token);
 
-    const storage = form.remember ? localStorage : sessionStorage;
-    storage.setItem("token", data.token);
+      authLogin(data.token, data.user);
 
-    navigate("/");
-  } catch (err) {
-    console.error(err);
-    alert("Username atau password salah");
-  }
-};
+      if (data.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      console.error(err.response?.data || err);
+      alert("Username / email atau kata sandi salah");
+    }
+  };
 
   return (
-    <div className="login-container">
-      <button className="close-btn" onClick={() => navigate("/")}>✕</button>
+    <div className="auth-wrapper">
+      {/* LEFT PANEL */}
+      <div className="auth-left">
+        <button className="close-btn" onClick={() => navigate("/")}>
+          ✕
+        </button>
 
-      <div className="login-left">
-        <h1>Masuk</h1>
-        <p className="subtitle">Masuk dengan akun yang telah kamu daftarkan.</p>
-
-        <form onSubmit={submit}>
-          <label>Username</label>
-          <input name="username" onChange={handleChange} required />
-
-          <label>Kata sandi</label>
-          <input type="password" name="password" onChange={handleChange} required />
-
-          <div className="options">
-            <label className="remember">
-              <input type="checkbox" name="remember" onChange={handleChange} />
-              Ingat akun ku
-            </label>
-
-            <span className="forgot">Lupa kata sandi mu?</span>
-          </div>
-
-          <button className="btn-submit" type="submit">Masuk</button>
-
-          <p className="register-link">
-            Belum memiliki akun?{" "}
-            <span onClick={() => navigate("/register")}>Daftar</span>
+        <div className="auth-form">
+          <h1>Masuk</h1>
+          <p className="subtitle">
+            Masuk dengan akun yang telah kamu daftarkan.
           </p>
-        </form>
+
+          <form onSubmit={submit}>
+            <div>
+              <label>Username atau Email</label>
+              <input
+                type="text"
+                name="login"
+                placeholder="Username atau Email"
+                value={form.login}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div>
+              <label>Kata sandi</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Kata sandi"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* BAGIAN INGAT AKUN & LUPA PASSWORD */}
+            <div className="options">
+              <label className="remember">
+                <input
+                  type="checkbox"
+                  name="remember"
+                  checked={form.remember}
+                  onChange={handleChange}
+                />
+                <span>Ingat akun ku</span>
+              </label>
+
+              <span
+                className="forgot"
+                onClick={() => navigate("/forgot-password")}
+              >
+                Lupa kata sandi mu?
+              </span>
+            </div>
+
+            <button className="btn-login" type="submit">
+              Masuk
+            </button>
+
+            <p className="register-link">
+              Belum memiliki akun?{" "}
+              <span onClick={() => navigate("/register")}>Daftar</span>
+            </p>
+          </form>
+        </div>
       </div>
 
-      <div className="login-right">
-        <div className="customer-service">
-          <FaHeadset />
-          <span>CUSTOMER SERVICE</span>
-        </div>
+      {/* RIGHT PANEL (KOSONG / KUNING POLOS) */}
+      <div className="auth-right">
+        {/* Customer Service dihapus sesuai permintaan */}
       </div>
     </div>
   );

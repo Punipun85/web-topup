@@ -1,13 +1,29 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from "react-router-dom";
 import App from './App.jsx'
-import './index.css' // Baris ini SANGAT PENTING untuk menghubungkan CSS ke program
+import FloatingFooter from './footer/FloatingFooter'
+import './index.css'
+import './cek transaksi/cek_transaksi.css'
+import { Toaster } from 'react-hot-toast'
+import { BrowserRouter } from 'react-router-dom'
+import { AuthProvider } from './context/authprovider.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
   <React.StrictMode>
+   <BrowserRouter>
+   <AuthProvider>
     <App />
+    <Toaster
+      position="top-right"
+      toastOptions={{
+        style: {
+          background: "#1c1c24",
+          color: "#fff",
+        },
+      }}
+    />
+    <FloatingFooter />
+  </AuthProvider>
+  </BrowserRouter>
   </React.StrictMode>
-  </BrowserRouter>,
 )

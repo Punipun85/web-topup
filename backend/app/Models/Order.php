@@ -11,17 +11,20 @@ class Order extends Model
 
     protected $fillable = [
         'order_number',
+        'topup_id',
         'user_id',
-        'topup_package_id',
-        'player_id',
+        'payment_method',
         'amount',
         'status',
-        'payment_payload'
+        'payment_payload',
+        'payment_proof',
+        'paid_at',
     ];
 
     protected $casts = [
         'amount' => 'float',
-        'payment_payload' => 'array'
+        'payment_payload' => 'array',
+        'paid_at' => 'datetime',
     ];
 
     public function user()
@@ -29,13 +32,8 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function topupPackage()
+    public function topup()
     {
-        return $this->belongsTo(TopUpPackage::class);
-    }
-
-    public function transaction()
-    {
-        return $this->hasOne(Transaction::class);
+        return $this->belongsTo(Topup::class);
     }
 }

@@ -1,0 +1,232 @@
+/* =========================================================
+   FOOTER UTAMA (STATIC FOOTER) - TIDAK DIUBAH
+   ========================================================= */
+.footer {
+  background: #000;
+  padding-top: 4rem;
+  padding-bottom: 8rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  position: relative;
+  z-index: 1;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.footer-description {
+  color: #9ca3af;
+  font-size: 13px;
+  line-height: 1.8;
+  text-align: center;
+  max-width: 1100px;
+  margin: 0 auto 4rem;
+}
+
+/* ================= GRID ================= */
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.footer-column h4 {
+  color: #f3f305;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 1.5rem;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column li {
+  color: #d1d5db;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.footer-column li:hover {
+  color: #fff;
+}
+
+/* =========================================================
+   FLOATING FOOTER (CUSTOMER SERVICE)
+   ========================================================= */
+.footer-floating {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  z-index: 9999;
+  pointer-events: none; /* Container utama tembus klik */
+}
+
+/* ===== CONTAINER FLEX ===== */
+.floating-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  
+  /* UPDATE PENTING:
+     Kita set ini ke 'none' agar ruang kosong di tengah tembus klik.
+     Hanya elemen anak (copyright & actions) yang kita set 'auto'. */
+  pointer-events: none; 
+}
+
+/* ===== COPYRIGHT ===== */
+.copyright {
+  font-size: 11px;
+  color: #9ca3af;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(12px);
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255,255,255,0.05);
+  
+  pointer-events: auto; /* 🔥 Agar Copyright bisa di-select/klik */
+}
+
+/* ===== ACTIONS (KANAN) ===== */
+.floating-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: auto; /* 🔥 Agar Tombol bisa diklik */
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+.icon-btn {
+  all: unset;
+  width: 40px;
+  height: 40px;
+  background: #1c1c24;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.icon-btn:hover {
+  color: #fff;
+  background: #262631;
+}
+
+.cs-btn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #f3f305;
+  color: #000;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1.25rem;
+  font-weight: 900;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(243,243,5,0.4);
+  transition: transform 0.2s ease;
+}
+
+.cs-btn:hover {
+  transform: scale(1.05);
+}
+
+.cs-btn:active {
+  transform: scale(0.95);
+}
+
+/* =========================================================
+   CUSTOMER SERVICE DROPDOWN
+   ========================================================= */
+.cs-wrapper {
+  position: relative;
+}
+
+.cs-dropdown {
+  position: absolute;
+  bottom: 56px; /* Muncul di atas tombol */
+  right: 0;
+  width: 260px;
+  background: #1f1f2b;
+  border-radius: 14px;
+  padding: 0.5rem;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+  
+  /* Pastikan dropdown bisa diklik */
+  pointer-events: auto; 
+}
+
+.cs-title {
+  font-weight: 800;
+  padding: 0.6rem 0.75rem;
+  color: #fff;
+  font-size: 14px;
+}
+
+/* ===== ITEM (BUTTON SAFE) ===== */
+.cs-item {
+  all: unset;
+  display: block;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px; /* Box-sizing sudah di-handle oleh * reset */
+  box-sizing: border-box; 
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.cs-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cs-item.highlight {
+  background: rgba(243,243,5,0.15);
+  font-weight: 700;
+  color: #f3f305;
+}
+
+.cs-item.highlight span {
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.cs-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 0.4rem 0;
+}
+
+.cs-item.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
